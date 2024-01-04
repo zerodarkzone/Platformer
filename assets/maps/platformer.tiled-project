@@ -1,0 +1,64 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+                {
+                    "name": "ActorInfo",
+                    "type": "string",
+                    "value": "Floor"
+                },
+                {
+                    "name": "density",
+                    "type": "float",
+                    "value": 1
+                },
+                {
+                    "name": "friction",
+                    "type": "float",
+                    "value": 0.2
+                },
+                {
+                    "name": "restitution",
+                    "type": "float",
+                    "value": 0.02
+                },
+                {
+                    "name": "sensorType",
+                    "type": "string",
+                    "value": "None"
+                },
+                {
+                    "name": "shapeType",
+                    "type": "string",
+                    "value": "Ground"
+                }
+            ],
+            "name": "Collider",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        }
+    ]
+}

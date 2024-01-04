@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="90" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="8" nextobjectid="37">
+ <tileset firstgid="1" source="oak_woods_tileset.tsx"/>
+ <tileset firstgid="316" source="template.tsx"/>
+ <imagelayer id="2" name="background1" locked="1" offsetx="0" offsety="72" parallaxx="0.8" repeatx="1">
+  <image source="../images/background_layer_1.png" width="320" height="180"/>
+ </imagelayer>
+ <imagelayer id="3" name="background2" locked="1" offsetx="0" offsety="72" parallaxx="0.85" repeatx="1">
+  <image source="../images/background_layer_2.png" width="320" height="180"/>
+ </imagelayer>
+ <imagelayer id="4" name="background3" locked="1" offsetx="0" offsety="72" repeatx="1">
+  <image source="../images/background_layer_3.png" width="320" height="180"/>
+ </imagelayer>
+ <layer id="1" name="prototype" width="90" height="12" visible="0" opacity="0.7">
+  <data encoding="base64" compression="zlib">
+   eJztkksOABAMROsULuT+Z7IQiUh8SlHNLN5ydPrUE1Fw4CSeEq97WAee4dkS8KzDM/7gjueTc1/vbt1znvmj69XevVzpQ9rJTcf1HruuuPlWptVr9LbGO+3tMtNzlOfc6SqSb0p3swQ884gxefdB
+  </data>
+ </layer>
+ <layer id="7" name="void" width="90" height="12">
+  <data encoding="base64" compression="zlib">
+   eJztwwENAAAIA6Dbyf7Z3kNhIwEAAOCjHb2zxWAlRQ==
+  </data>
+ </layer>
+ <layer id="5" name="terrain" width="90" height="12">
+  <data encoding="base64" compression="zlib">
+   eJztk9ENgzAMREmV3/61QYzRIaquw9iMgSOwhCxhJyTYqORJxw+6i32BoWucTQAN1kPcgNazDq1nHVrPOkg9P7UG+XOsvuePwZmWWPT8BU2gn/K5NXAgf8DH9RwzH6uOZHOMlfM4tnuU7BNzXvB4uzw/+mjPOFd813eLUrLRV/tOSsAdcY+cfdCPd0P7kO6M9rj10Dw62162Y/IkeZKT45W0t0vqnJxfyknxSqL/QKiUVZJzdc1wWhCt
+  </data>
+ </layer>
+ <objectgroup id="6" name="colliders" class="Collider">
+  <properties>
+   <property name="ActorInfo" value="Floor"/>
+   <property name="density" type="float" value="1"/>
+   <property name="friction" type="float" value="0"/>
+   <property name="restitution" type="float" value="0.02"/>
+   <property name="sensorType" value="None"/>
+   <property name="shapeType" value="Ground"/>
+  </properties>
+  <object id="4" type="Collider" x="144" y="192" width="96" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="5" type="Collider" x="432" y="216" width="72" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="6" type="Collider" x="96" y="216" width="48" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="7" type="Collider" x="240" y="216" width="24" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="8" type="Collider" x="2136" y="192" width="24" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="9" type="Collider" x="2112" y="192" width="24" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="10" type="Collider" x="2064" y="216" width="48" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="11" type="Collider" x="1944" y="240" width="120" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="12" type="Collider" x="1872" y="216" width="72" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="13" type="Collider" x="1848" y="192" width="24" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="14" type="Collider" x="1800" y="168" width="48" height="144">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="15" type="Collider" x="1776" y="192" width="24" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="16" type="Collider" x="1704" y="216" width="72" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="17" type="Collider" x="1512" y="240" width="192" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="18" type="Collider" x="1488" y="216" width="24" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="19" type="Collider" x="1344" y="192" width="144" height="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="20" type="Collider" x="1320" y="216" width="24" height="96">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="24" type="Collider" x="840" y="240" width="480" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="25" type="Collider" x="264" y="240" width="72" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="26" type="Collider" x="0" y="240" width="96" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="27" type="Collider" x="168" y="120" width="24" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Platform"/>
+   </properties>
+  </object>
+  <object id="28" type="Collider" x="696" y="144" width="24" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="29" type="Collider" x="720" y="168" width="24" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="30" type="Collider" x="672" y="168" width="24" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="31" type="Collider" x="0" y="0" width="24" height="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+  </object>
+  <object id="32" type="Collider" x="2136" y="0" width="24" height="192">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+  </object>
+  <object id="33" type="Collider" x="504" y="240" width="288" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="34" type="Collider" x="408" y="240" width="24" height="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="36" type="Collider" x="24" y="0" width="2112" height="3">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

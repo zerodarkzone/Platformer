@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="26" height="20" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="1">
+ <properties>
+  <property name="DeleteTiles" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../template.tsx"/>
+ <tileset firstgid="57" source="../oak_woods_tileset.tsx"/>
+ <layer id="1" name="regions" width="26" height="20" opacity="0.31">
+  <data encoding="base64" compression="zlib">
+   eJzNVMsKACAI8+r//3CXTiPTaYwGgUa5zR5mPfgeGGd7MD7VqMSMTuSO1k14FEBNbu+1RjV/7EcFNx+ZR8ZzdmereYUnyl/6UYHV3PHAnsHkXSn8qMD8wzjH9FDFM4GK5zcsuoYDag==
+  </data>
+ </layer>
+ <layer id="2" name="input_prototype" width="26" height="20" opacity="0.55">
+  <data encoding="base64" compression="zlib">
+   eJzVVEEKACEI7Orr/P9vdg8JMZialdBAkFmNo2VrOfA/qM+p25EzAoK12X0ZHo2TzF37PBVADRKnp22VQ7vzJEclLB1Y4x3Ns/eD+eRhaH4PVXqq4MWImjL/UvKN9eGgf5XLsl+oicDqyZpO7O/Rd63VAjm1mMb9t/v1jV77Aj4WPhFc
+  </data>
+ </layer>
+ <layer id="3" name="output_terrain" width="26" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPBKLx/YjQ449FrJKAeWlo4slE2IMMrIhUR45/BgNYQQMzM2lg5nAH9Wj8WiT2ZDS5t2h8V+o7ZxSgARs0viUavxqNX0FDtwwHYM6IyrdgxFRDbDnii6bXB4tZuAAonykwYuY/WgBalLWDHQAANNMMHQ==
+  </data>
+ </layer>
+</map>
