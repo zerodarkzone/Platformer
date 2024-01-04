@@ -322,37 +322,6 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 	}
 }
 
-namespace
-{
-	std::set<std::tuple<Player::State, Player::State>> validTransitions =
-			{
-					{ Player::State::Idle,        Player::State::Walking },
-					{ Player::State::Idle,        Player::State::Jumping },
-					{ Player::State::Idle,        Player::State::Falling },
-					{ Player::State::Idle,        Player::State::PrepareJump },
-					{ Player::State::Walking,     Player::State::Idle },
-					{ Player::State::Walking,     Player::State::Sliding },
-					{ Player::State::Walking,     Player::State::Jumping },
-					{ Player::State::Walking,     Player::State::Falling },
-					{ Player::State::Walking,     Player::State::PrepareJump },
-					{ Player::State::Sliding,     Player::State::Idle },
-					{ Player::State::Sliding,     Player::State::Walking },
-					{ Player::State::Sliding,     Player::State::PrepareJump },
-					{ Player::State::Sliding,     Player::State::Falling },
-					{ Player::State::PrepareJump, Player::State::Jumping },
-					{ Player::State::Jumping,     Player::State::Falling },
-					{ Player::State::Jumping,     Player::State::WallSliding },
-					//{ Player::State::Jumping,     Player::State::Idle },
-					{ Player::State::Falling,     Player::State::Jumping },
-					{ Player::State::Falling,     Player::State::Idle },
-					{ Player::State::Falling,     Player::State::WallSliding },
-					{ Player::State::WallSliding, Player::State::Falling },
-					{ Player::State::WallSliding, Player::State::Idle },
-					{ Player::State::WallSliding, Player::State::Jumping },
-					{ Player::State::WallSliding, Player::State::PrepareJump },
-			};
-}
-
 void PlayerSystem::changeState(cro::Entity entity)
 {
 	auto &player = entity.getComponent<Player>();
@@ -477,6 +446,36 @@ void PlayerSystem::changeState(cro::Entity entity)
 	}
 }
 
+namespace
+{
+	std::set<std::tuple<Player::State, Player::State>> validTransitions =
+	{
+		{ Player::State::Idle,        Player::State::Walking },
+		{ Player::State::Idle,        Player::State::Jumping },
+		{ Player::State::Idle,        Player::State::Falling },
+		{ Player::State::Idle,        Player::State::PrepareJump },
+		{ Player::State::Walking,     Player::State::Idle },
+		{ Player::State::Walking,     Player::State::Sliding },
+		{ Player::State::Walking,     Player::State::Jumping },
+		{ Player::State::Walking,     Player::State::Falling },
+		{ Player::State::Walking,     Player::State::PrepareJump },
+		{ Player::State::Sliding,     Player::State::Idle },
+		{ Player::State::Sliding,     Player::State::Walking },
+		{ Player::State::Sliding,     Player::State::PrepareJump },
+		{ Player::State::Sliding,     Player::State::Falling },
+		{ Player::State::PrepareJump, Player::State::Jumping },
+		{ Player::State::Jumping,     Player::State::Falling },
+		{ Player::State::Jumping,     Player::State::WallSliding },
+		//{ Player::State::Jumping,     Player::State::Idle },
+		{ Player::State::Falling,     Player::State::Jumping },
+		{ Player::State::Falling,     Player::State::Idle },
+		{ Player::State::Falling,     Player::State::WallSliding },
+		{ Player::State::WallSliding, Player::State::Falling },
+		{ Player::State::WallSliding, Player::State::Idle },
+		{ Player::State::WallSliding, Player::State::Jumping },
+		{ Player::State::WallSliding, Player::State::PrepareJump },
+	};
+}
 
 void Player::changeState(Player::State newState)
 {
