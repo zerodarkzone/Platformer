@@ -212,24 +212,22 @@ void PlayerSystem::beginContact(b2Contact* contact)
 		if (!fixtureData or !otherFixtureData)
 			return;
 
-		if (fixtureData->type == ShapeType::Sensor)
+		if (fixtureData->type == FixtureType::Sensor)
 		{
 			if (fixtureData->sensor == SensorType::Feet)
 			{
 				if (other.getComponent<ActorInfo>().id == ActorID::Floor ||
-					otherFixtureData->type == ShapeType::Ground ||
-					otherFixtureData->type == ShapeType::Platform || otherFixtureData->type == ShapeType::Slope)
+					otherFixtureData->type == FixtureType::Ground ||
+					otherFixtureData->type == FixtureType::Platform || otherFixtureData->type == FixtureType::Slope)
 				{
-					auto vel = self.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
 					player.numFootContacts++;
 					player.grounded = true;
 				}
 			}
 			else if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
 			{
-				if (other.getComponent<ActorInfo>().id == ActorID::Wall || otherFixtureData->type == ShapeType::Wall ||
-					otherFixtureData->type == ShapeType::Slope || otherFixtureData->type == ShapeType::Ground ||
-					otherFixtureData->type == ShapeType::Platform)
+				if (other.getComponent<ActorInfo>().id == ActorID::Wall || otherFixtureData->type == FixtureType::Wall ||
+					otherFixtureData->type == FixtureType::Slope)
 				{
 					if (fixtureData->sensor == SensorType::Right)
 						player.numRightWallContacts++;
@@ -254,13 +252,13 @@ void PlayerSystem::endContact(b2Contact* contact)
 		if (!fixtureData or !otherFixtureData)
 			return;
 
-		if (fixtureData->type == ShapeType::Sensor)
+		if (fixtureData->type == FixtureType::Sensor)
 		{
 			if (fixtureData->sensor == SensorType::Feet)
 			{
 				if (other.getComponent<ActorInfo>().id == ActorID::Floor ||
-					otherFixtureData->type == ShapeType::Ground ||
-					otherFixtureData->type == ShapeType::Platform || otherFixtureData->type == ShapeType::Slope)
+					otherFixtureData->type == FixtureType::Ground ||
+					otherFixtureData->type == FixtureType::Platform || otherFixtureData->type == FixtureType::Slope)
 				{
 					player.numFootContacts--;
 					player.grounded = false;
@@ -268,9 +266,8 @@ void PlayerSystem::endContact(b2Contact* contact)
 			}
 			else if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
 			{
-				if (other.getComponent<ActorInfo>().id == ActorID::Wall || otherFixtureData->type == ShapeType::Wall ||
-					otherFixtureData->type == ShapeType::Slope || otherFixtureData->type == ShapeType::Ground ||
-					otherFixtureData->type == ShapeType::Platform)
+				if (other.getComponent<ActorInfo>().id == ActorID::Wall || otherFixtureData->type == FixtureType::Wall ||
+					otherFixtureData->type == FixtureType::Slope)
 				{
 					if (fixtureData->sensor == SensorType::Right)
 						player.numRightWallContacts--;
@@ -294,14 +291,14 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 		auto otherFixtureData = reinterpret_cast<ShapeInfo*>(otherFixture->GetUserData().pointer);
 		if (player.state == Player::State::WallSliding)
 		{
-			if (fixtureData->type == ShapeType::Solid)
+			if (fixtureData->type == FixtureType::Solid)
 			{
 				contact->SetFriction(0.1f);
 			}
 		}
 		if (player.state == Player::State::Jumping)
 		{
-			if (fixtureData->type == ShapeType::Solid)
+			if (fixtureData->type == FixtureType::Solid)
 			{
 				contact->SetFriction(0.f);
 			}
@@ -316,7 +313,7 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 	if (utils::processCollisionEvent(contact, ActorID::Player, getScene(), self, other, selfFixture, otherFixture))
 	{
 		auto fixtureData = reinterpret_cast<ShapeInfo*>(selfFixture->GetUserData().pointer);
-		if (fixtureData->type == ShapeType::Solid)
+		if (fixtureData->type == FixtureType::Solid)
 		{
 			cro::Console::printStat("impulse n0: ", std::to_string(impulse->normalImpulses[0]));
 			cro::Console::printStat("impulse n1: ", std::to_string(impulse->normalImpulses[1]));

@@ -86,7 +86,7 @@ struct ShapeProperties final
 };
 
 #ifndef USE_SHAPE_USER_INFO
-enum class ShapeType : std::uint8_t
+enum class FixtureType : std::uint8_t
 {
 	None = 0,
 	Sensor,
@@ -100,7 +100,7 @@ enum class ShapeType : std::uint8_t
 
 struct ShapeInfo final
 {
-	ShapeType type = ShapeType::None;
+	FixtureType type = FixtureType::None;
 };
 #else
 #include "ShapeUserInfo.hpp"
@@ -147,7 +147,7 @@ public:
 	b2Fixture* addPolygonShape(const ShapeProperties&, const std::vector<glm::vec2>& points);
 
 	b2Fixture* addChainShape(const ShapeProperties&, const std::vector<glm::vec2>& points, bool loop = false,
-			glm::vec2 prevPoint = {}, glm::vec2 nextPoint = {});
+			glm::vec2 prevPoint = {}, glm::vec2 nextPoint = {}, bool sort = false);
 
 	void removeShape(b2Fixture*);
 
@@ -170,7 +170,7 @@ public:
 private:
 	Type m_type;
 	b2Body* m_body;
-	static constexpr std::size_t MaxShapes = 50u;
+	static constexpr std::size_t MaxShapes = 100u;
 	std::array<b2Fixture*, MaxShapes> m_shapes{};
 	std::size_t m_shapeCount;
 	PhysicsSystem* m_system;

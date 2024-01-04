@@ -41,7 +41,7 @@ void BackgroundSystem::process(float dt)
 		// X-axis scrolling
 		if (element.repeatX)
 		{
-			if (transform.getPosition().x + element.size.x <
+			if (transform.getPosition().x + element.size.x / 2 <
 				cameraTransform.getPosition().x - camera.getViewSize().width / 2)
 			{
 				transform.move({ element.size.x, 0 });
@@ -58,7 +58,7 @@ void BackgroundSystem::process(float dt)
 		// Y-axis scrolling
 		if (element.repeatY)
 		{
-			if (transform.getPosition().y + element.size.y <
+			if (transform.getPosition().y + element.size.y / 2 <
 				cameraTransform.getPosition().y - camera.getViewSize().height / 2)
 			{
 				transform.move({ 0, element.size.y });

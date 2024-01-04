@@ -2,6 +2,7 @@
 // Created by juanb on 10/12/2023.
 //
 
+#include <crogine/util/Constants.hpp>
 #include "PhysicsSystem.hpp"
 
 PhysicsObject::PhysicsObject(bool deleteShapeUserInfo)
@@ -124,6 +125,16 @@ b2Fixture* PhysicsObject::addEdgeShape(const ShapeProperties& properties, glm::v
 	return m_shapes[m_shapeCount - 1];
 }
 
+b2Vec2 findCentroid(std::vector<b2Vec2> &points) {
+	float x = 0;
+	float y = 0;
+	for (const auto& p : points) {
+		x += p.x;
+		y += p.y;
+	}
+	return {x / (float)points.size(), y / (float)points.size()};
+}
+
 b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points)
 {
 	CRO_ASSERT(m_system && m_body, "Component not initialised!");
@@ -136,6 +147,12 @@ b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, con
 	{
 		verts.push_back(Convert::toPhysVec(p));
 	}
+
+	auto midP = findCentroid(verts);
+	std::sort(std::begin(verts), std::end(verts), [midP](b2Vec2 a, b2Vec2 b) -> bool {
+		return std::atan2(a.x - midP.x, a.y - midP.y) + 2 * cro::Util::Const::PI > std::atan2(b.x - midP.x, b.y - midP.y) + 2 * cro::Util::Const::PI;
+	});
+
 	shape.Set(verts.data(), static_cast<int32>(verts.size()));
 	m_shapes[m_shapeCount++] = applyProperties(properties, shape);
 	return m_shapes[m_shapeCount - 1];
@@ -143,7 +160,7 @@ b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, con
 
 b2Fixture*
 PhysicsObject::addChainShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points, bool loop,
-		glm::vec2 prevPoint, glm::vec2 nextPoint)
+		glm::vec2 prevPoint, glm::vec2 nextPoint, bool sort)
 {
 	CRO_ASSERT(m_system && m_body, "Component not initialised!");
 	CRO_ASSERT(m_shapeCount < MaxShapes, "No more shapes available!");
@@ -161,6 +178,15 @@ PhysicsObject::addChainShape(const ShapeProperties& properties, const std::vecto
 	}
 	else
 	{
+		if (sort)
+		{
+			auto midP = findCentroid(verts);
+			std::sort(std::begin(verts), std::end(verts), [midP](b2Vec2 a, b2Vec2 b) -> bool
+			{
+				return std::atan2(a.x - midP.x, a.y - midP.y) + 2 * cro::Util::Const::PI >
+					   std::atan2(b.x - midP.x, b.y - midP.y) + 2 * cro::Util::Const::PI;
+			});
+		}
 		shape.CreateChain(verts.data(), static_cast<int32>(verts.size()), Convert::toPhysVec(prevPoint),
 				Convert::toPhysVec(nextPoint));
 	}

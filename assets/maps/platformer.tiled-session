@@ -47,8 +47,8 @@
             "scale": 2,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 205,
-                "y": 76
+                "x": 1878,
+                "y": 240.5
             }
         },
         "oak_woods_tileset.tsx": {
@@ -71,7 +71,7 @@
         "oak_woods_tileset.tsx"
     ],
     "project": "platformer.tiled-project",
-    "property.type": "float",
+    "property.type": "bool",
     "recentFiles": [
         "level_00.tmx",
         "oak_woods_tileset.tsx",

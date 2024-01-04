@@ -175,7 +175,7 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
 
 std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize,
 		std::unordered_map<std::string, glm::vec2>& spawnPoints,
-		std::vector<std::tuple<glm::vec2, glm::vec2, ShapeInfo>>& shapes)
+		std::vector<ShapeInfo>& shapes)
 {
 	const auto name = cro::Util::String::toLower(layer->getName());
 	if (name == "colliders")
@@ -196,7 +196,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
 					switch (utils::hash(p_name))
 					{
 					case "shapeType"_hash:
-						shapeInfo.type = shapeTypeMap[property.getStringValue()];
+						shapeInfo.type = fixtureTypeMap[property.getStringValue()];
 						break;
 					case "sensorType"_hash:
 						shapeInfo.sensor = sensorTypeMap[property.getStringValue()];
@@ -210,12 +210,72 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
 					case "density"_hash:
 						shapeInfo.density = property.getFloatValue();
 						break;
+					case "ghost"_hash:
+						shapeInfo.ghost = property.getBoolValue();
+						break;
 					}
 				}
-				auto position = glm::vec2{ obj.getPosition().x + obj.getAABB().width / 2.f,
-										   mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f };
-				auto size = glm::vec2{ obj.getAABB().width, obj.getAABB().height };
-				shapes.emplace_back(position, size, shapeInfo);
+				auto shape = obj.getShape();
+				switch (shape)
+				{
+				case tmx::Object::Shape::Rectangle:
+				{
+					auto position = glm::vec2{ obj.getPosition().x + obj.getAABB().width / 2.f,
+											   mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f };
+					auto size = glm::vec2{ obj.getAABB().width, obj.getAABB().height };
+					shapeInfo.shape = ShapeType::Box;
+					shapeInfo.size = size;
+					shapeInfo.offset = position;
+					shapes.emplace_back(shapeInfo);
+				}
+					break;
+				case tmx::Object::Shape::Ellipse:
+				{
+					auto position = glm::vec2{ obj.getPosition().x + obj.getAABB().width / 2.f,
+											   mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f };
+					auto radius = obj.getAABB().width / 2.f;
+					shapeInfo.shape = ShapeType::Circle;
+					shapeInfo.radius = radius;
+					shapeInfo.offset = position;
+					shapes.emplace_back(shapeInfo);
+				}
+					break;
+				case tmx::Object::Shape::Point:
+				case tmx::Object::Shape::Text:
+					break;
+				case tmx::Object::Shape::Polygon:
+				{
+					auto position = glm::vec2{ obj.getPosition().x + obj.getAABB().width / 2.f,
+											   mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f };
+					auto points = obj.getPoints();
+					shapeInfo.shape = ShapeType::Polygon;
+					shapeInfo.offset = position;
+					shapeInfo.size = glm::vec2{ obj.getAABB().width / 2.f, obj.getAABB().height / 2.f };
+					for (const auto& p: points)
+					{
+						if (shapeInfo.pointsCount < shapeInfo.points.size())
+							shapeInfo.points[shapeInfo.pointsCount++] = glm::vec2{ position.x + p.x, position.y - p.y };
+					}
+					shapes.emplace_back(shapeInfo);
+				}
+					break;
+				case tmx::Object::Shape::Polyline:
+				{
+					auto position = glm::vec2{ obj.getPosition().x + obj.getAABB().width / 2.f,
+											   mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f };
+					auto points = obj.getPoints();
+					shapeInfo.shape = ShapeType::Edge;
+					shapeInfo.offset = position;
+					shapeInfo.size = glm::vec2{ obj.getAABB().width / 2.f, obj.getAABB().height / 2.f };
+					for (const auto& p: points)
+					{
+						if (shapeInfo.pointsCount < shapeInfo.points.size())
+							shapeInfo.points[shapeInfo.pointsCount++] = glm::vec2{ position.x + p.x, position.y - p.y };
+					}
+					shapes.emplace_back(shapeInfo);
+				}
+					break;
+				}
 			}
 		}
 	}

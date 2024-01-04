@@ -278,16 +278,67 @@ void GameState::createScene()
 	mapBody = m_physicsSystem->createObject({ m_mapData.position.x, m_mapData.position.y }, 0,
 			PhysicsObject::Type::Static, true);
 	mapBody.setDeleteShapeUserInfo(true);
-	for (auto& [position, size, info]: m_mapData.collisionShapes)
+	for (auto& info: m_mapData.collisionShapes)
 	{
-		auto fixture = mapBody.addBoxShape(
-				{ .restitution=info.restitution, .density=info.density, .friction=info.friction }, size, position);
-		fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));
+		b2Fixture* fixture = nullptr;
+		switch (info.shape)
+		{
+		default:
+			break;
+		case ShapeType::Circle:
+		{
+			fixture = mapBody.addCircleShape(
+					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, info.radius,
+					info.offset);
+		}
+			break;
+		case ShapeType::Box:
+		{
+			fixture = mapBody.addBoxShape(
+					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, info.size, info.offset);
+		}
+			break;
+		case ShapeType::Edge:
+			if (info.pointsCount >= 2)
+			{
+				if (info.ghost && info.pointsCount >= 4)
+				{
+					std::vector<glm::vec2> points;
+					auto ghostVert1 = info.points[0];
+					auto ghostVert2 = info.points[info.pointsCount - 1];
+					for (auto i = 1u; i <info.pointsCount - 1; ++i)
+					{
+						points.emplace_back(info.points[i].x, info.points[i].y);
+					}
+					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points, false, ghostVert1, ghostVert2);
+				}
+				else
+				{
+					std::vector<glm::vec2> points;
+					for (auto i = 0u; i <info.pointsCount; ++i)
+					{
+						points.emplace_back(info.points[i].x, info.points[i].y);
+					}
+					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points, false);
+				}
+			}
+			break;
+		case ShapeType::Polygon:
+		{
+			std::vector<glm::vec2> points;
+			auto firstPoint = info.points[0];
+			for (auto i = 0u; i <info.pointsCount; ++i)
+			{
+				points.emplace_back(info.points[i].x, info.points[i].y);
+			}
+			fixture = mapBody.addPolygonShape(
+					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points);
+		}
+			break;
+		}
+		if (fixture)
+			fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));
 	}
-	auto bottomFixture = mapBody.addEdgeShape({ .isSensor=true }, { 0, 0 },
-			{ m_mapData.mapSize.x * m_mapData.tileSize.x, 0 });
-	bottomFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
-			{ ShapeType::Sensor, SensorType::Bottom }));
 
 	// Background
 	auto backGroundPos = -15.f;
@@ -304,16 +355,16 @@ void GameState::createScene()
 		std::uint16_t repY = 1;
 		if (repeatX && repeatY)
 		{
-			repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 3;
-			repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 3;
+			repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 2;
+			repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 2;
 		}
 		else if (repeatX)
 		{
-			repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 3;
+			repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 2;
 		}
 		else if (repeatY)
 		{
-			repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 3;
+			repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 2;
 		}
 		newText.create(texture.getSize().x * repX, texture.getSize().y * repY);
 		for (auto i = 0u; i < repX; ++i)
@@ -355,8 +406,10 @@ void GameState::createScene()
 	// Add main fixture
 	auto shapeInfo = ShapeInfo(
 			{
-					ShapeType::Solid,
+					FixtureType::Solid,
 					SensorType::None,
+					PlatformType::None,
+					ShapeType::Box,
 					0.f,
 					0.2f,
 					0.f,
@@ -370,6 +423,8 @@ void GameState::createScene()
 			{
 					shapeInfo.type,
 					shapeInfo.sensor,
+					shapeInfo.platform,
+					shapeInfo.shape,
 					shapeInfo.slope,
 					shapeInfo.friction,
 					shapeInfo.restitution,
@@ -389,8 +444,10 @@ void GameState::createScene()
 	// Add ground sensor fixture
 	shapeInfo = ShapeInfo(
 			{
-					ShapeType::Sensor,
+					FixtureType::Sensor,
 					SensorType::Feet,
+					PlatformType::None,
+					ShapeType::Box,
 					0.f,
 					0.0f,
 					0.0f,
@@ -401,14 +458,16 @@ void GameState::createScene()
 	);
 	auto groundFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
 	groundFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
-			{ ShapeType::Sensor, SensorType::Feet }));
+			{ FixtureType::Sensor, SensorType::Feet }));
 	//groundFixture->GetShape()->m_radius = 0.1f;
 
 	// Add right sensor fixture
 	shapeInfo = ShapeInfo(
 			{
-					ShapeType::Sensor,
+					FixtureType::Sensor,
 					SensorType::Right,
+					PlatformType::None,
+					ShapeType::Box,
 					0.f,
 					0.0f,
 					0.0f,
@@ -421,6 +480,8 @@ void GameState::createScene()
 			{
 					shapeInfo.type,
 					shapeInfo.sensor,
+					shapeInfo.platform,
+					shapeInfo.shape,
 					shapeInfo.slope,
 					shapeInfo.friction,
 					shapeInfo.restitution,
@@ -438,8 +499,10 @@ void GameState::createScene()
 	// Add left sensor fixture
 	shapeInfo = ShapeInfo(
 			{
-					ShapeType::Sensor,
+					FixtureType::Sensor,
 					SensorType::Left,
+					PlatformType::None,
+					ShapeType::Box,
 					0.f,
 					0.0f,
 					0.0f,
@@ -452,6 +515,8 @@ void GameState::createScene()
 			{
 					shapeInfo.type,
 					shapeInfo.sensor,
+					shapeInfo.platform,
+					shapeInfo.shape,
 					shapeInfo.slope,
 					shapeInfo.friction,
 					shapeInfo.restitution,
