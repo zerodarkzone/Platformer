@@ -25,13 +25,16 @@ void BackgroundSystem::process(float dt)
 	auto& cameraTransform = getScene()->getActiveCamera().getComponent<cro::Transform>();
 	auto& camera = getScene()->getActiveCamera().getComponent<cro::Camera>();
 	auto& entities = getEntities();
-	for (auto& entity : entities)
+	for (auto& entity: entities)
 	{
 		auto& element = entity.getComponent<BackgroundElement>();
 		auto& transform = entity.getComponent<cro::Transform>();
 
 		auto parallax = 1.0f - element.parallaxFactor;
-		auto position = glm::vec2{element.position.x + ((cameraTransform.getPosition().x - camera.getViewSize().width / 2) * parallax.x), element.position.y + ((cameraTransform.getPosition().y - camera.getViewSize().height / 2) * parallax.y)};
+		auto position = glm::vec2{
+				element.position.x + ((cameraTransform.getPosition().x - camera.getViewSize().width / 2) * parallax.x),
+				element.position.y +
+				((cameraTransform.getPosition().y - camera.getViewSize().height / 2) * parallax.y) };
 
 		transform.setPosition(position);
 

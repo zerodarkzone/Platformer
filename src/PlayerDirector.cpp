@@ -150,7 +150,8 @@ void PlayerDirector::process(float)
 			}
 			if ((m_currentInput & InputFlag::Down))
 			{
-				if (!player.jump && std::abs(entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity().x) > 0)
+				if (!player.jump &&
+					std::abs(entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity().x) > 0)
 					player.changeState(Player::State::Sliding);
 				else
 					m_currentInput &= ~InputFlag::Down;

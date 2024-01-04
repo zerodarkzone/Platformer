@@ -141,7 +141,8 @@ b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, con
 	return m_shapes[m_shapeCount - 1];
 }
 
-b2Fixture* PhysicsObject::addChainShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points, bool loop,
+b2Fixture*
+PhysicsObject::addChainShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points, bool loop,
 		glm::vec2 prevPoint, glm::vec2 nextPoint)
 {
 	CRO_ASSERT(m_system && m_body, "Component not initialised!");
@@ -184,7 +185,7 @@ b2Fixture* PhysicsObject::applyProperties(const ShapeProperties& properties, con
 
 void PhysicsObject::removeShape(b2Fixture* fixture)
 {
-CRO_ASSERT(m_system && m_body, "Component not initialised!");
+	CRO_ASSERT(m_system && m_body, "Component not initialised!");
 
 	for (auto i = 0u; i < m_shapeCount; ++i)
 	{

@@ -284,7 +284,8 @@ void GameState::createScene()
 				{ .restitution=info.restitution, .density=info.density, .friction=info.friction }, size, position);
 		fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));
 	}
-	auto bottomFixture = mapBody.addEdgeShape({ .isSensor=true }, { 0, 0 }, { m_mapData.mapSize.x * m_mapData.tileSize.x, 0 });
+	auto bottomFixture = mapBody.addEdgeShape({ .isSensor=true }, { 0, 0 },
+			{ m_mapData.mapSize.x * m_mapData.tileSize.x, 0 });
 	bottomFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
 			{ ShapeType::Sensor, SensorType::Bottom }));
 
@@ -292,12 +293,12 @@ void GameState::createScene()
 	auto backGroundPos = -15.f;
 	for (auto& [key, value]: m_mapData.backgroundElements)
 	{
-		auto &[texturePath, position, size, scale,parallaxFactor, repeatX, repeatY] = value;
+		auto& [texturePath, position, size, scale, parallaxFactor, repeatX, repeatY] = value;
 
 		auto background = m_gameScene.createEntity();
-		background.addComponent<cro::Transform>().setPosition({position.x, position.y, backGroundPos});
+		background.addComponent<cro::Transform>().setPosition({ position.x, position.y, backGroundPos });
 		background.addComponent<cro::Drawable2D>();
-		auto &texture = m_resources.textures.get(std::hash<std::string>{}(key));
+		auto& texture = m_resources.textures.get(std::hash<std::string>{}(key));
 		auto newText = cro::Texture();
 		std::uint16_t repX = 1;
 		std::uint16_t repY = 1;
@@ -322,7 +323,7 @@ void GameState::createScene()
 				newText.update(texture, i * texture.getSize().x, j * texture.getSize().y);
 			}
 		}
-		background.getComponent<cro::Transform>().setOrigin({ repX > 1 ? size.x: 0, repY > 1 ? size.y: 0 });
+		background.getComponent<cro::Transform>().setOrigin({ repX > 1 ? size.x : 0, repY > 1 ? size.y : 0 });
 		texture = std::move(newText);
 		background.addComponent<cro::Sprite>().setTexture(texture);
 		background.addComponent<ActorInfo>({ ActorID::Background });
@@ -346,35 +347,36 @@ void GameState::createScene()
 	player.addComponent<AnimationController>() = m_animationControllers[SpriteID::Player];
 	player.getComponent<AnimationController>().nextAnimation = AnimationID::Idle;
 	auto& playerTransform = player.addComponent<cro::Transform>();
-	playerTransform.setOrigin({8.f, playerSprite.getSize().y / 2.0f});
+	playerTransform.setOrigin({ 8.f, playerSprite.getSize().y / 2.0f });
 	playerTransform.setScale({ 1.f, 1.f });
 	auto& playerBody = player.addComponent<PhysicsObject>();
 	playerBody = m_physicsSystem->createObject({ CAMERA_SIZE.x / 2, 100.0f }, 0, PhysicsObject::Type::Dynamic, true);
 	playerBody.setDeleteShapeUserInfo(true);
 	// Add main fixture
 	auto shapeInfo = ShapeInfo(
-		{
-			ShapeType::Solid,
-			SensorType::None,
-			0.f,
-			0.2f,
-			0.f,
-			1.0f,
-			{0.f, 0.f},
-			{playerSprite.getSize().y * playerTransform.getScale().y * 0.5, playerSprite.getSize().y * playerTransform.getScale().y * 0.9}
-		}
+			{
+					ShapeType::Solid,
+					SensorType::None,
+					0.f,
+					0.2f,
+					0.f,
+					1.0f,
+					{ 0.f, 0.f },
+					{ playerSprite.getSize().y * playerTransform.getScale().y * 0.5,
+					  playerSprite.getSize().y * playerTransform.getScale().y * 0.9 }
+			}
 	);
 	auto slideShapeInfo = ShapeInfo(
-		{
-			shapeInfo.type,
-			shapeInfo.sensor,
-			shapeInfo.slope,
-			shapeInfo.friction,
-			shapeInfo.restitution,
-			shapeInfo.density,
-			{shapeInfo.offset.x, -shapeInfo.size.y * 0.25},
-			{shapeInfo.size.x, shapeInfo.size.y * 0.5}
-		}
+			{
+					shapeInfo.type,
+					shapeInfo.sensor,
+					shapeInfo.slope,
+					shapeInfo.friction,
+					shapeInfo.restitution,
+					shapeInfo.density,
+					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
+					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+			}
 	);
 	auto mainFixture = playerBody.addBoxShape(
 			{ .restitution=shapeInfo.restitution, .density=shapeInfo.density, .friction=shapeInfo.friction },
@@ -386,16 +388,16 @@ void GameState::createScene()
 
 	// Add ground sensor fixture
 	shapeInfo = ShapeInfo(
-		{
-			ShapeType::Sensor,
-			SensorType::Feet,
-			0.f,
-			0.0f,
-			0.0f,
-			0.0f,
-			{ 0, -(playerSprite.getSize().y) * playerTransform.getScale().y / 2.f },
-			{ playerSprite.getSize().y * playerTransform.getScale().y * 0.5, 8.0f }
-		}
+			{
+					ShapeType::Sensor,
+					SensorType::Feet,
+					0.f,
+					0.0f,
+					0.0f,
+					0.0f,
+					{ 0, -(playerSprite.getSize().y) * playerTransform.getScale().y / 2.f },
+					{ playerSprite.getSize().y * playerTransform.getScale().y * 0.5, 8.0f }
+			}
 	);
 	auto groundFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
 	groundFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
@@ -404,28 +406,28 @@ void GameState::createScene()
 
 	// Add right sensor fixture
 	shapeInfo = ShapeInfo(
-		{
-			ShapeType::Sensor,
-			SensorType::Right,
-			0.f,
-			0.0f,
-			0.0f,
-			0.0f,
-			{ playerSprite.getSize().x * playerTransform.getScale().x / 2.5f, 0 },
-			{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
-		}
+			{
+					ShapeType::Sensor,
+					SensorType::Right,
+					0.f,
+					0.0f,
+					0.0f,
+					0.0f,
+					{ playerSprite.getSize().x * playerTransform.getScale().x / 2.5f, 0 },
+					{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
+			}
 	);
 	slideShapeInfo = ShapeInfo(
-		{
-			shapeInfo.type,
-			shapeInfo.sensor,
-			shapeInfo.slope,
-			shapeInfo.friction,
-			shapeInfo.restitution,
-			shapeInfo.density,
-			{ shapeInfo.offset.x, -shapeInfo.size.y * 0.22 },
-			{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
-		}
+			{
+					shapeInfo.type,
+					shapeInfo.sensor,
+					shapeInfo.slope,
+					shapeInfo.friction,
+					shapeInfo.restitution,
+					shapeInfo.density,
+					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.22 },
+					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+			}
 	);
 	auto rightFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
 	rightFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(shapeInfo));
@@ -435,28 +437,28 @@ void GameState::createScene()
 
 	// Add left sensor fixture
 	shapeInfo = ShapeInfo(
-		{
-			ShapeType::Sensor,
-			SensorType::Left,
-			0.f,
-			0.0f,
-			0.0f,
-			0.0f,
-			{ -(playerSprite.getSize().x) * playerTransform.getScale().x / 2.2f, 0 },
-			{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
-		}
+			{
+					ShapeType::Sensor,
+					SensorType::Left,
+					0.f,
+					0.0f,
+					0.0f,
+					0.0f,
+					{ -(playerSprite.getSize().x) * playerTransform.getScale().x / 2.2f, 0 },
+					{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
+			}
 	);
 	slideShapeInfo = ShapeInfo(
-		{
-			shapeInfo.type,
-			shapeInfo.sensor,
-			shapeInfo.slope,
-			shapeInfo.friction,
-			shapeInfo.restitution,
-			shapeInfo.density,
-			{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
-			{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
-		}
+			{
+					shapeInfo.type,
+					shapeInfo.sensor,
+					shapeInfo.slope,
+					shapeInfo.friction,
+					shapeInfo.restitution,
+					shapeInfo.density,
+					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
+					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+			}
 	);
 	auto leftFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
 	leftFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(shapeInfo));

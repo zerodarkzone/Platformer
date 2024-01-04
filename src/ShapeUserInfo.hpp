@@ -43,13 +43,13 @@ enum class SensorType : std::uint8_t
 };
 
 inline std::map<std::string, SensorType> sensorTypeMap = {
-		{ "None",  SensorType::None },
-		{ "Feet",  SensorType::Feet },
-		{ "Head",  SensorType::Head },
-		{ "Left",  SensorType::Left },
-		{ "Right", SensorType::Right },
+		{ "None",   SensorType::None },
+		{ "Feet",   SensorType::Feet },
+		{ "Head",   SensorType::Head },
+		{ "Left",   SensorType::Left },
+		{ "Right",  SensorType::Right },
 		{ "Bottom", SensorType::Bottom },
-		{ "Top", SensorType::Top }
+		{ "Top",    SensorType::Top }
 };
 
 struct ShapeInfo final

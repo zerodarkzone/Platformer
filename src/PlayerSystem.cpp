@@ -76,7 +76,9 @@ void PlayerSystem::process(float dt)
 			animController.nextAnimation = AnimationID::WallSlide;
 		}
 
-		transform.setOrigin({player.state == Player::State::Walking || player.state == Player::State::Idle ? 8.f : 11.f, transform.getOrigin().y});
+		transform.setOrigin(
+				{ player.state == Player::State::Walking || player.state == Player::State::Idle ? 8.f : 11.f,
+				  transform.getOrigin().y });
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
 	}
 }
@@ -117,7 +119,7 @@ void PlayerSystem::fixedUpdate(float dt)
 		}
 		if (player.jump)
 		{
- 			float impulse = body->GetMass() * player.jumpForce;
+			float impulse = body->GetMass() * player.jumpForce;
 			if (player.prevState == Player::State::WallSliding)
 			{
 				impulse *= 0.8f;
@@ -214,7 +216,8 @@ void PlayerSystem::beginContact(b2Contact* contact)
 		{
 			if (fixtureData->sensor == SensorType::Feet)
 			{
-				if (other.getComponent<ActorInfo>().id == ActorID::Floor || otherFixtureData->type == ShapeType::Ground ||
+				if (other.getComponent<ActorInfo>().id == ActorID::Floor ||
+					otherFixtureData->type == ShapeType::Ground ||
 					otherFixtureData->type == ShapeType::Platform || otherFixtureData->type == ShapeType::Slope)
 				{
 					auto vel = self.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
@@ -255,7 +258,8 @@ void PlayerSystem::endContact(b2Contact* contact)
 		{
 			if (fixtureData->sensor == SensorType::Feet)
 			{
-				if (other.getComponent<ActorInfo>().id == ActorID::Floor || otherFixtureData->type == ShapeType::Ground ||
+				if (other.getComponent<ActorInfo>().id == ActorID::Floor ||
+					otherFixtureData->type == ShapeType::Ground ||
 					otherFixtureData->type == ShapeType::Platform || otherFixtureData->type == ShapeType::Slope)
 				{
 					player.numFootContacts--;
@@ -324,7 +328,7 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 
 void PlayerSystem::changeState(cro::Entity entity)
 {
-	auto &player = entity.getComponent<Player>();
+	auto& player = entity.getComponent<Player>();
 	auto newState = player.nextState;
 
 	if (player.nextState != player.state)
@@ -361,7 +365,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 			auto newMainFixture = playerBody.addBoxShape(
 					{ .restitution=player.collisionShapeInfo.restitution, .density=player.collisionShapeInfo.density, .friction=player.collisionShapeInfo.friction },
 					player.collisionShapeInfo.size, player.collisionShapeInfo.offset);
-			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.collisionShapeInfo));
+			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.collisionShapeInfo));
 			player.mainFixture = newMainFixture;
 
 			playerBody.removeShape(player.leftSensorFixture);
@@ -369,7 +374,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 					{ .restitution=player.leftSensorShapeInfo.restitution, .density=player.leftSensorShapeInfo.density,
 							.isSensor=true, .friction=player.leftSensorShapeInfo.friction },
 					player.leftSensorShapeInfo.size, player.leftSensorShapeInfo.offset);
-			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.leftSensorShapeInfo));
+			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.leftSensorShapeInfo));
 			player.leftSensorFixture = newLeftSensorFixture;
 			if (player.numLeftWallContacts >= 1)
 				player.numLeftWallContacts--;
@@ -379,7 +385,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 					{ .restitution=player.rightSensorShapeInfo.restitution, .density=player.rightSensorShapeInfo.density,
 							.isSensor=true, .friction=player.rightSensorShapeInfo.friction },
 					player.rightSensorShapeInfo.size, player.rightSensorShapeInfo.offset);
-			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.rightSensorShapeInfo));
+			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.rightSensorShapeInfo));
 			player.rightSensorFixture = newRightSensorFixture;
 			if (player.numRightWallContacts >= 1)
 				player.numRightWallContacts--;
@@ -418,7 +425,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 			auto newMainFixture = playerBody.addBoxShape(
 					{ .restitution=player.slideCollisionShapeInfo.restitution, .density=player.slideCollisionShapeInfo.density, .friction=player.slideCollisionShapeInfo.friction },
 					player.slideCollisionShapeInfo.size, player.slideCollisionShapeInfo.offset);
-			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.slideCollisionShapeInfo));
+			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.slideCollisionShapeInfo));
 			player.mainFixture = newMainFixture;
 
 			playerBody.removeShape(player.leftSensorFixture);
@@ -426,7 +434,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 					{ .restitution=player.slideLeftSensorShapeInfo.restitution, .density=player.slideLeftSensorShapeInfo.density,
 							.isSensor=true, .friction=player.slideLeftSensorShapeInfo.friction },
 					player.slideLeftSensorShapeInfo.size, player.slideLeftSensorShapeInfo.offset);
-			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.slideLeftSensorShapeInfo));
+			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.slideLeftSensorShapeInfo));
 			player.leftSensorFixture = newLeftSensorFixture;
 			if (player.numLeftWallContacts >= 1)
 				player.numLeftWallContacts--;
@@ -436,7 +445,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 					{ .restitution=player.slideRightSensorShapeInfo.restitution, .density=player.slideRightSensorShapeInfo.density,
 							.isSensor=true, .friction=player.slideRightSensorShapeInfo.friction },
 					player.slideRightSensorShapeInfo.size, player.slideRightSensorShapeInfo.offset);
-			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(player.slideRightSensorShapeInfo));
+			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
+					player.slideRightSensorShapeInfo));
 			player.rightSensorFixture = newRightSensorFixture;
 			if (player.numRightWallContacts >= 1)
 				player.numRightWallContacts--;
@@ -449,32 +459,32 @@ void PlayerSystem::changeState(cro::Entity entity)
 namespace
 {
 	std::set<std::tuple<Player::State, Player::State>> validTransitions =
-	{
-		{ Player::State::Idle,        Player::State::Walking },
-		{ Player::State::Idle,        Player::State::Jumping },
-		{ Player::State::Idle,        Player::State::Falling },
-		{ Player::State::Idle,        Player::State::PrepareJump },
-		{ Player::State::Walking,     Player::State::Idle },
-		{ Player::State::Walking,     Player::State::Sliding },
-		{ Player::State::Walking,     Player::State::Jumping },
-		{ Player::State::Walking,     Player::State::Falling },
-		{ Player::State::Walking,     Player::State::PrepareJump },
-		{ Player::State::Sliding,     Player::State::Idle },
-		{ Player::State::Sliding,     Player::State::Walking },
-		{ Player::State::Sliding,     Player::State::PrepareJump },
-		{ Player::State::Sliding,     Player::State::Falling },
-		{ Player::State::PrepareJump, Player::State::Jumping },
-		{ Player::State::Jumping,     Player::State::Falling },
-		{ Player::State::Jumping,     Player::State::WallSliding },
-		//{ Player::State::Jumping,     Player::State::Idle },
-		{ Player::State::Falling,     Player::State::Jumping },
-		{ Player::State::Falling,     Player::State::Idle },
-		{ Player::State::Falling,     Player::State::WallSliding },
-		{ Player::State::WallSliding, Player::State::Falling },
-		{ Player::State::WallSliding, Player::State::Idle },
-		{ Player::State::WallSliding, Player::State::Jumping },
-		{ Player::State::WallSliding, Player::State::PrepareJump },
-	};
+			{
+					{ Player::State::Idle,        Player::State::Walking },
+					{ Player::State::Idle,        Player::State::Jumping },
+					{ Player::State::Idle,        Player::State::Falling },
+					{ Player::State::Idle,        Player::State::PrepareJump },
+					{ Player::State::Walking,     Player::State::Idle },
+					{ Player::State::Walking,     Player::State::Sliding },
+					{ Player::State::Walking,     Player::State::Jumping },
+					{ Player::State::Walking,     Player::State::Falling },
+					{ Player::State::Walking,     Player::State::PrepareJump },
+					{ Player::State::Sliding,     Player::State::Idle },
+					{ Player::State::Sliding,     Player::State::Walking },
+					{ Player::State::Sliding,     Player::State::PrepareJump },
+					{ Player::State::Sliding,     Player::State::Falling },
+					{ Player::State::PrepareJump, Player::State::Jumping },
+					{ Player::State::Jumping,     Player::State::Falling },
+					{ Player::State::Jumping,     Player::State::WallSliding },
+					//{ Player::State::Jumping,     Player::State::Idle },
+					{ Player::State::Falling,     Player::State::Jumping },
+					{ Player::State::Falling,     Player::State::Idle },
+					{ Player::State::Falling,     Player::State::WallSliding },
+					{ Player::State::WallSliding, Player::State::Falling },
+					{ Player::State::WallSliding, Player::State::Idle },
+					{ Player::State::WallSliding, Player::State::Jumping },
+					{ Player::State::WallSliding, Player::State::PrepareJump },
+			};
 }
 
 void Player::changeState(Player::State newState)
