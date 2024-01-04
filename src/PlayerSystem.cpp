@@ -96,12 +96,12 @@ void PlayerSystem::fixedUpdate(float dt)
 			if ((player.facing == Player::Facing::Left && player.numLeftWallContacts < 1) ||
 				(player.facing == Player::Facing::Right && player.numRightWallContacts < 1))
 			{
-				player.changeState(Player::State::Falling, entity);
+				player.changeState(Player::State::Falling);
 				body->SetGravityScale(player.gravityScale); // increased gravity
 			}
 			else
 			{
-				player.changeState(Player::State::WallSliding, entity);
+				player.changeState(Player::State::WallSliding);
 				body->SetGravityScale(0.3f); //reduced gravity
 				//float impulse = body->GetMass() * player.jumpForce;
 
@@ -141,7 +141,7 @@ void PlayerSystem::fixedUpdate(float dt)
 		}
 		if (player.state == Player::State::Sliding)
 		{
-			player.desiredSpeed = vel.x * 0.99;
+			player.desiredSpeed = vel.x * 0.99f;
 		}
 		float velChange = player.desiredSpeed - vel.x;
 		float impulse = body->GetMass() * velChange; //disregard time factor
@@ -161,21 +161,21 @@ void PlayerSystem::fixedUpdate(float dt)
 		{
 			if (player.desiredSpeed == 0 && (player.state == Player::State::Walking))
 			{
-				player.changeState(Player::State::Idle, entity);
+				player.changeState(Player::State::Idle);
 			}
 		}
 		if (player.state == Player::State::Jumping && vel.y <= 0)
 		{
-			player.changeState(Player::State::Falling, entity);
+			player.changeState(Player::State::Falling);
 		}
 		else if ((player.state == Player::State::Falling || player.state == Player::State::WallSliding) && vel.y >= 0)
 		{
-			player.changeState(Player::State::Idle, entity);
+			player.changeState(Player::State::Idle);
 			player.numWallJumps = 0;
 		}
 		if (player.state == Player::State::Sliding && player.desiredSpeed == 0)
 		{
-			player.changeState(Player::State::Idle, entity);
+			player.changeState(Player::State::Idle);
 		}
 
 		cro::Console::printStat("Player Velocity x", std::to_string(vel.x));
@@ -478,127 +478,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 }
 
 
-void Player::changeState(Player::State newState, cro::Entity entity)
+void Player::changeState(Player::State newState)
 {
 	if (validTransitions.find(std::make_tuple(state, newState)) != validTransitions.end())
 		nextState = newState;
-	/*
-	if (validTransitions.find(std::make_tuple(state, newState)) != validTransitions.end())
-	{
-		prevState = state;
-		switch (state)
-		{
-		default:
-			break;
-		case State::Idle:
-			cro::Logger::log("left idle.");
-			break;
-		case State::Walking:
-			cro::Logger::log("left walking.");
-			break;
-		case State::PrepareJump:
-			cro::Logger::log("left prepare jump.");
-			break;
-		case State::Jumping:
-			cro::Logger::log("left jumping.");
-			break;
-		case State::Falling:
-			cro::Logger::log("left falling.");
-			break;
-		case State::WallSliding:
-			cro::Logger::log("left wall sliding.");
-			break;
-		case State::Sliding:
-		{
-			cro::Logger::log("left sliding.");
-			auto& playerBody = entity.getComponent<PhysicsObject>();
-
-			playerBody.removeShape(mainFixture);
-			auto newMainFixture = playerBody.addBoxShape(
-					{ .restitution=collisionShapeInfo.restitution, .density=collisionShapeInfo.density, .friction=collisionShapeInfo.friction },
-					collisionShapeInfo.size, collisionShapeInfo.offset);
-			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(collisionShapeInfo));
-			mainFixture = newMainFixture;
-
-			playerBody.removeShape(leftSensorFixture);
-			auto newLeftSensorFixture = playerBody.addBoxShape(
-					{ .restitution=leftSensorShapeInfo.restitution, .density=leftSensorShapeInfo.density,
-							.isSensor=true, .friction=leftSensorShapeInfo.friction },
-					leftSensorShapeInfo.size, leftSensorShapeInfo.offset);
-			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(leftSensorShapeInfo));
-			leftSensorFixture = newLeftSensorFixture;
-			if (numLeftWallContacts >= 1)
-				numLeftWallContacts--;
-
-			playerBody.removeShape(rightSensorFixture);
-			auto newRightSensorFixture = playerBody.addBoxShape(
-					{ .restitution=rightSensorShapeInfo.restitution, .density=rightSensorShapeInfo.density,
-							.isSensor=true, .friction=rightSensorShapeInfo.friction },
-					rightSensorShapeInfo.size, rightSensorShapeInfo.offset);
-			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(rightSensorShapeInfo));
-			rightSensorFixture = newRightSensorFixture;
-			if (numRightWallContacts >= 1)
-				numRightWallContacts--;
-		}
-			break;
-		}
-		state = newState;
-		switch (state)
-		{
-		default:
-			break;
-		case State::Idle:
-			cro::Logger::log("idle.");
-			break;
-		case State::Walking:
-			cro::Logger::log("walking.");
-			break;
-		case State::PrepareJump:
-			cro::Logger::log("prepare jump.");
-			break;
-		case State::Jumping:
-			cro::Logger::log("jumping.");
-			break;
-		case State::Falling:
-			cro::Logger::log("falling.");
-			break;
-		case State::WallSliding:
-			cro::Logger::log("wall sliding.");
-			break;
-		case State::Sliding:
-		{
-			cro::Logger::log("sliding.");
-			auto& playerBody = entity.getComponent<PhysicsObject>();
-
-			playerBody.removeShape(mainFixture);
-			auto newMainFixture = playerBody.addBoxShape(
-					{ .restitution=slideCollisionShapeInfo.restitution, .density=slideCollisionShapeInfo.density, .friction=slideCollisionShapeInfo.friction },
-					slideCollisionShapeInfo.size, slideCollisionShapeInfo.offset);
-			newMainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(slideCollisionShapeInfo));
-			mainFixture = newMainFixture;
-
-			playerBody.removeShape(leftSensorFixture);
-			auto newLeftSensorFixture = playerBody.addBoxShape(
-					{ .restitution=slideLeftSensorShapeInfo.restitution, .density=slideLeftSensorShapeInfo.density,
-							.isSensor=true, .friction=slideLeftSensorShapeInfo.friction },
-					slideLeftSensorShapeInfo.size, slideLeftSensorShapeInfo.offset);
-			newLeftSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(slideLeftSensorShapeInfo));
-			leftSensorFixture = newLeftSensorFixture;
-			if (numLeftWallContacts >= 1)
-				numLeftWallContacts--;
-
-			playerBody.removeShape(rightSensorFixture);
-			auto newRightSensorFixture = playerBody.addBoxShape(
-					{ .restitution=slideRightSensorShapeInfo.restitution, .density=slideRightSensorShapeInfo.density,
-							.isSensor=true, .friction=slideRightSensorShapeInfo.friction },
-					slideRightSensorShapeInfo.size, slideRightSensorShapeInfo.offset);
-			newRightSensorFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(slideRightSensorShapeInfo));
-			rightSensorFixture = newRightSensorFixture;
-			if (numRightWallContacts >= 1)
-				numRightWallContacts--;
-		}
-			break;
-		}
-	}
-	 */
 }

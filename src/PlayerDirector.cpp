@@ -110,7 +110,7 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 			cmd.action = [](cro::Entity entity, float)
 			{
 				auto& player = entity.getComponent<Player>();
-				player.changeState(Player::State::Jumping, entity);
+				player.changeState(Player::State::Jumping);
 			};
 			sendCommand(cmd);
 		}
@@ -135,7 +135,7 @@ void PlayerDirector::process(float)
 				player.desiredSpeed = -player.speed;
 				if (!(m_currentInput & InputFlag::Down) || player.state != Player::State::Sliding)
 				{
-					player.changeState(Player::State::Walking, entity);
+					player.changeState(Player::State::Walking);
 				}
 				player.facing = Player::Facing::Left;
 			}
@@ -144,20 +144,20 @@ void PlayerDirector::process(float)
 				player.desiredSpeed = player.speed;
 				if (!(m_currentInput & InputFlag::Down) || player.state != Player::State::Sliding)
 				{
-					player.changeState(Player::State::Walking, entity);
+					player.changeState(Player::State::Walking);
 				}
 				player.facing = Player::Facing::Right;
 			}
 			if ((m_currentInput & InputFlag::Down))
 			{
 				if (!player.jump && std::abs(entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity().x) > 0)
-					player.changeState(Player::State::Sliding, entity);
+					player.changeState(Player::State::Sliding);
 				else
 					m_currentInput &= ~InputFlag::Down;
 			}
 			else if (!(m_currentInput & InputFlag::Left) && !(m_currentInput & InputFlag::Right))
 			{
-				player.changeState(player.prevState, entity);
+				player.changeState(player.prevState);
 			}
 		};
 		sendCommand(cmd);
@@ -182,7 +182,7 @@ void PlayerDirector::process(float)
 			}
 			/*if (player.numFootContacts >= 1)
 			{
-				player.changeState(Player::State::Idle, entity);
+				player.changeState(Player::State::Idle);
 			}*/
 		};
 		sendCommand(cmd);
@@ -198,7 +198,7 @@ void PlayerDirector::process(float)
 			if ((player.numFootContacts >= 1 /*&& player.state != Player::State::Sliding*/) ||
 				((player.state == Player::State::WallSliding) && player.numWallJumps < 3))
 			{
-				player.changeState(Player::State::PrepareJump, entity);
+				player.changeState(Player::State::PrepareJump);
 				player.jump = true;
 			}
 		};

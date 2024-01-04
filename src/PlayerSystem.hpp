@@ -57,7 +57,7 @@ struct Player
 	ShapeInfo slideRightSensorShapeInfo;
 	ShapeInfo slideLeftSensorShapeInfo;
 
-	void changeState(State newState, cro::Entity entity);
+	void changeState(State newState);
 };
 
 
