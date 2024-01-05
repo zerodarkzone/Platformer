@@ -6,6 +6,7 @@
     "activeFile": "level_00.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        "Rules",
         "."
     ],
     "file.lastUsedOpenFilter": "Todos los archivos (*)",
@@ -36,28 +37,38 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 360,
-                "y": 360.5
+                "x": 291.5,
+                "y": 379.5
             }
+        },
+        "decorations.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
         },
         "level_00.tmx": {
             "expandedObjectLayers": [
                 6
             ],
-            "scale": 2,
+            "scale": 5.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 1878,
-                "y": 240.5
+                "x": 1860.3636363636365,
+                "y": 179.54545454545456
             }
         },
         "oak_woods_tileset.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1.5
+        },
+        "template.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.exportedFilePath": "E:/xygine/PhysicsTest/assets/maps",
-    "last.imagePath": "C:/Users/juanb/Downloads",
+    "last.externalTilesetPath": "E:/xygine/PhysicsTest/assets/maps",
+    "last.imagePath": "E:/xygine/PhysicsTest/assets/sprites",
     "map.height": 20,
     "map.lastUsedExportFilter": "Archivos de mapas de Tiled (*.tmx *.xml)",
     "map.lastUsedFormat": "tmx",
@@ -68,13 +79,16 @@
     "map.width": 20,
     "openFiles": [
         "level_00.tmx",
-        "oak_woods_tileset.tsx"
+        "oak_woods_tileset.tsx",
+        "Rules/autotile_rules.tmx"
     ],
     "project": "platformer.tiled-project",
-    "property.type": "bool",
+    "property.type": "float",
     "recentFiles": [
         "level_00.tmx",
+        "Rules/autotile_rules.tmx",
         "oak_woods_tileset.tsx",
+        "decorations.tsx",
         "E:/xygine/Pacman/assets/maps/maze.tmx",
         "Rules/autitile_rules.tmx"
     ],
@@ -82,5 +96,6 @@
     "tileset.tileSize": {
         "height": 24,
         "width": 24
-    }
+    },
+    "tileset.type": 0
 }

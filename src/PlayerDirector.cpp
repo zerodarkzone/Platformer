@@ -128,7 +128,7 @@ void PlayerDirector::process(float)
 		cmd.action = [this](cro::Entity entity, float)
 		{
 			auto& player = entity.getComponent<Player>();
-			if (player.numFootContacts >= 1)
+			if (player.getContactNum(FixtureType::Ground) >= 1)
 				player.desiredSpeed = 0.f;
 			if ((m_currentInput & InputFlag::Left) && !(m_currentInput & InputFlag::Right))
 			{
@@ -173,15 +173,15 @@ void PlayerDirector::process(float)
 			auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
 			auto vel = body->GetLinearVelocity();
 			player.desiredSpeed = 0.f;
-			if (player.numFootContacts < 1 && vel.x < -1)
+			if (player.getContactNum(FixtureType::Ground) < 1 && vel.x < -1)
 			{
 				player.desiredSpeed = -player.speed;
 			}
-			if (player.numFootContacts < 1 && vel.x > 1)
+			if (player.getContactNum(FixtureType::Ground) < 1 && vel.x > 1)
 			{
 				player.desiredSpeed = player.speed;
 			}
-			/*if (player.numFootContacts >= 1)
+			/*if (player.numFeetContacts >= 1)
 			{
 				player.changeState(Player::State::Idle);
 			}*/
@@ -196,7 +196,7 @@ void PlayerDirector::process(float)
 		cmd.action = [](cro::Entity entity, float)
 		{
 			auto& player = entity.getComponent<Player>();
-			if ((player.numFootContacts >= 1 /*&& player.state != Player::State::Sliding*/) ||
+			if ((player.getContactNum(FixtureType::Ground) >= 1 /*&& player.state != Player::State::Sliding*/) ||
 				((player.state == Player::State::WallSliding) && player.numWallJumps < 3))
 			{
 				player.changeState(Player::State::PrepareJump);

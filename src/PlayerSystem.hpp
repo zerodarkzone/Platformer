@@ -8,6 +8,8 @@
 #define USE_SHAPE_USER_INFO
 
 #include <cstdint>
+#include <unordered_set>
+
 #include <crogine/ecs/System.hpp>
 #include <box2d/b2_contact.h>
 #include <box2d/b2_world_callbacks.h>
@@ -42,11 +44,12 @@ struct Player
 	float desiredSpeed = 0.f;
 	float gravityScale = 2.1f;
 	float jumpForce = 7.f;
+	constexpr static std::uint16_t maxConsecutiveWallJumps = 3u;
 	Facing facing = Facing::Right;
-	std::int32_t numFootContacts = 0;
-	std::int32_t numLeftWallContacts = 0;
-	std::int32_t numRightWallContacts = 0;
-	std::int32_t numWallJumps = 0;
+	std::unordered_set<b2Fixture*> feetContacts;
+	std::unordered_set<b2Fixture*> leftSensorContacts;
+	std::unordered_set<b2Fixture*> rightSensorContacts;
+	std::uint16_t numWallJumps = 0;
 	b2Fixture* mainFixture = nullptr;
 	b2Fixture* leftSensorFixture = nullptr;
 	b2Fixture* rightSensorFixture = nullptr;
@@ -58,6 +61,7 @@ struct Player
 	ShapeInfo slideLeftSensorShapeInfo;
 
 	void changeState(State newState);
+	std::uint16_t getContactNum(FixtureType type, SensorType sensor = SensorType::Feet) const;
 };
 
 
