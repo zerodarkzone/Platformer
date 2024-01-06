@@ -36,7 +36,6 @@ struct Player
 		Right
 	};
 	bool jump = false;
-	bool grounded = false;
 	State state = State::Idle;
 	State prevState = State::Idle;
 	State nextState = State::Idle;
@@ -46,9 +45,9 @@ struct Player
 	float jumpForce = 7.f;
 	constexpr static std::uint16_t maxConsecutiveWallJumps = 3u;
 	Facing facing = Facing::Right;
-	std::unordered_set<b2Fixture*> feetContacts;
-	std::unordered_set<b2Fixture*> leftSensorContacts;
-	std::unordered_set<b2Fixture*> rightSensorContacts;
+	std::unordered_multiset<b2Fixture*> feetContacts;
+	std::unordered_multiset<b2Fixture*> leftSensorContacts;
+	std::unordered_multiset<b2Fixture*> rightSensorContacts;
 	std::uint16_t numWallJumps = 0;
 	b2Fixture* mainFixture = nullptr;
 	b2Fixture* leftSensorFixture = nullptr;
@@ -61,7 +60,8 @@ struct Player
 	ShapeInfo slideLeftSensorShapeInfo;
 
 	void changeState(State newState);
-	std::uint16_t getContactNum(FixtureType type, SensorType sensor = SensorType::Feet) const;
+	std::uint16_t getContactNum(SensorType sensor = SensorType::Feet, FixtureType type = FixtureType::Count) const;
+	std::uint16_t getSlopeContactsNum() const;
 };
 
 
@@ -85,6 +85,31 @@ public:
 	void postSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	void changeState(cro::Entity entity);
+private:
+	class PlayerRayCastCallback : public b2RayCastCallback
+	{
+	public:
+		PlayerRayCastCallback()
+		{
+			m_fixture = nullptr;
+			m_fraction = 1.f;
+		}
+
+		float ReportFixture(b2Fixture* fixture, const b2Vec2& point,
+				const b2Vec2& normal, float fraction) override
+		{
+			m_fixture = fixture;
+			m_point = point;
+			m_normal = normal;
+			m_fraction = fraction;
+			return 0.f;
+		}
+
+		b2Fixture* m_fixture;
+		b2Vec2 m_point;
+		b2Vec2 m_normal;
+		float m_fraction;
+	};
 };
 
 

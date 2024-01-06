@@ -46,7 +46,7 @@ void PlayerSystem::process(float dt)
 		}
 		else if (player.state == Player::State::Walking)
 		{
-			if (player.getContactNum(FixtureType::Wall, SensorType::Left) > 0 || player.getContactNum(FixtureType::Wall, SensorType::Right) > 0)
+			if (player.getContactNum(SensorType::Left, FixtureType::Wall) > 0 || player.getContactNum(SensorType::Right, FixtureType::Wall) > 0)
 			{
 				animController.nextAnimation = AnimationID::Idle;
 			}
@@ -93,10 +93,10 @@ void PlayerSystem::fixedUpdate(float dt)
 		auto vel = body->GetLinearVelocity();
 		auto& animController = entity.getComponent<AnimationController>();
 
-		if (player.getContactNum(FixtureType::Ground) < 1 && vel.y <= 0)
+		if (player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
 		{
-			if ((player.facing == Player::Facing::Left && player.getContactNum(FixtureType::Wall, SensorType::Left) < 1) ||
-				(player.facing == Player::Facing::Right && player.getContactNum(FixtureType::Wall, SensorType::Right) < 1))
+			if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
+				(player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1))
 			{
 				player.changeState(Player::State::Falling);
 				body->SetGravityScale(player.gravityScale); // increased gravity
@@ -119,6 +119,7 @@ void PlayerSystem::fixedUpdate(float dt)
 		}
 		if (player.jump)
 		{
+			player.jump = false;
 			float impulse = body->GetMass() * player.jumpForce;
 			if (player.prevState == Player::State::WallSliding)
 			{
@@ -127,14 +128,12 @@ void PlayerSystem::fixedUpdate(float dt)
 			}
 
 			body->ApplyLinearImpulseToCenter({ 0, impulse }, true);
-			player.jump = false;
-			player.grounded = false;
-			if (player.prevState == Player::State::WallSliding && player.getContactNum(FixtureType::Wall, SensorType::Left) > 0)
+			if (player.prevState == Player::State::WallSliding && player.getContactNum(SensorType::Left) > 0)
 			{
 				body->ApplyLinearImpulseToCenter({ body->GetMass() * (player.speed + player.desiredSpeed), 0 }, true);
 				player.facing = Player::Facing::Right;
 			}
-			else if (player.prevState == Player::State::WallSliding && player.getContactNum(FixtureType::Wall, SensorType::Right) > 0)
+			else if (player.prevState == Player::State::WallSliding && player.getContactNum(SensorType::Right) > 0)
 			{
 				body->ApplyLinearImpulseToCenter({ -body->GetMass() * (player.speed - player.desiredSpeed), 0 }, true);
 				player.facing = Player::Facing::Left;
@@ -143,25 +142,26 @@ void PlayerSystem::fixedUpdate(float dt)
 		}
 		if (player.state == Player::State::Sliding)
 		{
-			player.desiredSpeed = vel.x * 0.99f;
+			if (player.getSlopeContactsNum() >= 1)
+			{
+				if (vel.y <= 0)
+				{
+					player.desiredSpeed = vel.x - (vel.x * dt * -0.5f);
+				}
+				else
+				{
+					player.desiredSpeed = player.desiredSpeed = vel.x - (vel.x * dt * 0.8f);;
+				}
+			}
+			else
+			{
+				player.desiredSpeed = vel.x - (vel.x * dt * 0.3f);
+			}
 		}
-		float velChange = player.desiredSpeed - vel.x;
-		float impulse = body->GetMass() * velChange; //disregard time factor
-		/*if (player.state == Player::State::Sliding)
-		{
-			impulse *= 0.05f;
-		}*/
-		if ((player.facing == Player::Facing::Left && player.getContactNum(FixtureType::Wall, SensorType::Left) > 0) ||
-			(player.facing == Player::Facing::Right && player.getContactNum(FixtureType::Wall, SensorType::Right) > 0))
-		{
-			impulse *= 0.001f;
-		}
-		if (impulse != 0)
-			body->ApplyLinearImpulseToCenter({ impulse, 0 }, true);
 
-		if (player.getContactNum(FixtureType::Ground) >= 1)
+		if (player.getContactNum(SensorType::Feet) > 0)
 		{
-			if (player.desiredSpeed == 0 && (player.state == Player::State::Walking))
+			if (player.desiredSpeed == 0 && (player.state == Player::State::Walking || player.state == Player::State::Sliding))
 			{
 				player.changeState(Player::State::Idle);
 			}
@@ -170,27 +170,42 @@ void PlayerSystem::fixedUpdate(float dt)
 		{
 			player.changeState(Player::State::Falling);
 		}
-		else if ((player.state == Player::State::Falling || player.state == Player::State::WallSliding) && vel.y >= 0)
+		else if ((player.state == Player::State::Falling || player.state == Player::State::WallSliding)
+				 && ((vel.y >= 0 && player.getContactNum(SensorType::Feet) > 0) || player.getContactNum(SensorType::Feet, FixtureType::Slope) > 0))
 		{
 			player.changeState(Player::State::Idle);
 			player.numWallJumps = 0;
 		}
-		if (player.state == Player::State::Sliding && player.desiredSpeed == 0)
+
+		float velChange = player.desiredSpeed - vel.x;
+		float impulse = body->GetMass() * velChange; //disregard time factor
+
+		if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left, FixtureType::Wall) > 0) ||
+			(player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right, FixtureType::Wall) > 0))
 		{
-			player.changeState(Player::State::Idle);
+			impulse *= 0.001f;
 		}
+		if (player.state == Player::State::PrepareJump || player.state == Player::State::Jumping || player.state == Player::State::Falling)
+		{
+			if ((player.facing == Player::Facing::Right && vel.x > 0.5f)
+			|| (player.facing == Player::Facing::Left && vel.x < -0.5f))
+			{
+				impulse = 0.f;
+			}
+		}
+		if (impulse != 0)
+			body->ApplyLinearImpulseToCenter({ impulse, 0 }, true);
 
 		cro::Console::printStat("Player Velocity x", std::to_string(vel.x));
 		cro::Console::printStat("Player Velocity y", std::to_string(vel.y));
 		cro::Console::printStat("Player Desired Velocity ", std::to_string(player.desiredSpeed));
 		cro::Console::printStat("Velocity Change ", std::to_string(velChange));
 		cro::Console::printStat("Impulse ", std::to_string(impulse));
-		cro::Console::printStat("Foot Contacts ", std::to_string(player.getContactNum(FixtureType::Ground)));
+		cro::Console::printStat("Foot Contacts ", std::to_string(player.getContactNum(SensorType::Feet)));
 		cro::Console::printStat("Wall Contacts ",
-				std::to_string(player.getContactNum(FixtureType::Wall, SensorType::Left) + player.getContactNum(FixtureType::Wall, SensorType::Right)));
+				std::to_string(player.getContactNum(SensorType::Left) + player.getContactNum(SensorType::Right)));
 		cro::Console::printStat("Jumping ", std::to_string(player.state == Player::State::Jumping));
 		cro::Console::printStat("Num Wall Jumps ", std::to_string(player.numWallJumps));
-		cro::Console::printStat("Grounded ", std::to_string(player.grounded));
 		cro::Console::printStat("Sliding ", std::to_string(player.state == Player::State::Sliding));
 		cro::Console::printStat("Walking Left ", std::to_string(player.state == Player::State::Walking && vel.x < 0));
 		cro::Console::printStat("Walking Right ", std::to_string(player.state == Player::State::Walking && vel.x > 0));
@@ -220,20 +235,19 @@ void PlayerSystem::beginContact(b2Contact* contact)
 					otherFixtureData->type == FixtureType::Ground ||
 					otherFixtureData->type == FixtureType::Platform || otherFixtureData->type == FixtureType::Slope)
 				{
-					player.feetContacts.emplace(otherFixture);
-					player.grounded = true;
+					player.feetContacts.insert(otherFixture);
 				}
 			}
-			else if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
+			if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
 			{
 				if (other.getComponent<ActorInfo>().id == ActorID::Wall ||
 					otherFixtureData->type == FixtureType::Wall ||
 					otherFixtureData->type == FixtureType::Slope)
 				{
 					if (fixtureData->sensor == SensorType::Right)
-						player.rightSensorContacts.emplace(otherFixture);
+						player.rightSensorContacts.insert(otherFixture);
 					else
-						player.leftSensorContacts.emplace(otherFixture);
+						player.leftSensorContacts.insert(otherFixture);
 				}
 			}
 		}
@@ -260,11 +274,10 @@ void PlayerSystem::endContact(b2Contact* contact)
 					otherFixtureData->type == FixtureType::Ground ||
 					otherFixtureData->type == FixtureType::Platform || otherFixtureData->type == FixtureType::Slope)
 				{
-					player.feetContacts.erase(otherFixture);
-					player.grounded = false;
+					player.feetContacts.extract(otherFixture);
 				}
 			}
-			else if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
+			if (fixtureData->sensor == SensorType::Right || fixtureData->sensor == SensorType::Left)
 			{
 				if (other.getComponent<ActorInfo>().id == ActorID::Wall ||
 					otherFixtureData->type == FixtureType::Wall ||
@@ -272,11 +285,11 @@ void PlayerSystem::endContact(b2Contact* contact)
 				{
 					if (fixtureData->sensor == SensorType::Right)
 					{
-						player.rightSensorContacts.erase(otherFixture);
+						player.rightSensorContacts.extract(otherFixture);
 					}
 					else
 					{
-						player.leftSensorContacts.erase(otherFixture);
+						player.leftSensorContacts.extract(otherFixture);
 					}
 				}
 			}
@@ -294,18 +307,22 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 		auto& player = self.getComponent<Player>();
 		auto fixtureData = reinterpret_cast<ShapeInfo*>(selfFixture->GetUserData().pointer);
 		auto otherFixtureData = reinterpret_cast<ShapeInfo*>(otherFixture->GetUserData().pointer);
-		if (player.state == Player::State::WallSliding)
+		if (fixtureData->type == FixtureType::Solid)
 		{
-			if (fixtureData->type == FixtureType::Solid)
+			if (player.state == Player::State::WallSliding)
 			{
 				contact->SetFriction(0.1f);
 			}
-		}
-		if (player.state == Player::State::Jumping)
-		{
-			if (fixtureData->type == FixtureType::Solid)
+			if (player.state == Player::State::Jumping || player.state == Player::State::PrepareJump)
 			{
 				contact->SetFriction(0.f);
+			}
+			if (player.getSlopeContactsNum() > 0)
+			{
+				if (player.state == Player::State::Idle || player.state == Player::State::Walking)
+					contact->SetFriction(0.8f);
+				else if (player.state == Player::State::Sliding)
+					contact->SetFriction(0.1f);
 			}
 		}
 	}
@@ -335,7 +352,6 @@ void PlayerSystem::changeState(cro::Entity entity)
 
 	if (player.nextState != player.state)
 	{
-		player.prevState = player.state;
 		switch (player.state)
 		{
 		default:
@@ -360,9 +376,27 @@ void PlayerSystem::changeState(cro::Entity entity)
 			break;
 		case Player::State::Sliding:
 		{
-			cro::Logger::log("left sliding.");
 			auto& playerBody = entity.getComponent<PhysicsObject>();
+			PlayerRayCastCallback callback;
+			auto body = playerBody.getPhysicsBody();
+			auto world = body->GetWorld();
+			auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
+			auto raycastPoints = std::vector<b2Vec2>{
+					{ body->GetPosition().x, body->GetPosition().y },
+					{ body->GetPosition().x + hw, body->GetPosition().y },
+					{ body->GetPosition().x - hw, body->GetPosition().y },
+			};
+			for (auto& p: raycastPoints)
+			{
+				world->RayCast(&callback, p, {p.x, p.y + 0.5f});
+				if (callback.m_fixture)
+				{
+					cro::Logger::log("raycast hit");
+					return;
+				}
+			}
 
+			cro::Logger::log("left sliding.");
 			playerBody.removeShape(player.mainFixture);
 			auto newMainFixture = playerBody.addBoxShape(
 					{ .restitution=player.collisionShapeInfo.restitution, .density=player.collisionShapeInfo.density, .friction=player.collisionShapeInfo.friction },
@@ -395,6 +429,7 @@ void PlayerSystem::changeState(cro::Entity entity)
 		}
 			break;
 		}
+		player.prevState = player.state;
 		player.state = newState;
 		switch (player.state)
 		{
@@ -495,84 +530,55 @@ void Player::changeState(Player::State newState)
 		nextState = newState;
 }
 
-std::uint16_t Player::getContactNum(FixtureType type, SensorType sensor) const
+std::uint16_t Player::getContactNum(SensorType sensor, FixtureType type) const
 {
-	switch (type)
+	switch (sensor)
 	{
-	default:
+	case SensorType::None:
+	case SensorType::Count:
+	case SensorType::Head:
+	case SensorType::Top:
 		return 0;
-	case FixtureType::Ground:
-	case FixtureType::Platform:
+	case SensorType::Feet:
+	case SensorType::Bottom:
 	{
 		std::uint16_t numFeetContacts = 0;
 		for (const auto& contact: feetContacts)
 		{
 			const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-			if (userData->type == FixtureType::Ground || userData->type == FixtureType::Platform || userData->type == FixtureType::Slope)
+			if (type == FixtureType::Count || userData->type == type)
 				numFeetContacts++;
 		}
 		return numFeetContacts;
 	}
-	case FixtureType::Slope:
+	case SensorType::Left:
 	{
-		if (sensor == SensorType::Feet)
+		std::uint16_t numLeftSensorContacts = 0;
+		for (const auto& contact: leftSensorContacts)
 		{
-			std::uint16_t numFeetContacts = 0;
-			for (const auto& contact: feetContacts)
-			{
-				const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-				if (userData->type == FixtureType::Slope)
-					numFeetContacts++;
-			}
-			return numFeetContacts;
+			const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
+			if (type == FixtureType::Count || userData->type == type)
+				numLeftSensorContacts++;
 		}
-		else if (sensor == SensorType::Right)
-		{
-			std::uint16_t numRightSensorContacts = 0;
-			for (const auto& contact: rightSensorContacts)
-			{
-				const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-				if (userData->type == FixtureType::Slope)
-					numRightSensorContacts++;
-			}
-			return numRightSensorContacts;
-		}
-		else
-		{
-			std::uint16_t numLeftSensorContacts = 0;
-			for (const auto& contact: leftSensorContacts)
-			{
-				const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-				if (userData->type == FixtureType::Slope)
-					numLeftSensorContacts++;
-			}
-			return numLeftSensorContacts;
-		}
+		return numLeftSensorContacts;
 	}
-	case FixtureType::Wall:
+	case SensorType::Right:
 	{
-		if (sensor == SensorType::Right)
+		std::uint16_t numRightSensorContacts = 0;
+		for (const auto& contact: rightSensorContacts)
 		{
-			std::uint16_t numRightSensorContacts = 0;
-			for (const auto& contact: rightSensorContacts)
-			{
-				const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-				if (userData->type == FixtureType::Wall)
-					numRightSensorContacts++;
-			}
-			return numRightSensorContacts;
+			const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
+			if (type == FixtureType::Count || userData->type == type)
+				numRightSensorContacts++;
 		}
-		else
-		{
-			std::uint16_t numLeftSensorContacts = 0;
-			for (const auto& contact: leftSensorContacts)
-			{
-				const auto& userData = reinterpret_cast<ShapeInfo*>(contact->GetUserData().pointer);
-				if (userData->type == FixtureType::Wall)
-					numLeftSensorContacts++;
-			}
-			return numLeftSensorContacts;
-		}
+		return numRightSensorContacts;
 	}
+		break;
 	}
+}
+
+std::uint16_t Player::getSlopeContactsNum() const
+{
+	return getContactNum(SensorType::Feet, FixtureType::Slope) + getContactNum(SensorType::Left, FixtureType::Slope) +
+			getContactNum(SensorType::Right, FixtureType::Slope);
 }

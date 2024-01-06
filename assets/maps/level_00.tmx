@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="90" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="11" nextobjectid="121">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="90" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="12" nextobjectid="121">
  <editorsettings>
   <export target="level_00.tmx" format="tmx"/>
  </editorsettings>
@@ -20,14 +20,19 @@
    eJztwwENAAAIA6Dbyf7Z3kNhIwEAAOCjHb2zxWAlRQ==
   </data>
  </layer>
- <layer id="5" name="terrain" width="90" height="12">
+ <layer id="11" name="prototype" width="90" height="12" visible="0">
   <data encoding="base64" compression="zlib">
-   eJztlNENwjAMRBOE1C9+EBR1DIZArMM0dAkGYwwctZaqU+qSNNgIctL1J/GLfU3buapPqyV31k38gWrOOqo566jmrKOlnHdajfy4rO7z2eBMS1nkfCE/yVflc0vIk7cZdVLOgbkZncOWdCvMk8RzNKNz5wmcAz2OfmDcyX1CHebMfYW1kxsc2Eu9cd10n/X/gWfkOVLm4Xq+azHOw81zMEd+PxIP9yHbz/D2wG7AyJrOleIYV5oF+8ypj3HeyTHF+A20hVhrON/uF2KFEyA=
+   eJztkjEOwCAIRfVuXMWxS3v/xA52aRrAVMCQP7zNj5+nVEs5gCk0iO6RHXiG50zA8x6e8QY+ni3vjd49u2cKujfSF5ejaufE0/F7j7+uHs6bazKn6SV1+zoX/We5XTTdpHxjfEtZLStnru7mTTOcDc9zdBQmqWQ=
   </data>
  </layer>
- <layer id="10" name="decorations" width="90" height="12" visible="0">
+ <layer id="5" name="terrain" width="90" height="12">
   <data encoding="base64" compression="zlib">
-   eJzt0kkKgDAMBdDmzg4LRXFX0ENbwUIMidQhIPLfxtrCT0gbAgAAAAB8RUU+uSMdv1nrVE9me9WpHfuX5OyykjvrC/u8c/88m68bI8vaf8OcshfSZyXPPPqYRKac55P3wrO3ddz/OyNT248X6mu9DsZsz1j9AfzRCgA0ETg=
+   eJztVEEOgjAQbI0JJy9GITzDRxi/42v0Ez6MZ7gNbEImsNhadwl2kuHS7nRmKLSu4Neoia21iT9A6VkHpWcdlJ51sNTzQcvIxmF1ny8GZ1rCoucrsSPelM/NAU/cJ8xJPQfN3cAUbQn3zHoSOEc1MDVP0DnR4+x7jQfxGTGHPbOvsNa4nkF7yRvPjfdZ/x84I+eIycPzfNemdF5uvm/skd+PpIf70KOf0TuCdgVErXGuGE7pSlnQZ8o89o2ePp2ViN9AnUnrG5218w3aphT0
+  </data>
+ </layer>
+ <layer id="10" name="decorations" width="90" height="12">
+  <data encoding="base64" compression="zlib">
+   eJztkskKgDAMRJt/djkoireCfrQVLMTQYFwCIvMubXN4GZKGAAAAAAAAvkJFPt6Rjmemdeon3V59asf8Ejm7jGVnvTHnnf1zN783ikurv8Gc3Avps/LOMQmnnOeT/8Ld2z3u705xlurxQv9S1sE427McAPyVFfvLD58=
   </data>
  </layer>
  <objectgroup id="6" name="colliders" class="Collider">
@@ -481,7 +486,7 @@
     <property name="sensorType" value="None"/>
     <property name="shapeType" value="Ground"/>
    </properties>
-   <polyline points="0,0 -120,0 -120,-24 -192,-24 -192,-48 -216,-48 -216,-72 -264,-72 -264,-48 -288,-48 -288,-24 -360,-24 -360,0 -552,0"/>
+   <polyline points="0,0 -120,0 -192,0 -192,-24 -192,-48 -216,-48 -216,-72 -264,-72 -264,-48 -288,-48 -288,-24 -360,-24 -360,0 -552,0"/>
   </object>
   <object id="119" type="Collider" x="576" y="240">
    <properties>
@@ -505,7 +510,7 @@
     <property name="sensorType" value="None"/>
     <property name="shapeType" value="Slope"/>
    </properties>
-   <polyline points="0,0 -24,0 -72,-24 -96,-24"/>
+   <polyline points="48,24 24,24 -72,-24 -96,-24"/>
   </object>
  </objectgroup>
 </map>
