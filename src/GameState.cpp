@@ -472,7 +472,7 @@ void GameState::createScene()
 					0.0f,
 					0.0f,
 					0.0f,
-					{ playerSprite.getSize().x * playerTransform.getScale().x / 2.5f, 0 },
+					{ playerSprite.getSize().x * playerTransform.getScale().x / 2.2f, 0 },
 					{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
 			}
 	);
@@ -486,7 +486,7 @@ void GameState::createScene()
 					shapeInfo.friction,
 					shapeInfo.restitution,
 					shapeInfo.density,
-					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.22 },
+					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
 					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
 			}
 	);

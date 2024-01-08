@@ -89,7 +89,8 @@ private:
 	class PlayerRayCastCallback : public b2RayCastCallback
 	{
 	public:
-		PlayerRayCastCallback()
+		explicit PlayerRayCastCallback(std::uint8_t flag = 0)
+			: m_flag(flag)
 		{
 			m_fixture = nullptr;
 			m_fraction = 1.f;
@@ -109,6 +110,7 @@ private:
 		b2Vec2 m_point;
 		b2Vec2 m_normal;
 		float m_fraction;
+		std::uint8_t m_flag;
 	};
 };
 

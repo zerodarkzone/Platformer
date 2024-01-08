@@ -155,7 +155,7 @@ void PlayerSystem::fixedUpdate(float dt)
 			}
 			else
 			{
-				player.desiredSpeed = vel.x - (vel.x * dt * 0.3f);
+				player.desiredSpeed = vel.x - (vel.x * dt * 0.1f);
 			}
 		}
 
@@ -345,6 +345,18 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 	}
 }
 
+namespace RayCastFlag
+{
+	typedef std::uint8_t RayCastFlag_t;
+	enum : RayCastFlag_t
+	{
+		Left = 0x1,
+		Right = 0x2,
+		Middle = 0x4,
+		None = 0
+	};
+}
+
 void PlayerSystem::changeState(cro::Entity entity)
 {
 	auto& player = entity.getComponent<Player>();
@@ -377,23 +389,51 @@ void PlayerSystem::changeState(cro::Entity entity)
 		case Player::State::Sliding:
 		{
 			auto& playerBody = entity.getComponent<PhysicsObject>();
-			PlayerRayCastCallback callback;
 			auto body = playerBody.getPhysicsBody();
 			auto world = body->GetWorld();
 			auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
-			auto raycastPoints = std::vector<b2Vec2>{
-					{ body->GetPosition().x, body->GetPosition().y },
-					{ body->GetPosition().x + hw, body->GetPosition().y },
-					{ body->GetPosition().x - hw, body->GetPosition().y },
+			auto raycastPoints = std::vector<std::pair<RayCastFlag::RayCastFlag_t, b2Vec2>>{
+					{RayCastFlag::Middle, { body->GetPosition().x, body->GetPosition().y }},
+					{RayCastFlag::Right, { body->GetPosition().x + hw, body->GetPosition().y }},
+					{RayCastFlag::Left, { body->GetPosition().x - hw, body->GetPosition().y }},
 			};
-			for (auto& p: raycastPoints)
+			RayCastFlag::RayCastFlag_t rayCastFlags = RayCastFlag::None;
+			for (auto& [f, p]: raycastPoints)
 			{
+				PlayerRayCastCallback callback(f);
 				world->RayCast(&callback, p, {p.x, p.y + 0.5f});
 				if (callback.m_fixture)
 				{
-					cro::Logger::log("raycast hit");
-					return;
+					rayCastFlags |= callback.m_flag;
 				}
+			}
+			if (rayCastFlags != RayCastFlag::None)
+			{
+				cro::Logger::log("raycast hit");
+				float desiredSpeed = 0.f;
+				if ((rayCastFlags & RayCastFlag::Left) == 0)
+				{
+					desiredSpeed = -2.f;
+				}
+				else if ((rayCastFlags & RayCastFlag::Right) == 0)
+				{
+					desiredSpeed = 2.f;
+				}
+				else
+				{
+					if (player.facing == Player::Facing::Left)
+					{
+						desiredSpeed = -1.f;
+					}
+					else
+					{
+						desiredSpeed = 1.f;
+					}
+				}
+				float velChange = desiredSpeed - body->GetLinearVelocity().x;
+				float impulse = body->GetMass() * velChange;
+				body->ApplyLinearImpulseToCenter({ impulse, 0 }, true);
+				return;
 			}
 
 			cro::Logger::log("left sliding.");
@@ -507,7 +547,7 @@ namespace
 					{ Player::State::Walking,     Player::State::Falling },
 					{ Player::State::Walking,     Player::State::PrepareJump },
 					{ Player::State::Sliding,     Player::State::Idle },
-					{ Player::State::Sliding,     Player::State::Walking },
+					//{ Player::State::Sliding,     Player::State::Walking }, //TODO: check if this is needed
 					{ Player::State::Sliding,     Player::State::PrepareJump },
 					{ Player::State::Sliding,     Player::State::Falling },
 					{ Player::State::PrepareJump, Player::State::Jumping },

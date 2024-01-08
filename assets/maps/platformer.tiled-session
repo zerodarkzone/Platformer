@@ -34,11 +34,11 @@
             }
         },
         "Rules/autotile_rules.tmx": {
-            "scale": 5.5,
+            "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 425.4545454545455,
-                "y": 377.27272727272725
+                "x": 354.5,
+                "y": 297
             }
         },
         "decorations.tsx": {
@@ -50,11 +50,11 @@
             "expandedObjectLayers": [
                 6
             ],
-            "scale": 5.5,
-            "selectedLayer": 4,
+            "scale": 1.5,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 1846.5454545454545,
-                "y": 198.36363636363637
+                "x": 1683.3333333333333,
+                "y": 303.33333333333326
             }
         },
         "oak_woods_tileset.tsx": {
