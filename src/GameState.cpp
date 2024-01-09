@@ -306,7 +306,7 @@ void GameState::createScene()
 					std::vector<glm::vec2> points;
 					auto ghostVert1 = info.points[0];
 					auto ghostVert2 = info.points[info.pointsCount - 1];
-					for (auto i = 1u; i <info.pointsCount - 1; ++i)
+					for (auto i = 1; i < info.pointsCount - 1; ++i)
 					{
 						points.emplace_back(info.points[i].x, info.points[i].y);
 					}

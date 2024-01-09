@@ -288,7 +288,7 @@ void PhysicsSystem::updateDrawList(cro::Entity)
 {
 }
 
-void PhysicsSystem::render(cro::Entity camera, const cro::RenderTarget& target)
+void PhysicsSystem::render(cro::Entity camera, const cro::RenderTarget&)
 {
 	if (m_debugDraw)
 	{

@@ -150,7 +150,7 @@ void PlayerSystem::fixedUpdate(float dt)
 				}
 				else
 				{
-					player.desiredSpeed = player.desiredSpeed = vel.x - (vel.x * dt * 0.8f);;
+					player.desiredSpeed = vel.x - (vel.x * dt * 0.8f);;
 				}
 			}
 			else
@@ -306,7 +306,6 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 	{
 		auto& player = self.getComponent<Player>();
 		auto fixtureData = reinterpret_cast<ShapeInfo*>(selfFixture->GetUserData().pointer);
-		auto otherFixtureData = reinterpret_cast<ShapeInfo*>(otherFixture->GetUserData().pointer);
 		if (fixtureData->type == FixtureType::Solid)
 		{
 			if (player.state == Player::State::WallSliding)
@@ -613,7 +612,8 @@ std::uint16_t Player::getContactNum(SensorType sensor, FixtureType type) const
 		}
 		return numRightSensorContacts;
 	}
-		break;
+	default:
+		return 0;
 	}
 }
 
