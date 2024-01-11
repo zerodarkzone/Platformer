@@ -49,6 +49,7 @@ struct Player
 	float fallGravityScale = 2.1f;
 	float wallSlideGravityScale = 0.3f;
 	float normalGravityScale = 1.f;
+	float minSlideSpeed = 2.5f;
 
 	constexpr static float maxSpeed = 6.f;
 	std::uint16_t maxConsecutiveWallJumps = 3u;
@@ -89,33 +90,6 @@ public:
 	void postSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	void changeState(cro::Entity entity);
-private:
-	class PlayerRayCastCallback : public b2RayCastCallback
-	{
-	public:
-		explicit PlayerRayCastCallback(std::uint8_t flag = 0)
-			: m_flag(flag)
-		{
-			m_fixture = nullptr;
-			m_fraction = 1.f;
-		}
-
-		float ReportFixture(b2Fixture* fixture, const b2Vec2& point,
-				const b2Vec2& normal, float fraction) override
-		{
-			m_fixture = fixture;
-			m_point = point;
-			m_normal = normal;
-			m_fraction = fraction;
-			return 0.f;
-		}
-
-		b2Fixture* m_fixture;
-		b2Vec2 m_point;
-		b2Vec2 m_normal;
-		float m_fraction;
-		std::uint8_t m_flag;
-	};
 };
 
 

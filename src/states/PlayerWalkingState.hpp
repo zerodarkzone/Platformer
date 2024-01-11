@@ -19,6 +19,7 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerWalkingState() override = default;
+	PlayerWalkingState() {m_id = PlayerStateID::State::Walking;}
 };
 
 

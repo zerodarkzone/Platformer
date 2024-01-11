@@ -11,6 +11,7 @@ void PlayerWalkingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
 	PlayerState::handleInput(entity, input);
 	auto& player = entity.getComponent<Player>();
+	auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
 	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0)
 	{
 		player.changeState(Player::State::Jumping);
@@ -23,7 +24,7 @@ void PlayerWalkingState::handleInput(cro::Entity& entity, std::uint8_t input)
 	{
 		player.changeState(Player::State::Idle);
 	}
-	if ((input & InputFlag::Down))
+	if ((input & InputFlag::Down) && std::abs(vel.x) > player.minSlideSpeed)
 	{
 		player.changeState(Player::State::Sliding);
 	}

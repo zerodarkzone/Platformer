@@ -19,6 +19,7 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerIdleState() override = default;
+	PlayerIdleState() {m_id = PlayerStateID::State::Idle;}
 };
 
 

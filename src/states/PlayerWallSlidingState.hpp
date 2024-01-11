@@ -19,6 +19,7 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerWallSlidingState() override = default;
+	PlayerWallSlidingState() {m_id = PlayerStateID::State::WallSliding;}
 };
 
 

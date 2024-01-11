@@ -20,6 +20,7 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerFallingState() override = default;
+	PlayerFallingState() {m_id = PlayerStateID::State::Falling;}
 };
 
 

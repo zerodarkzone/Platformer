@@ -109,12 +109,17 @@ void PlayerDirector::process(float)
 	cro::Command cmd;
 	cmd.targetFlags = CommandID::Player;
 	auto input = m_currentInput;
-	cmd.action = [input](cro::Entity entity, float)
+	cmd.action = [input, this](cro::Entity entity, float)
 	{
 		auto& player = entity.getComponent<Player>();
 		if (player.statePtr)
 		{
 			player.statePtr->handleInput(entity, input);
+			auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
+			if (player.statePtr->getStateID() == PlayerStateID::State::Sliding && vel.x == 0)
+			{
+				m_currentInput &= ~InputFlag::Down;
+			}
 		}
 	};
 	sendCommand(cmd);

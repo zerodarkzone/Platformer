@@ -37,8 +37,8 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 354.5,
-                "y": 297
+                "x": 415,
+                "y": 311.75
             }
         },
         "decorations.tsx": {
@@ -53,8 +53,8 @@
             "scale": 1.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 1683.3333333333333,
-                "y": 303.33333333333326
+                "x": 1080,
+                "y": 143.66666666666666
             }
         },
         "oak_woods_tileset.tsx": {

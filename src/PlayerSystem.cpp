@@ -309,6 +309,9 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 	{
 		auto& player = self.getComponent<Player>();
 		auto fixtureData = reinterpret_cast<ShapeInfo*>(selfFixture->GetUserData().pointer);
+		auto otherFixtureData = reinterpret_cast<ShapeInfo*>(otherFixture->GetUserData().pointer);
+		if (!fixtureData or !otherFixtureData)
+			return;
 		if (fixtureData->type == FixtureType::Solid)
 		{
 			if (player.state == Player::State::WallSliding)
@@ -319,7 +322,7 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 			{
 				contact->SetFriction(0.f);
 			}
-			if (player.getSlopeContactsNum() > 0)
+			if (otherFixtureData->type == FixtureType::Slope)
 			{
 				if (player.state == Player::State::Idle || player.state == Player::State::Walking)
 					contact->SetFriction(0.8f);
@@ -347,20 +350,6 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 	}
 }
 
-namespace RayCastFlag
-{
-	typedef std::uint8_t RayCastFlag_t;
-	enum : RayCastFlag_t
-	{
-		Left = 0x1,
-		Right = 0x2,
-		Middle = 0x4,
-		None = 0
-	};
-}
-
-
-
 void PlayerSystem::changeState(cro::Entity entity)
 {
 	auto& player = entity.getComponent<Player>();
@@ -369,6 +358,10 @@ void PlayerSystem::changeState(cro::Entity entity)
 
 	if (player.statePtr)
 		player.statePtr->onExit(entity);
+
+	if (player.nextState == player.state)
+		return;
+
 	player.prevState = player.state;
 	auto changed = false;
 	switch (player.nextState)
@@ -399,6 +392,8 @@ void PlayerSystem::changeState(cro::Entity entity)
 	case PlayerStateID::State::WallSliding:
 		player.statePtr = std::make_unique<PlayerWallSlidingState>();
 		changed = true;
+		break;
+	case PlayerStateID::State::Crouching:
 		break;
 	}
 	player.state = player.nextState;

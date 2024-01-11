@@ -19,6 +19,7 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerJumpingState() override = default;
+	PlayerJumpingState() {m_id = PlayerStateID::State::Jumping;}
 
 private:
 	bool m_jumped = false;

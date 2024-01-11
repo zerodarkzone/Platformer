@@ -14,6 +14,7 @@ namespace PlayerStateID
 		Jumping,
 		Falling,
 		Sliding,
+		Crouching,
 		WallSliding,
 		Count
 	};
