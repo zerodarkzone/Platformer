@@ -4,7 +4,6 @@
 #define USE_SHAPE_USER_INFO
 
 #include <crogine/core/Console.hpp>
-#include <crogine/ecs/Scene.hpp>
 #include <crogine/ecs/components/Transform.hpp>
 
 #include <set>
@@ -14,6 +13,12 @@
 #include "Actors.hpp"
 #include "Utils.hpp"
 #include "AnimationController.hpp"
+#include "states/PlayerIdleState.hpp"
+#include "states/PlayerWalkingState.hpp"
+#include "states/PlayerFallingState.hpp"
+#include "states/PlayerJumpingState.hpp"
+#include "states/PlayerWallSlidingState.hpp"
+#include "states/PlayerSlidingState.hpp"
 
 PlayerSystem::PlayerSystem(cro::MessageBus& mb) : cro::System(mb, typeid(PlayerSystem))
 {
@@ -59,14 +64,6 @@ void PlayerSystem::process(float dt)
 		{
 			animController.nextAnimation = AnimationID::Slide;
 		}
-		else if (player.state == Player::State::PrepareJump)
-		{
-			animController.nextAnimation = AnimationID::PrepareJump;
-		}
-		else if (player.state == Player::State::Jumping)
-		{
-			animController.nextAnimation = AnimationID::Jump;
-		}
 		else if (player.state == Player::State::Falling)
 		{
 			animController.nextAnimation = AnimationID::Fall;
@@ -93,13 +90,17 @@ void PlayerSystem::fixedUpdate(float dt)
 		auto vel = body->GetLinearVelocity();
 		auto& animController = entity.getComponent<AnimationController>();
 
+		if (player.statePtr)
+			player.statePtr->update(entity, dt);
+
+		/*
 		if (player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
 		{
 			if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
 				(player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1))
 			{
 				player.changeState(Player::State::Falling);
-				body->SetGravityScale(player.gravityScale); // increased gravity
+				body->SetGravityScale(player.fallGravityScale); // increased gravity
 			}
 			else
 			{
@@ -196,11 +197,13 @@ void PlayerSystem::fixedUpdate(float dt)
 		if (impulse != 0)
 			body->ApplyLinearImpulseToCenter({ impulse, 0 }, true);
 
+		 */
+
 		cro::Console::printStat("Player Velocity x", std::to_string(vel.x));
 		cro::Console::printStat("Player Velocity y", std::to_string(vel.y));
-		cro::Console::printStat("Player Desired Velocity ", std::to_string(player.desiredSpeed));
-		cro::Console::printStat("Velocity Change ", std::to_string(velChange));
-		cro::Console::printStat("Impulse ", std::to_string(impulse));
+		//cro::Console::printStat("Player Desired Velocity ", std::to_string(player.desiredSpeed));
+		//cro::Console::printStat("Velocity Change ", std::to_string(velChange));
+		//cro::Console::printStat("Impulse ", std::to_string(impulse));
 		cro::Console::printStat("Foot Contacts ", std::to_string(player.getContactNum(SensorType::Feet)));
 		cro::Console::printStat("Wall Contacts ",
 				std::to_string(player.getContactNum(SensorType::Left) + player.getContactNum(SensorType::Right)));
@@ -312,7 +315,7 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 			{
 				contact->SetFriction(0.1f);
 			}
-			if (player.state == Player::State::Jumping || player.state == Player::State::PrepareJump)
+			if (player.state == Player::State::Jumping)
 			{
 				contact->SetFriction(0.f);
 			}
@@ -356,12 +359,53 @@ namespace RayCastFlag
 	};
 }
 
+
+
 void PlayerSystem::changeState(cro::Entity entity)
 {
 	auto& player = entity.getComponent<Player>();
-	auto newState = player.nextState;
+	if (player.nextState == player.state)
+		return;
 
-	if (player.nextState != player.state)
+	if (player.statePtr)
+		player.statePtr->onExit(entity);
+	player.prevState = player.state;
+	auto changed = false;
+	switch (player.nextState)
+	{
+	case PlayerStateID::State::None:
+	case PlayerStateID::State::Count:
+		break;
+	case Player::State::Idle:
+		player.statePtr = std::make_unique<PlayerIdleState>();
+		changed = true;
+		break;
+	case PlayerStateID::State::Walking:
+		player.statePtr = std::make_unique<PlayerWalkingState>();
+		changed = true;
+		break;
+	case PlayerStateID::State::Jumping:
+		player.statePtr = std::make_unique<PlayerJumpingState>();
+		changed = true;
+		break;
+	case PlayerStateID::State::Falling:
+		player.statePtr = std::make_unique<PlayerFallingState>();
+		changed = true;
+		break;
+	case PlayerStateID::State::Sliding:
+		player.statePtr = std::make_unique<PlayerSlidingState>();
+		changed = true;
+		break;
+	case PlayerStateID::State::WallSliding:
+		player.statePtr = std::make_unique<PlayerWallSlidingState>();
+		changed = true;
+		break;
+	}
+	player.state = player.nextState;
+	if (changed)
+		player.statePtr->onEnter(entity);
+
+	/*if (player.nextState != player.state)
 	{
 		switch (player.state)
 		{
@@ -529,37 +573,35 @@ void PlayerSystem::changeState(cro::Entity entity)
 		}
 			break;
 		}
-	}
+	}*/
 }
 
 namespace
 {
 	std::set<std::tuple<Player::State, Player::State>> validTransitions =
 			{
+					{ Player::State::None,        Player::State::Idle },
 					{ Player::State::Idle,        Player::State::Walking },
 					{ Player::State::Idle,        Player::State::Jumping },
 					{ Player::State::Idle,        Player::State::Falling },
-					{ Player::State::Idle,        Player::State::PrepareJump },
 					{ Player::State::Walking,     Player::State::Idle },
 					{ Player::State::Walking,     Player::State::Sliding },
 					{ Player::State::Walking,     Player::State::Jumping },
 					{ Player::State::Walking,     Player::State::Falling },
-					{ Player::State::Walking,     Player::State::PrepareJump },
 					{ Player::State::Sliding,     Player::State::Idle },
 					//{ Player::State::Sliding,     Player::State::Walking }, //TODO: check if this is needed
-					{ Player::State::Sliding,     Player::State::PrepareJump },
+					{ Player::State::Sliding,     Player::State::Jumping },
 					{ Player::State::Sliding,     Player::State::Falling },
-					{ Player::State::PrepareJump, Player::State::Jumping },
 					{ Player::State::Jumping,     Player::State::Falling },
 					{ Player::State::Jumping,     Player::State::WallSliding },
 					//{ Player::State::Jumping,     Player::State::Idle },
 					{ Player::State::Falling,     Player::State::Jumping },
 					{ Player::State::Falling,     Player::State::Idle },
 					{ Player::State::Falling,     Player::State::WallSliding },
+					{ Player::State::Falling,     Player::State::Walking },
 					{ Player::State::WallSliding, Player::State::Falling },
 					{ Player::State::WallSliding, Player::State::Idle },
 					{ Player::State::WallSliding, Player::State::Jumping },
-					{ Player::State::WallSliding, Player::State::PrepareJump },
 			};
 }
 
