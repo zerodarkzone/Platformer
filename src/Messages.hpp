@@ -16,11 +16,18 @@ namespace MessageID
 		UIMessage = cro::Message::Count,
 		CollisionStartedMessage,
 		CollisionEndedMessage,
-		AnimationMessage,
-		AnimationCompleteMessage
+		AnimationMessage
 	};
 }
 
+namespace FrameMessageID
+{
+	enum
+	{
+		PrepareJumpStarted = 0,
+		PrepareJumpEnded = 1
+	};
+}
 
 struct UIEvent final
 {
@@ -57,10 +64,5 @@ struct AnimationEvent final
 	float y = 0.f;
 };
 
-struct AnimationCompleteEvent final
-{
-	std::int32_t animationID = -1;
-	cro::Entity entity;
-};
 
 #endif // PHYSICS_TEST_MESSAGES_HPP

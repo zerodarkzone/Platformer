@@ -85,10 +85,12 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 {
 	switch (msg.id)
 	{
-	case MessageID::AnimationCompleteMessage:
+	case cro::Message::SpriteAnimationMessage:
 	{
-		auto& animEvent = msg.getData<AnimationCompleteEvent>();
-		if (animEvent.animationID == AnimationID::PrepareJump)
+		auto& animEvent = msg.getData<cro::Message::SpriteAnimationEvent>();
+		cro::Logger::log(std::to_string(animEvent.entity.getIndex()));
+		cro::Logger::log(std::to_string(animEvent.userType));
+		if (animEvent.userType == FrameMessageID::PrepareJumpEnded)
 		{
 			cro::Command cmd;
 			cmd.targetFlags = CommandID::Player;
@@ -99,8 +101,8 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 			};
 			sendCommand(cmd);
 		}
-	}
 		break;
+	}
 	}
 }
 
