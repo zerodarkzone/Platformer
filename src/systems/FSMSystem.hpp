@@ -41,7 +41,6 @@ public:
 	explicit BaseState(FSM::State_t id) : m_id(id) {}
 	BaseState() = delete;
 protected:
-	float m_desiredSpeed = 0.f;
 	FSM::State_t m_id = FSM::State::None;
 };
 

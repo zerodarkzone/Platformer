@@ -135,7 +135,7 @@ b2Vec2 findCentroid(std::vector<b2Vec2> &points) {
 	return {x / (float)points.size(), y / (float)points.size()};
 }
 
-b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points)
+b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, const std::span<glm::vec2>& points)
 {
 	CRO_ASSERT(m_system && m_body, "Component not initialised!");
 	CRO_ASSERT(m_shapeCount < MaxShapes, "No more shapes available!");
@@ -159,7 +159,7 @@ b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, con
 }
 
 b2Fixture*
-PhysicsObject::addChainShape(const ShapeProperties& properties, const std::vector<glm::vec2>& points, bool loop,
+PhysicsObject::addChainShape(const ShapeProperties& properties, const std::span<glm::vec2>& points, bool loop,
 		glm::vec2 prevPoint, glm::vec2 nextPoint, bool sort)
 {
 	CRO_ASSERT(m_system && m_body, "Component not initialised!");

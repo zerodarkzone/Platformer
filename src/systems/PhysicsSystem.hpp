@@ -8,6 +8,7 @@
 #include "DebugDraw.hpp"
 
 #include <map>
+#include <span>
 #include <crogine/ecs/System.hpp>
 #include <crogine/ecs/Renderable.hpp>
 #include <utility>
@@ -144,9 +145,9 @@ public:
 
 	b2Fixture* addEdgeShape(const ShapeProperties&, glm::vec2 start, glm::vec2 end);
 
-	b2Fixture* addPolygonShape(const ShapeProperties&, const std::vector<glm::vec2>& points);
+	b2Fixture* addPolygonShape(const ShapeProperties&, const std::span<glm::vec2>& points);
 
-	b2Fixture* addChainShape(const ShapeProperties&, const std::vector<glm::vec2>& points, bool loop = false,
+	b2Fixture* addChainShape(const ShapeProperties&, const std::span<glm::vec2>& points, bool loop = false,
 			glm::vec2 prevPoint = {}, glm::vec2 nextPoint = {}, bool sort = false);
 
 	void removeShape(b2Fixture*);

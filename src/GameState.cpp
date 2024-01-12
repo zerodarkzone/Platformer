@@ -323,25 +323,14 @@ void GameState::createScene()
 				}
 				else
 				{
-					std::vector<glm::vec2> points;
-					for (auto i = 0u; i <info.pointsCount; ++i)
-					{
-						points.emplace_back(info.points[i].x, info.points[i].y);
-					}
-					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points, false);
+					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, info.points, false);
 				}
 			}
 			break;
 		case ShapeType::Polygon:
 		{
-			std::vector<glm::vec2> points;
-			auto firstPoint = info.points[0];
-			for (auto i = 0u; i <info.pointsCount; ++i)
-			{
-				points.emplace_back(info.points[i].x, info.points[i].y);
-			}
 			fixture = mapBody.addPolygonShape(
-					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points);
+					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, info.points);
 		}
 			break;
 		}
