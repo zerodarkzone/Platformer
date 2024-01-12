@@ -1,4 +1,4 @@
-CROGINE Project Template
+Box2D Platformer Test
 ------------------------
 
-Use this to start a new Crogine project by creating a copy of the directory and editing the project name in the cmake file.
+Test game created with Box2d and the Crogine game framework.
