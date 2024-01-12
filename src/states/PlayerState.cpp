@@ -2,8 +2,8 @@
 // Created by juanb on 10/1/2024.
 //
 #include "PlayerState.hpp"
-#include "PlayerSystem.hpp"
-#include "InputFlags.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "directors/InputFlags.hpp"
 
 void PlayerState::handleInput(cro::Entity& entity, std::uint8_t input)
 {

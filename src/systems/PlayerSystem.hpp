@@ -15,7 +15,7 @@
 #include <box2d/b2_world_callbacks.h>
 
 #include "ShapeUserInfo.hpp"
-#include "PlayerStateIDs.hpp"
+#include "states/PlayerStateIDs.hpp"
 #include "states/PlayerState.hpp"
 
 

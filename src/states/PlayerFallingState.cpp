@@ -3,8 +3,8 @@
 //
 
 #include "PlayerFallingState.hpp"
-#include "PlayerSystem.hpp"
-#include "PhysicsSystem.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
 
 void PlayerFallingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {

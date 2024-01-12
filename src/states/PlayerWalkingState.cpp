@@ -3,9 +3,9 @@
 //
 
 #include "PlayerWalkingState.hpp"
-#include "PlayerSystem.hpp"
-#include "InputFlags.hpp"
-#include "PhysicsSystem.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "directors/InputFlags.hpp"
+#include "systems/PhysicsSystem.hpp"
 
 void PlayerWalkingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {

@@ -5,7 +5,7 @@
 #ifndef PHYSICS_TEST_PLAYERSTATEIDS_HPP
 #define PHYSICS_TEST_PLAYERSTATEIDS_HPP
 
-#include "FSMSystem.hpp"
+#include "systems/FSMSystem.hpp"
 
 namespace PlayerStateID
 {

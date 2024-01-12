@@ -6,10 +6,10 @@
 
 #include "PlayerDirector.hpp"
 #include "ResourceIDs.hpp"
-#include "PlayerSystem.hpp"
-#include "PhysicsSystem.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
 #include "Messages.hpp"
-#include "AnimationController.hpp"
+#include "systems/AnimationController.hpp"
 #include "InputFlags.hpp"
 
 PlayerDirector::PlayerDirector() : m_currentInput(0)

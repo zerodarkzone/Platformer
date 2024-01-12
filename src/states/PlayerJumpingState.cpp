@@ -3,9 +3,9 @@
 //
 
 #include "PlayerJumpingState.hpp"
-#include "PlayerSystem.hpp"
-#include "PhysicsSystem.hpp"
-#include "AnimationController.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
+#include "systems/AnimationController.hpp"
 
 void PlayerJumpingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {

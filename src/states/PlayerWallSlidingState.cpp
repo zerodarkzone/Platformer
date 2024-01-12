@@ -3,9 +3,9 @@
 //
 
 #include "PlayerWallSlidingState.hpp"
-#include "PlayerSystem.hpp"
-#include "PhysicsSystem.hpp"
-#include "InputFlags.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
+#include "directors/InputFlags.hpp"
 
 void PlayerWallSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
