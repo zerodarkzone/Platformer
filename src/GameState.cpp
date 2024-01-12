@@ -36,6 +36,13 @@ source distribution.
 #include "PlayerSystem.hpp"
 #include "PlayerDirector.hpp"
 #include "MapSystem.hpp"
+#include "FSMSystem.hpp"
+#include "states/PlayerIdleState.hpp"
+#include "states/PlayerWalkingState.hpp"
+#include "states/PlayerFallingState.hpp"
+#include "states/PlayerJumpingState.hpp"
+#include "states/PlayerWallSlidingState.hpp"
+#include "states/PlayerSlidingState.hpp"
 
 #include <crogine/gui/Gui.hpp>
 
@@ -176,6 +183,7 @@ void GameState::addSystems()
 	auto& mb = getContext().appInstance.getMessageBus();
 
 	auto playerSystem = m_gameScene.addSystem<PlayerSystem>(mb);
+	auto fsmSystem = m_gameScene.addSystem<FiniteStateMachineSystem>(mb);
 	m_gameScene.addSystem<AnimationControllerSystem>(mb);
 	m_gameScene.addSystem<BackgroundSystem>(mb);
 
@@ -207,8 +215,9 @@ void GameState::addSystems()
 			{
 				playerSystem->postSolve(contact, impulse);
 			});
-	m_physicsSystem->setFixedUpdateCallback(typeid(PlayerSystem), [playerSystem](float dt)
+	m_physicsSystem->setFixedUpdateCallback(typeid(PlayerSystem), [playerSystem, fsmSystem](float dt)
 	{
+		fsmSystem->fixedUpdate(dt);
 		playerSystem->fixedUpdate(dt);
 	});
 
@@ -391,6 +400,14 @@ void GameState::createScene()
 	player.getComponent<cro::Drawable2D>().setFacing(cro::Drawable2D::Facing::Front);
 	player.addComponent<ActorInfo>({ ActorID::Player });
 	player.addComponent<Player>();
+	auto& fsm = player.addComponent<FiniteStateMachine>();
+	fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle);
+	fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking);
+	fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling);
+	fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping);
+	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding);
+	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding);
+	fsm.changeState(PlayerStateID::State::Idle, player);
 	player.addComponent<cro::CommandTarget>().ID = CommandID::Player;
 	auto& playerSprite = player.addComponent<cro::Sprite>();
 	playerSprite = m_sprites[SpriteID::Player];

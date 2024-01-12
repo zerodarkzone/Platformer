@@ -14,19 +14,14 @@ namespace cro
 	class Entity;
 }
 
-class PlayerState
+class PlayerState : public BaseState
 {
 public:
-	virtual void handleInput(cro::Entity& entity, std::uint8_t input);
-	virtual void update(cro::Entity& entity, float dt) = 0;
-	virtual void onEnter(cro::Entity& entity) = 0;
-	virtual void onExit(cro::Entity& entity) = 0;
-	[[nodiscard]] virtual PlayerStateID::State getStateID() const { return m_id; }
-
-	virtual ~PlayerState() = default;
+	void handleInput(cro::Entity& entity, std::uint8_t input) override;
+	~PlayerState() override = default;
+	explicit PlayerState(FSM::State_t id) : BaseState(id) {}
 protected:
 	float m_desiredSpeed = 0.f;
-	PlayerStateID::State m_id = PlayerStateID::State::None;
 };
 
 #endif //PHYSICS_TEST_STATE_HPP

@@ -11,9 +11,10 @@ void PlayerFallingState::handleInput(cro::Entity& entity, std::uint8_t input)
 	PlayerState::handleInput(entity, input);
 }
 
-void PlayerFallingState::update(cro::Entity& entity, float dt)
+void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 {
 	auto& player = entity.getComponent<Player>();
+	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 	auto& physics = entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	auto vel = body.GetLinearVelocity();
@@ -23,16 +24,16 @@ void PlayerFallingState::update(cro::Entity& entity, float dt)
 		if (!((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
 			  (player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1)))
 		{
-			player.changeState(Player::State::WallSliding);
+			stateMachine.changeState(PlayerStateID::State::WallSliding, entity);
 			return;
 		}
 	}
 	if ((vel.y >= 0 && player.getContactNum(SensorType::Feet) > 0) || player.getContactNum(SensorType::Feet, FixtureType::Slope) > 0)
 	{
 		if (m_desiredSpeed != 0)
-			player.changeState(Player::State::Walking);
+			stateMachine.changeState(PlayerStateID::State::Walking, entity);
 		else
-			player.changeState(Player::State::Idle);
+			stateMachine.changeState(PlayerStateID::State::Idle, entity);
 		return;
 	}
 

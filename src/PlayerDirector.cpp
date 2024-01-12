@@ -112,11 +112,12 @@ void PlayerDirector::process(float)
 	cmd.action = [input, this](cro::Entity entity, float)
 	{
 		auto& player = entity.getComponent<Player>();
-		if (player.statePtr)
+		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
+		if (stateMachine.getSize() != 0)
 		{
-			player.statePtr->handleInput(entity, input);
+			stateMachine.getCurrentState()->handleInput(entity, input);
 			auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
-			if (player.statePtr->getStateID() == PlayerStateID::State::Sliding && vel.x == 0)
+			if (stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Sliding && vel.x == 0)
 			{
 				m_currentInput &= ~InputFlag::Down;
 			}

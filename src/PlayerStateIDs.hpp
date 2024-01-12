@@ -4,12 +4,14 @@
 
 #ifndef PHYSICS_TEST_PLAYERSTATEIDS_HPP
 #define PHYSICS_TEST_PLAYERSTATEIDS_HPP
+
+#include "FSMSystem.hpp"
+
 namespace PlayerStateID
 {
-	enum class State
+	enum State: std::uint8_t
 	{
-		None,
-		Idle,
+		Idle = FSM::State::Count,
 		Walking,
 		Jumping,
 		Falling,

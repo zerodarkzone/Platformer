@@ -12,6 +12,7 @@ set(PROJECT_SRC
         ${PROJECT_DIR}/AnimationController.cpp
         ${PROJECT_DIR}/MapSystem.cpp
         ${PROJECT_DIR}/BackGroundSystem.cpp
+        ${PROJECT_DIR}/FSMSystem.cpp
         ${PROJECT_DIR}/states/PlayerState.cpp
         ${PROJECT_DIR}/states/PlayerIdleState.cpp
         ${PROJECT_DIR}/states/PlayerWalkingState.cpp

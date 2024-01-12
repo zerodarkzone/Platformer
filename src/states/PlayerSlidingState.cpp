@@ -11,22 +11,24 @@
 void PlayerSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
 	PlayerState::handleInput(entity, input);auto& player = entity.getComponent<Player>();
+	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0)
 	{
-		player.changeState(Player::State::Jumping);
+		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}
 }
 
-void PlayerSlidingState::update(cro::Entity& entity, float dt)
+void PlayerSlidingState::fixedUpdate(cro::Entity& entity, float dt)
 {
 	auto& player = entity.getComponent<Player>();
+	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 	auto& physics = entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	auto vel = body.GetLinearVelocity();
 
 	if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
 	{
-		player.changeState(Player::State::Falling);
+		stateMachine.changeState(PlayerStateID::State::Falling, entity);
 		return;
 	}
 
@@ -43,7 +45,16 @@ void PlayerSlidingState::update(cro::Entity& entity, float dt)
 	}
 	else
 	{
-		m_desiredSpeed = vel.x - (vel.x * dt * 0.1f);
+		if (checkStand(entity))
+		{
+			m_desiredSpeed = vel.x - (vel.x * dt * 0.1f);
+		}
+		else
+		{
+			if (m_constSpeed == 0.f)
+				m_constSpeed = vel.x;
+			m_desiredSpeed = m_constSpeed;
+		}
 	}
 
 	if (player.getContactNum(SensorType::Feet) > 0)
@@ -55,9 +66,10 @@ void PlayerSlidingState::update(cro::Entity& entity, float dt)
 
 	if (player.getContactNum(SensorType::Feet) > 0)
 	{
-		if (m_desiredSpeed == 0 && (player.state == Player::State::Sliding))
+		if (m_desiredSpeed == 0 && (stateMachine.getCurrentStateID() == PlayerStateID::State::Sliding))
 		{
-			player.changeState(Player::State::Idle);
+			if (checkStand(entity))
+				stateMachine.changeState(PlayerStateID::State::Idle, entity);
 		}
 	}
 }
@@ -104,53 +116,6 @@ void PlayerSlidingState::onExit(cro::Entity& entity)
 {
 	auto &player = entity.getComponent<Player>();
 	auto& playerBody = entity.getComponent<PhysicsObject>();
-	auto body = playerBody.getPhysicsBody();
-	auto world = body->GetWorld();
-	auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
-	auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
-			{RayCastFlag::Middle, { body->GetPosition().x, body->GetPosition().y }},
-			{RayCastFlag::Right, { body->GetPosition().x + hw, body->GetPosition().y }},
-			{RayCastFlag::Left, { body->GetPosition().x - hw, body->GetPosition().y }},
-	};
-	RayCastFlag_t rayCastFlags = RayCastFlag::None;
-	for (auto& [f, p]: raycastPoints)
-	{
-		PlayerRayCastCallback callback(f);
-		world->RayCast(&callback, p, {p.x, p.y + 0.5f});
-		if (callback.m_fixture)
-		{
-			rayCastFlags |= callback.m_flag;
-		}
-	}
-	if (rayCastFlags != RayCastFlag::None)
-	{
-		cro::Logger::log("raycast hit");
-		float desiredSpeed = 0.f;
-		if ((rayCastFlags & RayCastFlag::Left) == 0)
-		{
-			desiredSpeed = -2.f;
-		}
-		else if ((rayCastFlags & RayCastFlag::Right) == 0)
-		{
-			desiredSpeed = 2.f;
-		}
-		else
-		{
-			if (player.facing == Player::Facing::Left)
-			{
-				desiredSpeed = -1.f;
-			}
-			else
-			{
-				desiredSpeed = 1.f;
-			}
-		}
-		float velChange = desiredSpeed - body->GetLinearVelocity().x;
-		float impulse = body->GetMass() * velChange;
-		body->ApplyLinearImpulseToCenter({ impulse, 0 }, true);
-		player.nextState = getStateID();
-		return;
-	}
 
 	cro::Logger::log("PlayerSlidingState Exit");
 	playerBody.removeShape(player.mainFixture);
@@ -182,4 +147,34 @@ void PlayerSlidingState::onExit(cro::Entity& entity)
 	player.rightSensorFixture = newRightSensorFixture;
 	if (!player.rightSensorContacts.empty())
 		player.rightSensorContacts.clear();
+}
+
+bool PlayerSlidingState::checkStand(cro::Entity& entity)
+{
+	auto &player = entity.getComponent<Player>();
+	auto& playerBody = entity.getComponent<PhysicsObject>();
+	auto body = playerBody.getPhysicsBody();
+	auto world = body->GetWorld();
+	auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
+	auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
+			{RayCastFlag::Middle, { body->GetPosition().x, body->GetPosition().y }},
+			{RayCastFlag::Right, { body->GetPosition().x + hw, body->GetPosition().y }},
+			{RayCastFlag::Left, { body->GetPosition().x - hw, body->GetPosition().y }},
+	};
+	RayCastFlag_t rayCastFlags = RayCastFlag::None;
+	for (auto& [f, p]: raycastPoints)
+	{
+		PlayerRayCastCallback callback(f);
+		world->RayCast(&callback, p, {p.x, p.y + 0.5f});
+		if (callback.m_fixture)
+		{
+			rayCastFlags |= callback.m_flag;
+		}
+	}
+	if (rayCastFlags != RayCastFlag::None)
+	{
+		cro::Logger::log("raycast hit");
+		return false;
+	}
+	return true;
 }

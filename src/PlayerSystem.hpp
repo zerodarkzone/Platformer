@@ -21,8 +21,6 @@
 
 struct Player
 {
-	typedef PlayerStateID::State State;
-
 	Player() = default;
 	Player(const Player&) = delete;
 	const Player& operator=(const Player&) = delete;
@@ -53,18 +51,12 @@ struct Player
 
 	constexpr static float maxSpeed = 6.f;
 	std::uint16_t maxConsecutiveWallJumps = 3u;
-	State state = State::None;
-	State prevState = State::None;
-	State nextState = State::Idle;
 	Facing facing = Facing::Right;
 	std::uint16_t numWallJumps = 0;
 	std::unordered_multiset<b2Fixture*> feetContacts;
 	std::unordered_multiset<b2Fixture*> leftSensorContacts;
 	std::unordered_multiset<b2Fixture*> rightSensorContacts;
 
-	std::unique_ptr<PlayerState> statePtr = nullptr;
-
-	void changeState(State newState);
 	std::uint16_t getContactNum(SensorType sensor = SensorType::Feet, FixtureType type = FixtureType::Count) const;
 	std::uint16_t getSlopeContactsNum() const;
 };
@@ -88,8 +80,6 @@ public:
 	void preSolve(b2Contact* contact, const b2Manifold* oldManifold);
 
 	void postSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-
-	void changeState(cro::Entity entity);
 };
 
 

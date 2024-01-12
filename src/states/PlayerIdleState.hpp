@@ -12,14 +12,16 @@ class PlayerIdleState : public PlayerState
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
 
-	void update(cro::Entity& entity, float dt) override;
+	void update(cro::Entity& entity, float dt) override {}
+
+	void fixedUpdate(cro::Entity& entity, float dt) override;
 
 	void onEnter(cro::Entity& entity) override;
 
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerIdleState() override = default;
-	PlayerIdleState() {m_id = PlayerStateID::State::Idle;}
+	PlayerIdleState(): PlayerState(PlayerStateID::State::Idle) {}
 };
 
 

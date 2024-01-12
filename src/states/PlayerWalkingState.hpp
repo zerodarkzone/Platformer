@@ -12,14 +12,16 @@ class PlayerWalkingState : public PlayerState
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
 
-	void update(cro::Entity& entity, float dt) override;
+	void update(cro::Entity& entity, float dt) override {}
+
+	void fixedUpdate(cro::Entity& entity, float dt) override;
 
 	void onEnter(cro::Entity& entity) override;
 
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerWalkingState() override = default;
-	PlayerWalkingState() {m_id = PlayerStateID::State::Walking;}
+	PlayerWalkingState(): PlayerState(PlayerStateID::State::Walking) {}
 };
 
 

@@ -14,16 +14,23 @@ class PlayerSlidingState : public PlayerState
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
 
-	void update(cro::Entity& entity, float dt) override;
+	void update(cro::Entity& entity, float dt) override {}
+
+	void fixedUpdate(cro::Entity& entity, float dt) override;
 
 	void onEnter(cro::Entity& entity) override;
 
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerSlidingState() override = default;
-	PlayerSlidingState() {m_id = PlayerStateID::State::Sliding;}
+	PlayerSlidingState() : PlayerState(PlayerStateID::State::Sliding) {}
 private:
 	typedef std::uint8_t RayCastFlag_t;
+
+	static bool checkStand(cro::Entity& entity) ;
+
+	float m_constSpeed = 0.f;
+
 	enum RayCastFlag: RayCastFlag_t
 	{
 		Left = 0x1,
