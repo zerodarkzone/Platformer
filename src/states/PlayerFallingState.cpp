@@ -28,7 +28,8 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 			return;
 		}
 	}
-	if ((vel.y >= 0 && player.getContactNum(SensorType::Feet) > 0) || player.getContactNum(SensorType::Feet, FixtureType::Slope) > 0)
+	if ((vel.y >= 0 && player.getContactNum(SensorType::Feet) > 0) ||
+		player.getContactNum(SensorType::Feet, FixtureType::Slope) > 0)
 	{
 		if (m_desiredSpeed != 0)
 			stateMachine.changeState(PlayerStateID::State::Walking, entity);
@@ -37,7 +38,8 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 		return;
 	}
 
-	if ((player.facing == Player::Facing::Left && vel.x < -0.5) || (player.facing == Player::Facing::Right && vel.x > 0.5))
+	if ((player.facing == Player::Facing::Left && vel.x < -0.5) ||
+		(player.facing == Player::Facing::Right && vel.x > 0.5))
 	{
 		m_desiredSpeed = 0;
 	}

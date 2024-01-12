@@ -13,7 +13,9 @@ class PlayerFallingState : public PlayerState
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
 
-	void update(cro::Entity& entity, float dt) override {}
+	void update(cro::Entity& entity, float dt) override
+	{
+	}
 
 	void fixedUpdate(cro::Entity& entity, float dt) override;
 
@@ -22,7 +24,10 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerFallingState() override = default;
-	PlayerFallingState() : PlayerState(PlayerStateID::State::Falling) {}
+
+	PlayerFallingState() : PlayerState(PlayerStateID::State::Falling)
+	{
+	}
 };
 
 

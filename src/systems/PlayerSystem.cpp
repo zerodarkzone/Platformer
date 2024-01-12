@@ -33,6 +33,8 @@ void PlayerSystem::process(float dt)
 	for (auto& entity: getEntities())
 	{
 		auto& player = entity.getComponent<Player>();
+		auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
+		auto vel = body->GetLinearVelocity();
 		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 		auto& transform = entity.getComponent<cro::Transform>();
 		//update animation state
@@ -73,18 +75,6 @@ void PlayerSystem::process(float dt)
 				{ stateMachine.getCurrentStateID() == PlayerStateID::State::Walking || stateMachine.getCurrentStateID() == PlayerStateID::State::Idle ? 8.f : 11.f,
 				  transform.getOrigin().y });
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
-	}
-}
-
-void PlayerSystem::fixedUpdate(float dt)
-{
-	for (auto& entity: getEntities())
-	{
-		auto& player = entity.getComponent<Player>();
-		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-		auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
-		auto vel = body->GetLinearVelocity();
-
 
 		cro::Console::printStat("Player Velocity x", std::to_string(vel.x));
 		cro::Console::printStat("Player Velocity y", std::to_string(vel.y));
@@ -100,6 +90,10 @@ void PlayerSystem::fixedUpdate(float dt)
 		cro::Console::printStat("Wall Sliding ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::WallSliding));
 		cro::Console::printStat("Idle ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::Idle));
 	}
+}
+
+void PlayerSystem::fixedUpdate(float dt)
+{
 }
 
 void PlayerSystem::beginContact(b2Contact* contact)

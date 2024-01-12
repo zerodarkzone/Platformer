@@ -12,7 +12,9 @@ class PlayerJumpingState : public PlayerState
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
 
-	void update(cro::Entity& entity, float dt) override {}
+	void update(cro::Entity& entity, float dt) override
+	{
+	}
 
 	void fixedUpdate(cro::Entity& entity, float dt) override;
 
@@ -21,7 +23,10 @@ public:
 	void onExit(cro::Entity& entity) override;
 
 	~PlayerJumpingState() override = default;
-	PlayerJumpingState() : PlayerState(PlayerStateID::State::Jumping) {}
+
+	PlayerJumpingState() : PlayerState(PlayerStateID::State::Jumping)
+	{
+	}
 
 private:
 	bool m_jumped = false;

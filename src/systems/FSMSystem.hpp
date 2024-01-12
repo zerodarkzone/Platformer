@@ -68,7 +68,7 @@ public:
 	void clearStates();
 	void changeState(FSM::State_t id, cro::Entity& entity);
 	[[nodiscard]] BaseState* getCurrentState() const { return isEmpty() ? nullptr : m_states.top().get(); }
-	[[nodiscard]] FSM::State_t getCurrentStateID() const { return getCurrentState() == nullptr ? FSM::State::None : getCurrentState()->getStateID(); }
+	[[nodiscard]] FSM::State_t getCurrentStateID() const { return getCurrentState() == nullptr ? static_cast<FSM::State_t>(FSM::State::None) : getCurrentState()->getStateID(); }
 	[[nodiscard]] FSM::State_t getPrevStateID() const { return m_prevState; }
 	[[nodiscard]] bool isEmpty() const { return m_states.empty(); }
 	[[nodiscard]] std::size_t getSize() const { return m_states.size(); }

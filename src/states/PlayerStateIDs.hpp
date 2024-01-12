@@ -9,7 +9,7 @@
 
 namespace PlayerStateID
 {
-	enum State: std::uint8_t
+	enum State : std::uint8_t
 	{
 		Idle = FSM::State::Count,
 		Walking,

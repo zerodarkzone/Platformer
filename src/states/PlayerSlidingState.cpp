@@ -10,9 +10,10 @@
 
 void PlayerSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
-	PlayerState::handleInput(entity, input);auto& player = entity.getComponent<Player>();
+	PlayerState::handleInput(entity, input);
+	auto& player = entity.getComponent<Player>();
 	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0)
+	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0 && checkStand(entity))
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}
@@ -78,7 +79,7 @@ void PlayerSlidingState::onEnter(cro::Entity& entity)
 {
 	cro::Logger::log("PlayerSlidingState Enter");
 
-	auto &player = entity.getComponent<Player>();
+	auto& player = entity.getComponent<Player>();
 	auto& playerBody = entity.getComponent<PhysicsObject>();
 
 	playerBody.removeShape(player.mainFixture);
@@ -114,10 +115,12 @@ void PlayerSlidingState::onEnter(cro::Entity& entity)
 
 void PlayerSlidingState::onExit(cro::Entity& entity)
 {
-	auto &player = entity.getComponent<Player>();
+	auto& player = entity.getComponent<Player>();
 	auto& playerBody = entity.getComponent<PhysicsObject>();
 
+#if CRO_DEBUG_
 	cro::Logger::log("PlayerSlidingState Exit");
+#endif
 	playerBody.removeShape(player.mainFixture);
 	auto newMainFixture = playerBody.addBoxShape(
 			{ .restitution=player.collisionShapeInfo.restitution, .density=player.collisionShapeInfo.density, .friction=player.collisionShapeInfo.friction },
@@ -151,21 +154,21 @@ void PlayerSlidingState::onExit(cro::Entity& entity)
 
 bool PlayerSlidingState::checkStand(cro::Entity& entity)
 {
-	auto &player = entity.getComponent<Player>();
+	auto& player = entity.getComponent<Player>();
 	auto& playerBody = entity.getComponent<PhysicsObject>();
 	auto body = playerBody.getPhysicsBody();
 	auto world = body->GetWorld();
 	auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
 	auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
-			{RayCastFlag::Middle, { body->GetPosition().x, body->GetPosition().y }},
-			{RayCastFlag::Right, { body->GetPosition().x + hw, body->GetPosition().y }},
-			{RayCastFlag::Left, { body->GetPosition().x - hw, body->GetPosition().y }},
+			{ RayCastFlag::Middle, { body->GetPosition().x,      body->GetPosition().y }},
+			{ RayCastFlag::Right,  { body->GetPosition().x + hw, body->GetPosition().y }},
+			{ RayCastFlag::Left,   { body->GetPosition().x - hw, body->GetPosition().y }},
 	};
 	RayCastFlag_t rayCastFlags = RayCastFlag::None;
 	for (auto& [f, p]: raycastPoints)
 	{
 		PlayerRayCastCallback callback(f);
-		world->RayCast(&callback, p, {p.x, p.y + 0.5f});
+		world->RayCast(&callback, p, { p.x, p.y + 0.5f });
 		if (callback.m_fixture)
 		{
 			rayCastFlags |= callback.m_flag;

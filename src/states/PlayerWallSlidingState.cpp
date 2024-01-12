@@ -12,7 +12,8 @@ void PlayerWallSlidingState::handleInput(cro::Entity& entity, std::uint8_t input
 	auto& player = entity.getComponent<Player>();
 	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 	if ((input & InputFlag::Space) &&
-		(player.getContactNum(SensorType::Left) > 0 || player.getContactNum(SensorType::Right) > 0) && player.numWallJumps < player.maxConsecutiveWallJumps)
+		(player.getContactNum(SensorType::Left) > 0 || player.getContactNum(SensorType::Right) > 0) &&
+		player.numWallJumps < player.maxConsecutiveWallJumps)
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}

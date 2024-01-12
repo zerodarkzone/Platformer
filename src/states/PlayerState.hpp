@@ -18,8 +18,13 @@ class PlayerState : public BaseState
 {
 public:
 	void handleInput(cro::Entity& entity, std::uint8_t input) override;
+
 	~PlayerState() override = default;
-	explicit PlayerState(FSM::State_t id) : BaseState(id) {}
+
+	explicit PlayerState(FSM::State_t id) : BaseState(id)
+	{
+	}
+
 protected:
 	float m_desiredSpeed = 0.f;
 };
