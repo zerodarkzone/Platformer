@@ -39,16 +39,12 @@ void AnimationControllerSystem::process(float dt)
 		drawable.setFacing(controller.direction > 0.f ? cro::Drawable2D::Facing::Front : cro::Drawable2D::Facing::Back);
 		auto position = xForm.getPosition();
 
-		/*if (controller.currAnimation != AnimationID::Count
+		if (controller.currAnimation != AnimationID::Count
 			&& !entity.getComponent<cro::SpriteAnimation>().playing
 			&& !m_animationStopped[static_cast<std::size_t>(actor.id)])
 		{
-			m_animationStopped[controller.currAnimation] = true;
-			auto msg = postMessage<AnimationCompleteEvent>(MessageID::AnimationCompleteMessage);
-			msg->animationID = controller.currAnimation;
-			msg->entity = entity;
 			m_animationStopped[static_cast<std::size_t>(actor.id)] = true;
-		}*/
+		}
 
 		//if overriding anim such as shooting is playing
 		//check to see if it has stopped
@@ -66,7 +62,6 @@ void AnimationControllerSystem::process(float dt)
 
 				controller.currAnimation = controller.prevAnimation;
 				sprAnim.play(static_cast<std::int32_t>(controller.animationMap[controller.currAnimation]));
-				entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
 				m_animationStopped[static_cast<std::size_t>(actor.id)] = false;
 			}
 		}

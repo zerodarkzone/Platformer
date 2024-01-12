@@ -88,8 +88,6 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 	case cro::Message::SpriteAnimationMessage:
 	{
 		auto& animEvent = msg.getData<cro::Message::SpriteAnimationEvent>();
-		cro::Logger::log(std::to_string(animEvent.entity.getIndex()));
-		cro::Logger::log(std::to_string(animEvent.userType));
 		if (animEvent.userType == FrameMessageID::PrepareJumpEnded)
 		{
 			cro::Command cmd;

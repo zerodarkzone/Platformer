@@ -10,7 +10,6 @@
 void PlayerJumpingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
 	PlayerState::handleInput(entity, input);
-	auto& player = entity.getComponent<Player>();
 }
 
 void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
@@ -35,6 +34,11 @@ void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
 		}
 		return;
 	}
+	if (m_jumped && player.getContactNum(SensorType::Feet) > 0 && vel.y <= 0)
+	{
+		stateMachine.changeState(PlayerStateID::State::Falling, entity);
+		return;
+	}
 
 	if (!m_jumped)
 	{
@@ -50,13 +54,13 @@ void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
 		if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
 			player.getContactNum(SensorType::Left) > 0)
 		{
-			body.ApplyLinearImpulseToCenter({ body.GetMass() * player.speed, 0 }, true);
+			m_desiredSpeed = player.speed;
 			player.facing = Player::Facing::Right;
 		}
 		else if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
 				 player.getContactNum(SensorType::Right) > 0)
 		{
-			body.ApplyLinearImpulseToCenter({ -body.GetMass() * player.speed, 0 }, true);
+			m_desiredSpeed = -player.speed;
 			player.facing = Player::Facing::Left;
 		}
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;

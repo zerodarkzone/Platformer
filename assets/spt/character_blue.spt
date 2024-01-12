@@ -108,7 +108,7 @@ sprite_sheet character_blue
 			frame = 218,178,18,34
 			frame = 116,115,20,29
 
-			framerate = 15
+			framerate = 10
 			event = 1,1
 			loop = false
 		}
