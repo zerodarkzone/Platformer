@@ -15,40 +15,24 @@
 #include <box2d/b2_world_callbacks.h>
 
 #include "ShapeUserInfo.hpp"
+#include "states/PlayerStateIDs.hpp"
+#include "states/PlayerState.hpp"
 
 
 struct Player
 {
-	enum class State
-	{
-		Idle,
-		Walking,
-		PrepareJump,
-		Jumping,
-		Falling,
-		Sliding,
-		WallSliding,
-		Count
-	};
+	Player() = default;
+	Player(const Player&) = delete;
+	const Player& operator=(const Player&) = delete;
+	Player(Player&&) = default;
+	Player& operator=(Player&&) = default;
+
 	enum class Facing
 	{
 		Left,
 		Right
 	};
-	bool jump = false;
-	State state = State::Idle;
-	State prevState = State::Idle;
-	State nextState = State::Idle;
-	float speed = 3.f;
-	float desiredSpeed = 0.f;
-	float gravityScale = 2.1f;
-	float jumpForce = 7.f;
-	constexpr static std::uint16_t maxConsecutiveWallJumps = 3u;
-	Facing facing = Facing::Right;
-	std::unordered_multiset<b2Fixture*> feetContacts;
-	std::unordered_multiset<b2Fixture*> leftSensorContacts;
-	std::unordered_multiset<b2Fixture*> rightSensorContacts;
-	std::uint16_t numWallJumps = 0;
+
 	b2Fixture* mainFixture = nullptr;
 	b2Fixture* leftSensorFixture = nullptr;
 	b2Fixture* rightSensorFixture = nullptr;
@@ -58,8 +42,21 @@ struct Player
 	ShapeInfo slideCollisionShapeInfo;
 	ShapeInfo slideRightSensorShapeInfo;
 	ShapeInfo slideLeftSensorShapeInfo;
+	float speed = 3.f;
+	float jumpForce = 7.f;
+	float fallGravityScale = 2.1f;
+	float wallSlideGravityScale = 0.3f;
+	float normalGravityScale = 1.f;
+	float minSlideSpeed = 2.5f;
 
-	void changeState(State newState);
+	constexpr static float maxSpeed = 6.f;
+	std::uint16_t maxConsecutiveWallJumps = 3u;
+	Facing facing = Facing::Right;
+	std::uint16_t numWallJumps = 0;
+	std::unordered_multiset<b2Fixture*> feetContacts;
+	std::unordered_multiset<b2Fixture*> leftSensorContacts;
+	std::unordered_multiset<b2Fixture*> rightSensorContacts;
+
 	std::uint16_t getContactNum(SensorType sensor = SensorType::Feet, FixtureType type = FixtureType::Count) const;
 	std::uint16_t getSlopeContactsNum() const;
 };
@@ -83,35 +80,6 @@ public:
 	void preSolve(b2Contact* contact, const b2Manifold* oldManifold);
 
 	void postSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-
-	void changeState(cro::Entity entity);
-private:
-	class PlayerRayCastCallback : public b2RayCastCallback
-	{
-	public:
-		explicit PlayerRayCastCallback(std::uint8_t flag = 0)
-			: m_flag(flag)
-		{
-			m_fixture = nullptr;
-			m_fraction = 1.f;
-		}
-
-		float ReportFixture(b2Fixture* fixture, const b2Vec2& point,
-				const b2Vec2& normal, float fraction) override
-		{
-			m_fixture = fixture;
-			m_point = point;
-			m_normal = normal;
-			m_fraction = fraction;
-			return 0.f;
-		}
-
-		b2Fixture* m_fixture;
-		b2Vec2 m_point;
-		b2Vec2 m_normal;
-		float m_fraction;
-		std::uint8_t m_flag;
-	};
 };
 
 

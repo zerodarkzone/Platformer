@@ -4,13 +4,21 @@ set(PROJECT_SRC
         ${PROJECT_DIR}/LoadingScreen.cpp
         ${PROJECT_DIR}/main.cpp
         ${PROJECT_DIR}/MenuState.cpp
-        ${PROJECT_DIR}/PhysicsSystem.cpp
-        ${PROJECT_DIR}/PhysicsObject.cpp
-        ${PROJECT_DIR}/DebugDraw.cpp
-        ${PROJECT_DIR}/PlayerDirector.cpp
-        ${PROJECT_DIR}/PlayerSystem.cpp
-        ${PROJECT_DIR}/AnimationController.cpp
-        ${PROJECT_DIR}/MapSystem.cpp
-        ${PROJECT_DIR}/BackGroundSystem.cpp
+        ${PROJECT_DIR}/directors/PlayerDirector.cpp
+        ${PROJECT_DIR}/systems/PhysicsSystem.cpp
+        ${PROJECT_DIR}/systems/PhysicsObject.cpp
+        ${PROJECT_DIR}/systems/DebugDraw.cpp
+        ${PROJECT_DIR}/systems/PlayerSystem.cpp
+        ${PROJECT_DIR}/systems/AnimationController.cpp
+        ${PROJECT_DIR}/systems/MapSystem.cpp
+        ${PROJECT_DIR}/systems/BackGroundSystem.cpp
+        ${PROJECT_DIR}/systems/FSMSystem.cpp
+        ${PROJECT_DIR}/states/PlayerState.cpp
+        ${PROJECT_DIR}/states/PlayerIdleState.cpp
+        ${PROJECT_DIR}/states/PlayerWalkingState.cpp
+        ${PROJECT_DIR}/states/PlayerFallingState.cpp
+        ${PROJECT_DIR}/states/PlayerJumpingState.cpp
+        ${PROJECT_DIR}/states/PlayerWallSlidingState.cpp
+        ${PROJECT_DIR}/states/PlayerSlidingState.cpp
         ${PROJECT_DIR}/MyApp.cpp
 )

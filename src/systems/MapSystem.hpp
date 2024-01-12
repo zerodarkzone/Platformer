@@ -14,7 +14,7 @@
 #include <tmxlite/Map.hpp>
 
 #include "ShapeUserInfo.hpp"
-#include "BackgroundSystem.hpp"
+#include "systems/BackgroundSystem.hpp"
 
 struct MapData
 {

@@ -3,8 +3,8 @@
 
 #include "StateIDs.hpp"
 #include "ResourceIDs.hpp"
-#include "AnimationController.hpp"
-#include "MapSystem.hpp"
+#include "systems/AnimationController.hpp"
+#include "systems/MapSystem.hpp"
 
 #include <crogine/core/State.hpp>
 #include <crogine/ecs/Scene.hpp>

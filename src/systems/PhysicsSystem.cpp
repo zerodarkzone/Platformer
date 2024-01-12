@@ -8,7 +8,7 @@
 #include "PhysicsSystem.hpp"
 #include "Messages.hpp"
 
-#include <Utils.hpp>
+#include "Utils.hpp"
 #include <crogine/ecs/components/Camera.hpp>
 #include <crogine/ecs/systems/RenderSystem2D.hpp>
 

@@ -29,13 +29,20 @@ source distribution.
 #define USE_SHAPE_USER_INFO
 
 #include "GameState.hpp"
-#include "PhysicsSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
 #include "Messages.hpp"
 #include "Utils.hpp"
 #include "Actors.hpp"
-#include "PlayerSystem.hpp"
-#include "PlayerDirector.hpp"
-#include "MapSystem.hpp"
+#include "systems/PlayerSystem.hpp"
+#include "directors/PlayerDirector.hpp"
+#include "systems/MapSystem.hpp"
+#include "systems/FSMSystem.hpp"
+#include "states/PlayerIdleState.hpp"
+#include "states/PlayerWalkingState.hpp"
+#include "states/PlayerFallingState.hpp"
+#include "states/PlayerJumpingState.hpp"
+#include "states/PlayerWallSlidingState.hpp"
+#include "states/PlayerSlidingState.hpp"
 
 #include <crogine/gui/Gui.hpp>
 
@@ -176,6 +183,7 @@ void GameState::addSystems()
 	auto& mb = getContext().appInstance.getMessageBus();
 
 	auto playerSystem = m_gameScene.addSystem<PlayerSystem>(mb);
+	auto fsmSystem = m_gameScene.addSystem<FiniteStateMachineSystem>(mb);
 	m_gameScene.addSystem<AnimationControllerSystem>(mb);
 	m_gameScene.addSystem<BackgroundSystem>(mb);
 
@@ -207,8 +215,9 @@ void GameState::addSystems()
 			{
 				playerSystem->postSolve(contact, impulse);
 			});
-	m_physicsSystem->setFixedUpdateCallback(typeid(PlayerSystem), [playerSystem](float dt)
+	m_physicsSystem->setFixedUpdateCallback(typeid(PlayerSystem), [playerSystem, fsmSystem](float dt)
 	{
+		fsmSystem->fixedUpdate(dt);
 		playerSystem->fixedUpdate(dt);
 	});
 
@@ -303,36 +312,20 @@ void GameState::createScene()
 			{
 				if (info.ghost && info.pointsCount >= 4)
 				{
-					std::vector<glm::vec2> points;
 					auto ghostVert1 = info.points[0];
 					auto ghostVert2 = info.points[info.pointsCount - 1];
-					for (auto i = 1; i < info.pointsCount - 1; ++i)
-					{
-						points.emplace_back(info.points[i].x, info.points[i].y);
-					}
-					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points, false, ghostVert1, ghostVert2);
+					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, {info.points.data() + 1, static_cast<std::size_t>(info.pointsCount - 2)}, false, ghostVert1, ghostVert2);
 				}
 				else
 				{
-					std::vector<glm::vec2> points;
-					for (auto i = 0u; i <info.pointsCount; ++i)
-					{
-						points.emplace_back(info.points[i].x, info.points[i].y);
-					}
-					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points, false);
+					fixture = mapBody.addChainShape({ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, {info.points.data(), info.pointsCount}, false);
 				}
 			}
 			break;
 		case ShapeType::Polygon:
 		{
-			std::vector<glm::vec2> points;
-			auto firstPoint = info.points[0];
-			for (auto i = 0u; i <info.pointsCount; ++i)
-			{
-				points.emplace_back(info.points[i].x, info.points[i].y);
-			}
 			fixture = mapBody.addPolygonShape(
-					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, points);
+					{ .restitution=info.restitution, .density=info.density, .isSensor=info.type == FixtureType::Sensor, .friction=info.friction }, {info.points.data(), info.pointsCount});
 		}
 			break;
 		}
@@ -391,6 +384,14 @@ void GameState::createScene()
 	player.getComponent<cro::Drawable2D>().setFacing(cro::Drawable2D::Facing::Front);
 	player.addComponent<ActorInfo>({ ActorID::Player });
 	player.addComponent<Player>();
+	auto& fsm = player.addComponent<FiniteStateMachine>();
+	fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle);
+	fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking);
+	fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling);
+	fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping);
+	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding);
+	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding);
+	fsm.changeState(PlayerStateID::State::Idle, player);
 	player.addComponent<cro::CommandTarget>().ID = CommandID::Player;
 	auto& playerSprite = player.addComponent<cro::Sprite>();
 	playerSprite = m_sprites[SpriteID::Player];

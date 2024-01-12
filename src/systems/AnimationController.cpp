@@ -43,10 +43,6 @@ void AnimationControllerSystem::process(float dt)
 			&& !entity.getComponent<cro::SpriteAnimation>().playing
 			&& !m_animationStopped[static_cast<std::size_t>(actor.id)])
 		{
-			m_animationStopped[controller.currAnimation] = true;
-			auto msg = postMessage<AnimationCompleteEvent>(MessageID::AnimationCompleteMessage);
-			msg->animationID = controller.currAnimation;
-			msg->entity = entity;
 			m_animationStopped[static_cast<std::size_t>(actor.id)] = true;
 		}
 
@@ -66,7 +62,6 @@ void AnimationControllerSystem::process(float dt)
 
 				controller.currAnimation = controller.prevAnimation;
 				sprAnim.play(static_cast<std::int32_t>(controller.animationMap[controller.currAnimation]));
-				entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
 				m_animationStopped[static_cast<std::size_t>(actor.id)] = false;
 			}
 		}
@@ -83,9 +78,10 @@ void AnimationControllerSystem::process(float dt)
 			msg->entity = entity;
 
 			controller.prevAnimation = controller.currAnimation = controller.nextAnimation;
+			entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
+			entity.getComponent<cro::SpriteAnimation>().stop();
 			entity.getComponent<cro::SpriteAnimation>().play(
 					static_cast<std::int32_t>(controller.animationMap[controller.currAnimation]));
-			entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
 			m_animationStopped[static_cast<std::size_t>(actor.id)] = false;
 		}
 	}
