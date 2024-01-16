@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.26)
 SET(PROJECT_NAME Physics_Test)
 project(${PROJECT_NAME})
 
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/")
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wreorder -DCRO_DEBUG_")
@@ -14,10 +15,16 @@ SET (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 SET (OpenGL_GL_PREFERENCE "GLVND")
 
-set(CROGINE_INCLUDE_DIR E:\\xygine\\crogine\\install\\include)
-link_directories(E:\\xygine\\crogine\\install\\lib)
-set(TMXLITE_INCLUDE_DIR D:\\tmxlite\\tmxlite\\include)
-link_directories(D:\\tmxlite\\tmxlite\\lib)
+#set(CROGINE_INCLUDE_DIR E:\\xygine\\crogine\\install\\include)
+#link_directories(E:\\xygine\\crogine\\install\\lib)
+#set(TMXLITE_INCLUDE_DIR D:\\tmxlite\\tmxlite\\include)
+#link_directories(D:\\tmxlite\\tmxlite\\lib)
+
+find_package(CROGINE REQUIRED)
+find_package(TMXLITE REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(Box2D REQUIRED)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   set(CROGINE_LIBRARIES crogine-d)
@@ -26,10 +33,6 @@ else()
   set(CROGINE_LIBRARIES crogine)
   set(TMXLITE_LIBRARIES tmxlite)
 endif ()
-
-find_package(SDL2 REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(Box2D REQUIRED)
 
 include_directories(
         ${CROGINE_INCLUDE_DIR}
@@ -49,4 +52,4 @@ target_link_libraries(${PROJECT_NAME}
         ${TMXLITE_LIBRARIES}
         ${SDL2_LIBRARIES}
         ${OPENGL_LIBRARIES}
-        box2d fmt)
+        box2d)

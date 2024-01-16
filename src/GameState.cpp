@@ -62,8 +62,6 @@ source distribution.
 
 #include <tmxlite/Map.hpp>
 
-#include <fmt/core.h>
-
 namespace InputFlag
 {
 	typedef std::uint8_t InputFlag_t;
