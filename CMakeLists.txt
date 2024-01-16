@@ -15,11 +15,6 @@ SET (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 SET (OpenGL_GL_PREFERENCE "GLVND")
 
-#set(CROGINE_INCLUDE_DIR E:\\xygine\\crogine\\install\\include)
-#link_directories(E:\\xygine\\crogine\\install\\lib)
-#set(TMXLITE_INCLUDE_DIR D:\\tmxlite\\tmxlite\\include)
-#link_directories(D:\\tmxlite\\tmxlite\\lib)
-
 find_package(CROGINE REQUIRED)
 find_package(TMXLITE REQUIRED)
 find_package(SDL2 REQUIRED)

@@ -101,7 +101,6 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
 						std::vector<std::uint8_t>(static_cast<std::size_t>(tileSize.x * tileSize.y * 4)));
 
 				std::size_t i = 0;
-				cro::Texture* currTexture = nullptr;
 				for (; i < tilesets.size(); ++i)
 				{
 					if (tiles[idx].ID >= tilesets[i].getFirstGID() && tiles[idx].ID <= tilesets[i].getLastGID())
@@ -116,14 +115,9 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
 												(static_cast<float>(tileY) * tileSize.y) - tileSize.y }, tileSize
 						);
 						pixels.second = newPixels;
-
-						//and ref to the texture
-						currTexture = textures[i].get();
 						break;
 					}
 				}
-
-				CRO_ASSERT(currTexture, "Something went wrong loading texture!");
 
 				//find which vertex array they belong and add if not yet existing
 				vertexArrays.push_back(pixels);
