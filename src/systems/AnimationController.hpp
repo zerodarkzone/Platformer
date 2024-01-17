@@ -22,6 +22,7 @@ struct AnimationController final
 	AnimationID::Animation nextAnimation = AnimationID::Count;
 	float direction = 1.f;
 	bool pauseAnimation = false;
+	bool resetAnimation = true;
 };
 
 class AnimationControllerSystem final : public cro::System

@@ -6,6 +6,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
 #include "systems/PhysicsSystem.hpp"
+#include "systems/AnimationController.hpp"
 
 
 void PlayerIdleState::handleInput(cro::Entity& entity, std::uint8_t input)
@@ -22,7 +23,7 @@ void PlayerIdleState::handleInput(cro::Entity& entity, std::uint8_t input)
 		player.facing = Player::Facing::Right;
 		stateMachine.changeState(PlayerStateID::State::Walking, entity);
 	}
-	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0)
+	if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0)
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}
@@ -54,6 +55,17 @@ void PlayerIdleState::fixedUpdate(cro::Entity& entity, float dt)
 void PlayerIdleState::onEnter(cro::Entity& entity)
 {
 	cro::Logger::log("PlayerIdleState Enter");
+	auto& animController = entity.getComponent<AnimationController>();
+	if (entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Sliding)
+	{
+		animController.nextAnimation = AnimationID::EndSlide;
+	}
+	else
+	{
+		animController.nextAnimation = AnimationID::Idle;
+	}
+	animController.resetAnimation = true;
+
 	auto& player = entity.getComponent<Player>();
 	player.numWallJumps = 0;
 }

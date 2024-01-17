@@ -78,8 +78,11 @@ void AnimationControllerSystem::process(float dt)
 			msg->entity = entity;
 
 			controller.prevAnimation = controller.currAnimation = controller.nextAnimation;
-			entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
-			entity.getComponent<cro::SpriteAnimation>().stop();
+			if (controller.resetAnimation)
+			{
+				entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
+				entity.getComponent<cro::SpriteAnimation>().stop();
+			}
 			entity.getComponent<cro::SpriteAnimation>().play(
 					static_cast<std::int32_t>(controller.animationMap[controller.currAnimation]));
 			m_animationStopped[static_cast<std::size_t>(actor.id)] = false;

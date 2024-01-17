@@ -62,21 +62,6 @@ source distribution.
 
 #include <tmxlite/Map.hpp>
 
-namespace InputFlag
-{
-	typedef std::uint8_t InputFlag_t;
-	enum : InputFlag_t
-	{
-		Up = 0x1,
-		Down = 0x2,
-		Left = 0x4,
-		Right = 0x8,
-		Space = 0x10,
-		StateChanged = (1 << 7),
-		Stop = 0
-	};
-}
-
 namespace
 {
 	const glm::vec2 CAMERA_SIZE(382, 215);
@@ -382,6 +367,11 @@ void GameState::createScene()
 	player.getComponent<cro::Drawable2D>().setFacing(cro::Drawable2D::Facing::Front);
 	player.addComponent<ActorInfo>({ ActorID::Player });
 	player.addComponent<Player>();
+	auto& playerSprite = player.addComponent<cro::Sprite>();
+	playerSprite = m_sprites[SpriteID::Player];
+	player.addComponent<cro::SpriteAnimation>();
+	player.addComponent<AnimationController>() = m_animationControllers[SpriteID::Player];
+	player.getComponent<AnimationController>().nextAnimation = AnimationID::Idle;
 	auto& fsm = player.addComponent<FiniteStateMachine>();
 	fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle);
 	fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking);
@@ -391,11 +381,6 @@ void GameState::createScene()
 	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding);
 	fsm.changeState(PlayerStateID::State::Idle, player);
 	player.addComponent<cro::CommandTarget>().ID = CommandID::Player;
-	auto& playerSprite = player.addComponent<cro::Sprite>();
-	playerSprite = m_sprites[SpriteID::Player];
-	player.addComponent<cro::SpriteAnimation>();
-	player.addComponent<AnimationController>() = m_animationControllers[SpriteID::Player];
-	player.getComponent<AnimationController>().nextAnimation = AnimationID::Idle;
 	auto& playerTransform = player.addComponent<cro::Transform>();
 	playerTransform.setOrigin({ 8.f, playerSprite.getSize().y / 2.0f });
 	playerTransform.setScale({ 1.f, 1.f });

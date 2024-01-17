@@ -25,7 +25,9 @@ namespace FrameMessageID
 	enum
 	{
 		PrepareJumpStarted = 0,
-		PrepareJumpEnded = 1
+		PrepareJumpEnded = 1,
+		SlidingStartEnded = 2,
+		SlidingEndEnded = 3,
 	};
 }
 

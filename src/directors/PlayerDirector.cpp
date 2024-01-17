@@ -9,7 +9,6 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "Messages.hpp"
-#include "systems/AnimationController.hpp"
 #include "InputFlags.hpp"
 
 PlayerDirector::PlayerDirector() : m_currentInput(0)
@@ -46,7 +45,7 @@ void PlayerDirector::handleEvent(const cro::Event& evt)
 			m_currentInput |= InputFlag::Down;
 			break;
 		case SDLK_SPACE:
-			m_currentInput |= InputFlag::Space;
+			m_currentInput |= InputFlag::Jump;
 			break;
 		}
 		//m_currentInput |= StateChanged;
@@ -73,10 +72,30 @@ void PlayerDirector::handleEvent(const cro::Event& evt)
 			m_currentInput &= ~InputFlag::Down;
 			break;
 		case SDLK_SPACE:
-			m_currentInput &= ~InputFlag::Space;
+			m_currentInput &= ~InputFlag::Jump;
 			break;
 		}
 		//m_currentInput |= StateChanged;
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		switch (evt.button.button)
+		{
+		default:
+			break;
+		case SDL_BUTTON_LEFT:
+			m_currentInput |= InputFlag::Attack;
+			break;
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		switch (evt.button.button)
+		{
+		default:
+			break;
+		case SDL_BUTTON_LEFT:
+			m_currentInput &= ~InputFlag::Attack;
+			break;
+		}
 		break;
 	}
 }
@@ -85,22 +104,8 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 {
 	switch (msg.id)
 	{
-	case cro::Message::SpriteAnimationMessage:
-	{
-		auto& animEvent = msg.getData<cro::Message::SpriteAnimationEvent>();
-		if (animEvent.userType == FrameMessageID::PrepareJumpEnded)
-		{
-			cro::Command cmd;
-			cmd.targetFlags = CommandID::Player;
-			cmd.action = [](cro::Entity entity, float)
-			{
-				auto& animController = entity.getComponent<AnimationController>();
-				animController.nextAnimation = AnimationID::Jump;
-			};
-			sendCommand(cmd);
-		}
+	default:
 		break;
-	}
 	}
 }
 
@@ -111,7 +116,6 @@ void PlayerDirector::process(float)
 	auto input = m_currentInput;
 	cmd.action = [input, this](cro::Entity entity, float)
 	{
-		auto& player = entity.getComponent<Player>();
 		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 		if (stateMachine.getSize() != 0)
 		{
@@ -124,8 +128,8 @@ void PlayerDirector::process(float)
 		}
 	};
 	sendCommand(cmd);
-	if (m_currentInput & InputFlag::Space)
+	if (m_currentInput & InputFlag::Jump)
 	{
-		m_currentInput &= ~InputFlag::Space;
+		m_currentInput &= ~InputFlag::Jump;
 	}
 }

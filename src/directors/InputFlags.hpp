@@ -16,7 +16,8 @@ namespace InputFlag
 		Down = 0x2,
 		Left = 0x4,
 		Right = 0x8,
-		Space = 0x10,
+		Jump = 0x10,
+		Attack = 0x20,
 		StateChanged = (1 << 7),
 		Stop = 0
 	};

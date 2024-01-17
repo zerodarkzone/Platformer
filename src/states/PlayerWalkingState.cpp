@@ -13,7 +13,7 @@ void PlayerWalkingState::handleInput(cro::Entity& entity, std::uint8_t input)
 	auto& player = entity.getComponent<Player>();
 	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 	auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
-	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0)
+	if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0)
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}

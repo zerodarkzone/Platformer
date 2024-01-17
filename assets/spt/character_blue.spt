@@ -105,8 +105,8 @@ sprite_sheet character_blue
 
 		animation jump_preparation
 		{
+		    frame = 116,115,20,29
 			frame = 218,178,18,34
-			frame = 116,115,20,29
 
 			framerate = 10
 			event = 1,1
@@ -202,6 +202,7 @@ sprite_sheet character_blue
 			frame = 135,57,18,29
 
 			framerate = 10
+			event = 3,1
 			loop = false
 		}
 
@@ -212,6 +213,7 @@ sprite_sheet character_blue
 			frame = 27,161,24,28
 
 			framerate = 10
+			event = 2,2
 			loop = false
 		}
 

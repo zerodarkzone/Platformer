@@ -85,6 +85,7 @@ void PlayerJumpingState::onEnter(cro::Entity& entity)
 	cro::Logger::log("PlayerJumpingState Enter");
 	auto& animController = entity.getComponent<AnimationController>();
 	animController.nextAnimation = AnimationID::PrepareJump;
+	animController.resetAnimation = true;
 
 	m_desiredSpeed = 0.f;
 	m_jumped = false;

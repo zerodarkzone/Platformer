@@ -13,6 +13,7 @@
 #include "Actors.hpp"
 #include "Utils.hpp"
 #include "AnimationController.hpp"
+#include "Messages.hpp"
 
 PlayerSystem::PlayerSystem(cro::MessageBus& mb) : cro::System(mb, typeid(PlayerSystem))
 {
@@ -26,6 +27,35 @@ PlayerSystem::PlayerSystem(cro::MessageBus& mb) : cro::System(mb, typeid(PlayerS
 
 void PlayerSystem::handleMessage(const cro::Message& msg)
 {
+	switch (msg.id)
+	{
+	case cro::Message::SpriteAnimationMessage:
+	{
+		auto& animEvent = msg.getData<cro::Message::SpriteAnimationEvent>();
+		if (animEvent.userType == FrameMessageID::PrepareJumpEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& animController = entity.getComponent<AnimationController>();
+			animController.nextAnimation = AnimationID::Jump;
+			animController.resetAnimation = true;
+		}
+		else if (animEvent.userType == FrameMessageID::SlidingStartEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& animController = entity.getComponent<AnimationController>();
+			animController.nextAnimation = AnimationID::Slide;
+			animController.resetAnimation = true;
+		}
+		else if (animEvent.userType == FrameMessageID::SlidingEndEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& animController = entity.getComponent<AnimationController>();
+			animController.nextAnimation = AnimationID::Idle;
+			animController.resetAnimation = true;
+		}
+		break;
+	}
+	}
 }
 
 void PlayerSystem::process(float dt)
@@ -41,7 +71,6 @@ void PlayerSystem::process(float dt)
 		auto& animController = entity.getComponent<AnimationController>();
 		if (stateMachine.getCurrentStateID() == PlayerStateID::State::Idle)
 		{
-			animController.nextAnimation = AnimationID::Idle;
 			if (animController.prevAnimation == AnimationID::WallSlide)
 			{
 				player.facing = player.facing == Player::Facing::Right ? Player::Facing::Left : Player::Facing::Right;
@@ -57,10 +86,6 @@ void PlayerSystem::process(float dt)
 			{
 				animController.nextAnimation = AnimationID::Run;
 			}
-		}
-		else if (stateMachine.getCurrentStateID() == PlayerStateID::State::Sliding)
-		{
-			animController.nextAnimation = AnimationID::Slide;
 		}
 		else if (stateMachine.getCurrentStateID() == PlayerStateID::State::Falling)
 		{

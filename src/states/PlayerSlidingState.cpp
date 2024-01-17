@@ -6,6 +6,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
 #include "systems/PhysicsSystem.hpp"
+#include "systems/AnimationController.hpp"
 
 
 void PlayerSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
@@ -13,7 +14,7 @@ void PlayerSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
 	PlayerState::handleInput(entity, input);
 	auto& player = entity.getComponent<Player>();
 	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	if ((input & InputFlag::Space) && player.getContactNum(SensorType::Feet) > 0 && checkStand(entity))
+	if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0 && checkStand(entity))
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
 	}
@@ -78,6 +79,9 @@ void PlayerSlidingState::fixedUpdate(cro::Entity& entity, float dt)
 void PlayerSlidingState::onEnter(cro::Entity& entity)
 {
 	cro::Logger::log("PlayerSlidingState Enter");
+	auto& animController = entity.getComponent<AnimationController>();
+	animController.nextAnimation = AnimationID::StartSlide;
+	animController.resetAnimation = true;
 
 	auto& player = entity.getComponent<Player>();
 	auto& playerBody = entity.getComponent<PhysicsObject>();
