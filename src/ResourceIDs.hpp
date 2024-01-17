@@ -66,7 +66,7 @@ namespace CommandID
 {
 	enum
 	{
-		Player = 0x1,
+		Player1 = 0x1,
 		AI = 0x2,
 		Map = 0x4,
 	};

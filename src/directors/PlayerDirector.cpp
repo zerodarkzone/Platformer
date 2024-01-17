@@ -112,7 +112,7 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 void PlayerDirector::process(float)
 {
 	cro::Command cmd;
-	cmd.targetFlags = CommandID::Player;
+	cmd.targetFlags = CommandID::Player1;
 	auto input = m_currentInput;
 	cmd.action = [input, this](cro::Entity entity, float)
 	{

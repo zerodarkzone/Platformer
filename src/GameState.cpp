@@ -359,7 +359,7 @@ void GameState::createScene()
 	}
 
 
-	// Player
+	// Player1
 	auto player = m_gameScene.createEntity();
 	m_playerEntity = player;
 
@@ -380,7 +380,7 @@ void GameState::createScene()
 	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding);
 	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding);
 	fsm.changeState(PlayerStateID::State::Idle, player);
-	player.addComponent<cro::CommandTarget>().ID = CommandID::Player;
+	player.addComponent<cro::CommandTarget>().ID = CommandID::Player1;
 	auto& playerTransform = player.addComponent<cro::Transform>();
 	playerTransform.setOrigin({ 8.f, playerSprite.getSize().y / 2.0f });
 	playerTransform.setScale({ 1.f, 1.f });

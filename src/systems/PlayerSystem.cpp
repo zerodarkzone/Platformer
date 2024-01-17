@@ -101,8 +101,8 @@ void PlayerSystem::process(float dt)
 				  transform.getOrigin().y });
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
 
-		cro::Console::printStat("Player Velocity x", std::to_string(vel.x));
-		cro::Console::printStat("Player Velocity y", std::to_string(vel.y));
+		cro::Console::printStat("Player1 Velocity x", std::to_string(vel.x));
+		cro::Console::printStat("Player1 Velocity y", std::to_string(vel.y));
 		cro::Console::printStat("Foot Contacts ", std::to_string(player.getContactNum(SensorType::Feet)));
 		cro::Console::printStat("Wall Contacts ",
 				std::to_string(player.getContactNum(SensorType::Left) + player.getContactNum(SensorType::Right)));
