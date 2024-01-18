@@ -69,14 +69,7 @@ void PlayerSystem::process(float dt)
 		auto& transform = entity.getComponent<cro::Transform>();
 		//update animation state
 		auto& animController = entity.getComponent<AnimationController>();
-		if (stateMachine.getCurrentStateID() == PlayerStateID::State::Idle)
-		{
-			if (animController.prevAnimation == AnimationID::WallSlide)
-			{
-				player.facing = player.facing == Player::Facing::Right ? Player::Facing::Left : Player::Facing::Right;
-			}
-		}
-		else if (stateMachine.getCurrentStateID() == PlayerStateID::State::Walking)
+		if (stateMachine.getCurrentStateID() == PlayerStateID::State::Walking)
 		{
 			if (player.getContactNum(SensorType::Left, FixtureType::Wall) > 0 || player.getContactNum(SensorType::Right, FixtureType::Wall) > 0)
 			{
@@ -86,14 +79,6 @@ void PlayerSystem::process(float dt)
 			{
 				animController.nextAnimation = AnimationID::Run;
 			}
-		}
-		else if (stateMachine.getCurrentStateID() == PlayerStateID::State::Falling)
-		{
-			animController.nextAnimation = AnimationID::Fall;
-		}
-		else if (stateMachine.getCurrentStateID() == PlayerStateID::State::WallSliding)
-		{
-			animController.nextAnimation = AnimationID::WallSlide;
 		}
 
 		transform.setOrigin(

@@ -2,10 +2,12 @@
 // Created by juanb on 10/1/2024.
 //
 
+#include <crogine/ecs/components/SpriteAnimation.hpp>
 #include "PlayerWallSlidingState.hpp"
 #include "systems/PlayerSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "directors/InputFlags.hpp"
+#include "systems/AnimationController.hpp"
 
 void PlayerWallSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
@@ -48,6 +50,10 @@ void PlayerWallSlidingState::fixedUpdate(cro::Entity& entity, float dt)
 void PlayerWallSlidingState::onEnter(cro::Entity& entity)
 {
 	cro::Logger::log("PlayerWallSlidingState Enter");
+	auto& animController = entity.getComponent<AnimationController>();
+	animController.nextAnimation = AnimationID::WallSlide;
+	animController.resetAnimation = true;
+
 	auto& player = entity.getComponent<Player>();
 	auto& physics = entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
@@ -61,5 +67,6 @@ void PlayerWallSlidingState::onExit(cro::Entity& entity)
 	auto& physics = entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	body.SetGravityScale(player.normalGravityScale);
+	player.facing = (player.facing == Player::Facing::Right) ? Player::Facing::Left : Player::Facing::Right;
+	entity.getComponent<cro::SpriteAnimation>().currentFrameTime = 0.f;
 }
-

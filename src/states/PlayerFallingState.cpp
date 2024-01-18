@@ -5,6 +5,7 @@
 #include "PlayerFallingState.hpp"
 #include "systems/PlayerSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
+#include "systems/AnimationController.hpp"
 
 void PlayerFallingState::handleInput(cro::Entity& entity, std::uint8_t input)
 {
@@ -55,6 +56,10 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 void PlayerFallingState::onEnter(cro::Entity& entity)
 {
 	cro::Logger::log("PlayerFallingState Enter");
+	auto& animController = entity.getComponent<AnimationController>();
+	animController.nextAnimation = AnimationID::Fall;
+	animController.resetAnimation = true;
+
 	auto& player = entity.getComponent<Player>();
 	auto& physics = entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
