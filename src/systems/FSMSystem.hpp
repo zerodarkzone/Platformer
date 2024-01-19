@@ -53,9 +53,9 @@ public:
 	void registerState(FSM::StateID id, Args&&... args)
 	{
 		static_assert(std::is_base_of<BaseState, T>::value, "Must derive from State class");
-		m_factories[id] = [id, &args...]()
+		m_factories[id] = [id, ...args=std::forward<Args>(args)]()
 		{
-			return std::make_unique<T>(id, std::forward<Args>(args)...);
+			return std::make_unique<T>(id, std::forward<decltype(args)>(args)...);
 		};
 	}
 	void pushState(FSM::StateID id);
