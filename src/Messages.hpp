@@ -30,6 +30,7 @@ namespace FrameMessageID
 		SlidingEndEnded = 3,
 		AttackEnded = 4,
 		AttackComboEnded = 5,
+		LandingEnded = 6,
 	};
 }
 

@@ -43,6 +43,7 @@ source distribution.
 #include "states/PlayerJumpingState.hpp"
 #include "states/PlayerWallSlidingState.hpp"
 #include "states/PlayerSlidingState.hpp"
+#include "states/PlayerAttackState.hpp"
 
 #include <crogine/gui/Gui.hpp>
 
@@ -254,6 +255,8 @@ void GameState::loadAssets()
 			"sliding_end", "character");
 	m_animationControllers[SpriteID::Player].animationMap[AnimationID::WallSlide] = spriteSheet.getAnimationIndex(
 			"wall_sliding", "character");
+	m_animationControllers[SpriteID::Player].animationMap[AnimationID::Attack] = spriteSheet.getAnimationIndex("attack", "character");
+	m_animationControllers[SpriteID::Player].animationMap[AnimationID::AttackCombo] = spriteSheet.getAnimationIndex("attack_combo", "character");
 }
 
 void GameState::createScene()
@@ -379,6 +382,7 @@ void GameState::createScene()
 	fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping, player);
 	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding, player);
 	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding, player);
+	fsm.registerState<PlayerAttackState>(PlayerStateID::State::Attacking, player);
 	fsm.changeState(PlayerStateID::State::Idle);
 	player.addComponent<cro::CommandTarget>().ID = CommandID::Player1;
 	auto& playerTransform = player.addComponent<cro::Transform>();

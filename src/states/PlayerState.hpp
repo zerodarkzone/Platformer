@@ -21,6 +21,8 @@ public:
 
 	~PlayerState() override = default;
 
+	void update(float) override {}
+
 	PlayerState(FSM::StateID id, cro::Entity entity) : BaseState(id, entity)
 	{
 	}

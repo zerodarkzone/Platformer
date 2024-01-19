@@ -7,6 +7,7 @@
 #include <crogine/ecs/components/Transform.hpp>
 
 #include <set>
+#include <crogine/ecs/components/SpriteAnimation.hpp>
 
 #include "PlayerSystem.hpp"
 #include "PhysicsSystem.hpp"
@@ -50,8 +51,46 @@ void PlayerSystem::handleMessage(const cro::Message& msg)
 		{
 			auto entity = animEvent.entity;
 			auto& animController = entity.getComponent<AnimationController>();
-			animController.nextAnimation = AnimationID::Idle;
-			animController.resetAnimation = true;
+			auto& finiteStateMachine = entity.getComponent<FiniteStateMachine>();
+			if (finiteStateMachine.getCurrentStateID() == PlayerStateID::State::Idle)
+			{
+				animController.nextAnimation = AnimationID::Idle;
+				animController.resetAnimation = true;
+			}
+		}
+		else if (animEvent.userType == FrameMessageID::LandingEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& animController = entity.getComponent<AnimationController>();
+			auto& finiteStateMachine = entity.getComponent<FiniteStateMachine>();
+			if (finiteStateMachine.getCurrentStateID() == PlayerStateID::State::Idle)
+			{
+				animController.nextAnimation = AnimationID::Idle;
+				animController.resetAnimation = true;
+			}
+			else if (finiteStateMachine.getCurrentStateID() == PlayerStateID::State::Walking)
+			{
+				animController.nextAnimation = AnimationID::Run;
+				animController.resetAnimation = true;
+			}
+		}
+		else if (animEvent.userType == FrameMessageID::AttackComboEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& animController = entity.getComponent<AnimationController>();
+			auto& spriteAnim = entity.getComponent<cro::SpriteAnimation>();
+			spriteAnim.stop();
+			animController.currAnimation = AnimationID::Attack;
+			spriteAnim.play(static_cast<std::int32_t>(animController.animationMap[animController.currAnimation]));
+		}
+		else if (animEvent.userType == FrameMessageID::AttackEnded)
+		{
+			auto entity = animEvent.entity;
+			auto& stateMachine = entity.getComponent<FiniteStateMachine>();
+			if (stateMachine.getCurrentStateID() == PlayerStateID::State::Attacking)
+			{
+ 				stateMachine.popState();
+			}
 		}
 		break;
 	}
@@ -66,24 +105,8 @@ void PlayerSystem::process(float dt)
 		auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
 		auto vel = body->GetLinearVelocity();
 		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-		auto& transform = entity.getComponent<cro::Transform>();
-		//update animation state
 		auto& animController = entity.getComponent<AnimationController>();
-		if (stateMachine.getCurrentStateID() == PlayerStateID::State::Walking)
-		{
-			if (player.getContactNum(SensorType::Left, FixtureType::Wall) > 0 || player.getContactNum(SensorType::Right, FixtureType::Wall) > 0)
-			{
-				animController.nextAnimation = AnimationID::Idle;
-			}
-			else
-			{
-				animController.nextAnimation = AnimationID::Run;
-			}
-		}
 
-		//transform.setOrigin(
-		//		{ stateMachine.getCurrentStateID() == PlayerStateID::State::Walking || stateMachine.getCurrentStateID() == PlayerStateID::State::Idle ? 8.f : 11.f,
-		//		  transform.getOrigin().y });
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
 
 		cro::Console::printStat("Player1 Velocity x", std::to_string(vel.x));

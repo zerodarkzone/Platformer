@@ -6,6 +6,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
 #include "systems/PhysicsSystem.hpp"
+#include "systems/AnimationController.hpp"
 
 void PlayerWalkingState::handleInput(std::uint8_t input)
 {
@@ -26,6 +27,10 @@ void PlayerWalkingState::handleInput(std::uint8_t input)
 	{
 		stateMachine.changeState(PlayerStateID::State::Sliding);
 	}
+	else if (input & InputFlag::Attack)
+	{
+		stateMachine.pushState(PlayerStateID::State::Attacking);
+	}
 }
 
 void PlayerWalkingState::fixedUpdate(float dt)
@@ -42,6 +47,13 @@ void PlayerWalkingState::fixedUpdate(float dt)
 		return;
 	}
 
+	auto& animController = m_entity.getComponent<AnimationController>();
+	if ((player.getContactNum(SensorType::Left, FixtureType::Wall) > 0 && m_desiredSpeed < 0) ||
+			(player.getContactNum(SensorType::Right, FixtureType::Wall) > 0 && m_desiredSpeed > 0))
+	{
+		animController.nextAnimation = AnimationID::Idle;
+	}
+
 	if (player.getContactNum(SensorType::Feet) > 0)
 	{
 		float velChange = m_desiredSpeed - vel.x;
@@ -53,6 +65,16 @@ void PlayerWalkingState::fixedUpdate(float dt)
 void PlayerWalkingState::onEnter()
 {
 	cro::Logger::log("PlayerWalkingState Enter");
+	auto& animController = m_entity.getComponent<AnimationController>();
+	if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Falling)
+	{
+		animController.nextAnimation = AnimationID::Land;
+	}
+	else
+	{
+		animController.nextAnimation = AnimationID::Run;
+	}
+	animController.resetAnimation = true;
 }
 
 void PlayerWalkingState::onExit()

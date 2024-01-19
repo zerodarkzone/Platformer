@@ -92,6 +92,7 @@ namespace AnimationID
 		Walk,
 		Run,
 		Attack,
+		AttackCombo,
 		Die,
 		Dead,
 		PrepareJump,

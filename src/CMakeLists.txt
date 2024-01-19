@@ -20,5 +20,6 @@ set(PROJECT_SRC
         ${PROJECT_DIR}/states/PlayerJumpingState.cpp
         ${PROJECT_DIR}/states/PlayerWallSlidingState.cpp
         ${PROJECT_DIR}/states/PlayerSlidingState.cpp
+        ${PROJECT_DIR}/states/PlayerAttackState.cpp
         ${PROJECT_DIR}/MyApp.cpp
 )

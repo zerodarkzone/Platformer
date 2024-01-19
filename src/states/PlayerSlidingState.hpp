@@ -14,10 +14,6 @@ class PlayerSlidingState : public PlayerState
 public:
 	void handleInput(std::uint8_t input) override;
 
-	void update(float dt) override
-	{
-	}
-
 	void fixedUpdate(float dt) override;
 
 	void onEnter() override;
