@@ -7,18 +7,18 @@
 #include "systems/PhysicsSystem.hpp"
 #include "systems/AnimationController.hpp"
 
-void PlayerJumpingState::handleInput(cro::Entity& entity, std::uint8_t input)
+void PlayerJumpingState::handleInput(std::uint8_t input)
 {
-	PlayerState::handleInput(entity, input);
+	PlayerState::handleInput(input);
 }
 
-void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
+void PlayerJumpingState::fixedUpdate(float dt)
 {
-	auto& player = entity.getComponent<Player>();
-	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	auto& physics = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+	auto& physics = m_entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
-	auto& animController = entity.getComponent<AnimationController>();
+	auto& animController = m_entity.getComponent<AnimationController>();
 	auto vel = body.GetLinearVelocity();
 
 	if (m_jumped && player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
@@ -26,17 +26,17 @@ void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
 		if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
 			(player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1))
 		{
-			stateMachine.changeState(PlayerStateID::State::Falling, entity);
+			stateMachine.changeState(PlayerStateID::State::Falling);
 		}
 		else
 		{
-			stateMachine.changeState(PlayerStateID::State::WallSliding, entity);
+			stateMachine.changeState(PlayerStateID::State::WallSliding);
 		}
 		return;
 	}
 	if (m_jumped && player.getContactNum(SensorType::Feet) > 0 && vel.y <= 0)
 	{
-		stateMachine.changeState(PlayerStateID::State::Falling, entity);
+		stateMachine.changeState(PlayerStateID::State::Falling);
 		return;
 	}
 
@@ -80,10 +80,10 @@ void PlayerJumpingState::fixedUpdate(cro::Entity& entity, float dt)
 	}
 }
 
-void PlayerJumpingState::onEnter(cro::Entity& entity)
+void PlayerJumpingState::onEnter()
 {
 	cro::Logger::log("PlayerJumpingState Enter");
-	auto& animController = entity.getComponent<AnimationController>();
+	auto& animController = m_entity.getComponent<AnimationController>();
 	animController.nextAnimation = AnimationID::PrepareJump;
 	animController.resetAnimation = true;
 
@@ -91,7 +91,7 @@ void PlayerJumpingState::onEnter(cro::Entity& entity)
 	m_jumped = false;
 }
 
-void PlayerJumpingState::onExit(cro::Entity& entity)
+void PlayerJumpingState::onExit()
 {
 	cro::Logger::log("PlayerJumpingState Exit");
 }

@@ -7,16 +7,16 @@
 #include "systems/PhysicsSystem.hpp"
 #include "systems/AnimationController.hpp"
 
-void PlayerFallingState::handleInput(cro::Entity& entity, std::uint8_t input)
+void PlayerFallingState::handleInput(std::uint8_t input)
 {
-	PlayerState::handleInput(entity, input);
+	PlayerState::handleInput(input);
 }
 
-void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
+void PlayerFallingState::fixedUpdate(float dt)
 {
-	auto& player = entity.getComponent<Player>();
-	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	auto& physics = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+	auto& physics = m_entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	auto vel = body.GetLinearVelocity();
 
@@ -25,7 +25,7 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 		if (!((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
 			  (player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1)))
 		{
-			stateMachine.changeState(PlayerStateID::State::WallSliding, entity);
+			stateMachine.changeState(PlayerStateID::State::WallSliding);
 			return;
 		}
 	}
@@ -33,9 +33,9 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 		player.getContactNum(SensorType::Feet, FixtureType::Slope) > 0)
 	{
 		if (m_desiredSpeed != 0)
-			stateMachine.changeState(PlayerStateID::State::Walking, entity);
+			stateMachine.changeState(PlayerStateID::State::Walking);
 		else
-			stateMachine.changeState(PlayerStateID::State::Idle, entity);
+			stateMachine.changeState(PlayerStateID::State::Idle);
 		return;
 	}
 
@@ -53,25 +53,25 @@ void PlayerFallingState::fixedUpdate(cro::Entity& entity, float dt)
 	}
 }
 
-void PlayerFallingState::onEnter(cro::Entity& entity)
+void PlayerFallingState::onEnter()
 {
 	cro::Logger::log("PlayerFallingState Enter");
-	auto& animController = entity.getComponent<AnimationController>();
+	auto& animController = m_entity.getComponent<AnimationController>();
 	animController.nextAnimation = AnimationID::Fall;
 	animController.resetAnimation = true;
 
-	auto& player = entity.getComponent<Player>();
-	auto& physics = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& physics = m_entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	body.SetGravityScale(player.fallGravityScale);
 	m_desiredSpeed = 0.f;
 }
 
-void PlayerFallingState::onExit(cro::Entity& entity)
+void PlayerFallingState::onExit()
 {
 	cro::Logger::log("PlayerFallingState Exit");
-	auto& player = entity.getComponent<Player>();
-	auto& physics = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& physics = m_entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	body.SetGravityScale(player.normalGravityScale);
 }

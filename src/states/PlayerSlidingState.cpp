@@ -9,28 +9,28 @@
 #include "systems/AnimationController.hpp"
 
 
-void PlayerSlidingState::handleInput(cro::Entity& entity, std::uint8_t input)
+void PlayerSlidingState::handleInput(std::uint8_t input)
 {
-	PlayerState::handleInput(entity, input);
-	auto& player = entity.getComponent<Player>();
-	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0 && checkStand(entity))
+	PlayerState::handleInput(input);
+	auto& player = m_entity.getComponent<Player>();
+	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+	if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0 && checkStand())
 	{
-		stateMachine.changeState(PlayerStateID::State::Jumping, entity);
+		stateMachine.changeState(PlayerStateID::State::Jumping);
 	}
 }
 
-void PlayerSlidingState::fixedUpdate(cro::Entity& entity, float dt)
+void PlayerSlidingState::fixedUpdate(float dt)
 {
-	auto& player = entity.getComponent<Player>();
-	auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-	auto& physics = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+	auto& physics = m_entity.getComponent<PhysicsObject>();
 	auto& body = *physics.getPhysicsBody();
 	auto vel = body.GetLinearVelocity();
 
 	if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
 	{
-		stateMachine.changeState(PlayerStateID::State::Falling, entity);
+		stateMachine.changeState(PlayerStateID::State::Falling);
 		return;
 	}
 
@@ -47,9 +47,9 @@ void PlayerSlidingState::fixedUpdate(cro::Entity& entity, float dt)
 	}
 	else
 	{
-		if (checkStand(entity))
+		if (checkStand())
 		{
-			m_desiredSpeed = vel.x - (vel.x * dt * 0.1f);
+			m_desiredSpeed = vel.x - (vel.x * dt * 0.01f);
 		}
 		else
 		{
@@ -70,21 +70,21 @@ void PlayerSlidingState::fixedUpdate(cro::Entity& entity, float dt)
 	{
 		if (m_desiredSpeed == 0 && (stateMachine.getCurrentStateID() == PlayerStateID::State::Sliding))
 		{
-			if (checkStand(entity))
-				stateMachine.changeState(PlayerStateID::State::Idle, entity);
+			if (checkStand())
+				stateMachine.changeState(PlayerStateID::State::Idle);
 		}
 	}
 }
 
-void PlayerSlidingState::onEnter(cro::Entity& entity)
+void PlayerSlidingState::onEnter()
 {
 	cro::Logger::log("PlayerSlidingState Enter");
-	auto& animController = entity.getComponent<AnimationController>();
+	auto& animController = m_entity.getComponent<AnimationController>();
 	animController.nextAnimation = AnimationID::StartSlide;
 	animController.resetAnimation = true;
 
-	auto& player = entity.getComponent<Player>();
-	auto& playerBody = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& playerBody = m_entity.getComponent<PhysicsObject>();
 
 	playerBody.removeShape(player.mainFixture);
 	auto newMainFixture = playerBody.addBoxShape(
@@ -117,10 +117,10 @@ void PlayerSlidingState::onEnter(cro::Entity& entity)
 		player.rightSensorContacts.clear();
 }
 
-void PlayerSlidingState::onExit(cro::Entity& entity)
+void PlayerSlidingState::onExit()
 {
-	auto& player = entity.getComponent<Player>();
-	auto& playerBody = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& playerBody = m_entity.getComponent<PhysicsObject>();
 
 #if CRO_DEBUG_
 	cro::Logger::log("PlayerSlidingState Exit");
@@ -156,17 +156,18 @@ void PlayerSlidingState::onExit(cro::Entity& entity)
 		player.rightSensorContacts.clear();
 }
 
-bool PlayerSlidingState::checkStand(cro::Entity& entity)
+bool PlayerSlidingState::checkStand()
 {
-	auto& player = entity.getComponent<Player>();
-	auto& playerBody = entity.getComponent<PhysicsObject>();
+	auto& player = m_entity.getComponent<Player>();
+	auto& playerBody = m_entity.getComponent<PhysicsObject>();
 	auto body = playerBody.getPhysicsBody();
 	auto world = body->GetWorld();
 	auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
+	auto yOff = Convert::toPhysFloat(player.slideCollisionShapeInfo.offset.y);
 	auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
-			{ RayCastFlag::Middle, { body->GetPosition().x,      body->GetPosition().y }},
-			{ RayCastFlag::Right,  { body->GetPosition().x + hw, body->GetPosition().y }},
-			{ RayCastFlag::Left,   { body->GetPosition().x - hw, body->GetPosition().y }},
+			{ RayCastFlag::Middle, { body->GetPosition().x,      body->GetPosition().y + yOff}},
+			{ RayCastFlag::Right,  { body->GetPosition().x + hw, body->GetPosition().y + yOff}},
+			{ RayCastFlag::Left,   { body->GetPosition().x - hw, body->GetPosition().y + yOff}},
 	};
 	RayCastFlag_t rayCastFlags = RayCastFlag::None;
 	for (auto& [f, p]: raycastPoints)

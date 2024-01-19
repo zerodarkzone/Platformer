@@ -4,7 +4,7 @@
 
 #include "FSMSystem.hpp"
 
-void FiniteStateMachine::pushState(FSM::State_t id, cro::Entity& entity)
+void FiniteStateMachine::pushState(FSM::StateID id)
 {
 	if (m_factories.count(id) == 0)
 	{
@@ -15,11 +15,11 @@ void FiniteStateMachine::pushState(FSM::State_t id, cro::Entity& entity)
 		m_prevState = getCurrentStateID();
 	}
 	auto state = m_factories[id]();
-	state->onEnter(entity);
+	state->onEnter();
 	m_states.emplace(std::move(state));
 }
 
-std::unique_ptr<BaseState> FiniteStateMachine::popState(cro::Entity& entity)
+std::unique_ptr<BaseState> FiniteStateMachine::popState()
 {
 	if (m_states.empty())
 	{
@@ -28,7 +28,7 @@ std::unique_ptr<BaseState> FiniteStateMachine::popState(cro::Entity& entity)
 	m_prevState = getCurrentStateID();
 	auto state = std::move(m_states.top());
 	m_states.pop();
-	state->onExit(entity);
+	state->onExit();
 
 	return state;
 }
@@ -41,10 +41,10 @@ void FiniteStateMachine::clearStates()
 	}
 }
 
-void FiniteStateMachine::changeState(FSM::State_t id, cro::Entity& entity)
+void FiniteStateMachine::changeState(FSM::StateID id)
 {
-	popState(entity);
-	pushState(id, entity);
+	popState();
+	pushState(id);
 }
 
 FiniteStateMachineSystem::FiniteStateMachineSystem(cro::MessageBus& mb) : cro::System(mb, typeid(FiniteStateMachineSystem))
@@ -65,7 +65,7 @@ void FiniteStateMachineSystem::process(float dt)
 		auto& fsm = entity.getComponent<FiniteStateMachine>();
 		if (fsm.getCurrentState() != nullptr)
 		{
-			fsm.getCurrentState()->update(entity, dt);
+			fsm.getCurrentState()->update(dt);
 		}
 	}
 }
@@ -78,7 +78,7 @@ void FiniteStateMachineSystem::fixedUpdate(float dt)
 		auto& fsm = entity.getComponent<FiniteStateMachine>();
 		if (fsm.getCurrentState() != nullptr)
 		{
-			fsm.getCurrentState()->fixedUpdate(entity, dt);
+			fsm.getCurrentState()->fixedUpdate(dt);
 		}
 	}
 }

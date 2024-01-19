@@ -373,22 +373,22 @@ void GameState::createScene()
 	player.addComponent<AnimationController>() = m_animationControllers[SpriteID::Player];
 	player.getComponent<AnimationController>().nextAnimation = AnimationID::Idle;
 	auto& fsm = player.addComponent<FiniteStateMachine>();
-	fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle);
-	fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking);
-	fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling);
-	fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping);
-	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding);
-	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding);
-	fsm.changeState(PlayerStateID::State::Idle, player);
+	fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle, player);
+	fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking, player);
+	fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling, player);
+	fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping, player);
+	fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding, player);
+	fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding, player);
+	fsm.changeState(PlayerStateID::State::Idle);
 	player.addComponent<cro::CommandTarget>().ID = CommandID::Player1;
 	auto& playerTransform = player.addComponent<cro::Transform>();
-	playerTransform.setOrigin({ 8.f, playerSprite.getSize().y / 2.0f });
+	playerTransform.setOrigin({ playerSprite.getSize().x / 2.0f, playerSprite.getSize().y / 2.0f });
 	playerTransform.setScale({ 1.f, 1.f });
 	auto& playerBody = player.addComponent<PhysicsObject>();
-	playerBody = m_physicsSystem->createObject({ CAMERA_SIZE.x / 2, 100.0f }, 0, PhysicsObject::Type::Dynamic, true);
+	playerBody = m_physicsSystem->createObject({ CAMERA_SIZE.x / 2, 120.0f }, 0, PhysicsObject::Type::Dynamic, true);
 	playerBody.setDeleteShapeUserInfo(true);
 	// Add main fixture
-	auto shapeInfo = ShapeInfo(
+	auto mainShapeInfo = ShapeInfo(
 			{
 					FixtureType::Solid,
 					SensorType::None,
@@ -398,35 +398,34 @@ void GameState::createScene()
 					0.2f,
 					0.f,
 					1.0f,
-					{ 0.f, 0.f },
-					{ playerSprite.getSize().y * playerTransform.getScale().y * 0.5,
-					  playerSprite.getSize().y * playerTransform.getScale().y * 0.9 }
+					{ 0.f, -11 },
+					{ 18, 31 }
 			}
 	);
 	auto slideShapeInfo = ShapeInfo(
 			{
-					shapeInfo.type,
-					shapeInfo.sensor,
-					shapeInfo.platform,
-					shapeInfo.shape,
-					shapeInfo.slope,
-					shapeInfo.friction,
-					shapeInfo.restitution,
-					shapeInfo.density,
-					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
-					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+					mainShapeInfo.type,
+					mainShapeInfo.sensor,
+					mainShapeInfo.platform,
+					mainShapeInfo.shape,
+					mainShapeInfo.slope,
+					mainShapeInfo.friction,
+					mainShapeInfo.restitution,
+					mainShapeInfo.density,
+					{ mainShapeInfo.offset.x, mainShapeInfo.offset.y - mainShapeInfo.size.y * 0.25 },
+					{ mainShapeInfo.size.x, mainShapeInfo.size.y * 0.5 }
 			}
 	);
 	auto mainFixture = playerBody.addBoxShape(
-			{ .restitution=shapeInfo.restitution, .density=shapeInfo.density, .friction=shapeInfo.friction },
-			shapeInfo.size, shapeInfo.offset);
-	mainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(shapeInfo));
-	player.getComponent<Player>().collisionShapeInfo = shapeInfo;
+			{ .restitution=mainShapeInfo.restitution, .density=mainShapeInfo.density, .friction=mainShapeInfo.friction },
+			mainShapeInfo.size, mainShapeInfo.offset);
+	mainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(mainShapeInfo));
+	player.getComponent<Player>().collisionShapeInfo = mainShapeInfo;
 	player.getComponent<Player>().slideCollisionShapeInfo = slideShapeInfo;
 	player.getComponent<Player>().mainFixture = mainFixture;
 
 	// Add ground sensor fixture
-	shapeInfo = ShapeInfo(
+	auto groundShapeInfo = ShapeInfo(
 			{
 					FixtureType::Sensor,
 					SensorType::Feet,
@@ -436,17 +435,15 @@ void GameState::createScene()
 					0.0f,
 					0.0f,
 					0.0f,
-					{ 0, -(playerSprite.getSize().y) * playerTransform.getScale().y / 2.f },
-					{ playerSprite.getSize().y * playerTransform.getScale().y * 0.5, 8.0f }
+					{ 0, -playerSprite.getSize().y / 2.1f },
+					{ mainShapeInfo.size.x, 8.0f }
 			}
 	);
-	auto groundFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
-	groundFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(
-			{ FixtureType::Sensor, SensorType::Feet }));
-	//groundFixture->GetShape()->m_radius = 0.1f;
+	auto groundFixture = playerBody.addBoxShape({ .isSensor=true }, groundShapeInfo.size, groundShapeInfo.offset);
+	groundFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(groundShapeInfo));
 
 	// Add right sensor fixture
-	shapeInfo = ShapeInfo(
+	auto rightShapeInfo = ShapeInfo(
 			{
 					FixtureType::Sensor,
 					SensorType::Right,
@@ -456,32 +453,32 @@ void GameState::createScene()
 					0.0f,
 					0.0f,
 					0.0f,
-					{ playerSprite.getSize().x * playerTransform.getScale().x / 2.2f, 0 },
-					{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
+					{ mainShapeInfo.size.x / 2.1f, mainShapeInfo.offset.y },
+					{ 5.0f, mainShapeInfo.size.y * 0.9 }
 			}
 	);
 	slideShapeInfo = ShapeInfo(
 			{
-					shapeInfo.type,
-					shapeInfo.sensor,
-					shapeInfo.platform,
-					shapeInfo.shape,
-					shapeInfo.slope,
-					shapeInfo.friction,
-					shapeInfo.restitution,
-					shapeInfo.density,
-					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
-					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+					rightShapeInfo.type,
+					rightShapeInfo.sensor,
+					rightShapeInfo.platform,
+					rightShapeInfo.shape,
+					rightShapeInfo.slope,
+					rightShapeInfo.friction,
+					rightShapeInfo.restitution,
+					rightShapeInfo.density,
+					{ rightShapeInfo.offset.x, rightShapeInfo.offset.y - rightShapeInfo.size.y * 0.25 },
+					{ rightShapeInfo.size.x, rightShapeInfo.size.y * 0.5 }
 			}
 	);
-	auto rightFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
-	rightFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(shapeInfo));
-	player.getComponent<Player>().rightSensorShapeInfo = shapeInfo;
+	auto rightFixture = playerBody.addBoxShape({ .isSensor=true }, rightShapeInfo.size, rightShapeInfo.offset);
+	rightFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(rightShapeInfo));
+	player.getComponent<Player>().rightSensorShapeInfo = rightShapeInfo;
 	player.getComponent<Player>().slideRightSensorShapeInfo = slideShapeInfo;
 	player.getComponent<Player>().rightSensorFixture = rightFixture;
 
 	// Add left sensor fixture
-	shapeInfo = ShapeInfo(
+	auto leftShapeInfo = ShapeInfo(
 			{
 					FixtureType::Sensor,
 					SensorType::Left,
@@ -491,27 +488,27 @@ void GameState::createScene()
 					0.0f,
 					0.0f,
 					0.0f,
-					{ -(playerSprite.getSize().x) * playerTransform.getScale().x / 2.2f, 0 },
-					{ 5.0f, playerSprite.getSize().y * playerTransform.getScale().y * 0.8 }
+					{ -mainShapeInfo.size.x / 2.1f, mainShapeInfo.offset.y },
+					{ 5.0f, mainShapeInfo.size.y * 0.9 }
 			}
 	);
 	slideShapeInfo = ShapeInfo(
 			{
-					shapeInfo.type,
-					shapeInfo.sensor,
-					shapeInfo.platform,
-					shapeInfo.shape,
-					shapeInfo.slope,
-					shapeInfo.friction,
-					shapeInfo.restitution,
-					shapeInfo.density,
-					{ shapeInfo.offset.x, -shapeInfo.size.y * 0.25 },
-					{ shapeInfo.size.x, shapeInfo.size.y * 0.5 }
+					leftShapeInfo.type,
+					leftShapeInfo.sensor,
+					leftShapeInfo.platform,
+					leftShapeInfo.shape,
+					leftShapeInfo.slope,
+					leftShapeInfo.friction,
+					leftShapeInfo.restitution,
+					leftShapeInfo.density,
+					{ leftShapeInfo.offset.x, leftShapeInfo.offset.y - leftShapeInfo.size.y * 0.25 },
+					{ leftShapeInfo.size.x, leftShapeInfo.size.y * 0.5 }
 			}
 	);
-	auto leftFixture = playerBody.addBoxShape({ .isSensor=true }, shapeInfo.size, shapeInfo.offset);
-	leftFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(shapeInfo));
-	player.getComponent<Player>().leftSensorShapeInfo = shapeInfo;
+	auto leftFixture = playerBody.addBoxShape({ .isSensor=true }, leftShapeInfo.size, leftShapeInfo.offset);
+	leftFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(leftShapeInfo));
+	player.getComponent<Player>().leftSensorShapeInfo = leftShapeInfo;
 	player.getComponent<Player>().slideLeftSensorShapeInfo = slideShapeInfo;
 	player.getComponent<Player>().leftSensorFixture = leftFixture;
 

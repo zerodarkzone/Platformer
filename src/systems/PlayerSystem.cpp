@@ -81,9 +81,9 @@ void PlayerSystem::process(float dt)
 			}
 		}
 
-		transform.setOrigin(
-				{ stateMachine.getCurrentStateID() == PlayerStateID::State::Walking || stateMachine.getCurrentStateID() == PlayerStateID::State::Idle ? 8.f : 11.f,
-				  transform.getOrigin().y });
+		//transform.setOrigin(
+		//		{ stateMachine.getCurrentStateID() == PlayerStateID::State::Walking || stateMachine.getCurrentStateID() == PlayerStateID::State::Idle ? 8.f : 11.f,
+		//		  transform.getOrigin().y });
 		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
 
 		cro::Console::printStat("Player1 Velocity x", std::to_string(vel.x));

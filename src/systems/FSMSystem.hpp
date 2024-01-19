@@ -14,34 +14,30 @@
 
 namespace FSM
 {
-	typedef std::uint8_t State_t;
-	enum State: State_t
+	using StateID = std::int32_t;
+	enum State: StateID
 	{
 		None,
 		Count
 	};
 }
 
-namespace cro
-{
-	class Entity;
-}
-
 class BaseState
 {
 public:
-	virtual void handleInput(cro::Entity& entity, std::uint8_t input) = 0;
-	virtual void update(cro::Entity& entity, float dt) = 0;
-	virtual void fixedUpdate(cro::Entity& entity, float dt) = 0;
-	virtual void onEnter(cro::Entity& entity) = 0;
-	virtual void onExit(cro::Entity& entity) = 0;
-	[[nodiscard]] virtual FSM::State_t getStateID() const { return m_id; }
+	virtual void handleInput(std::uint8_t input) = 0;
+	virtual void update(float dt) = 0;
+	virtual void fixedUpdate(float dt) = 0;
+	virtual void onEnter() = 0;
+	virtual void onExit() = 0;
+	[[nodiscard]] virtual FSM::StateID getStateID() const { return m_id; }
 
 	virtual ~BaseState() = default;
-	explicit BaseState(FSM::State_t id) : m_id(id) {}
+	explicit BaseState(FSM::StateID id, cro::Entity entity) : m_id(id), m_entity(entity) {}
 	BaseState() = delete;
 protected:
-	FSM::State_t m_id = FSM::State::None;
+	FSM::StateID m_id = FSM::State::None;
+	cro::Entity m_entity;
 };
 
 class FiniteStateMachine
@@ -54,28 +50,28 @@ public:
 	FiniteStateMachine& operator=(FiniteStateMachine&&) = default;
 
 	template <typename T, typename... Args>
-	void registerState(FSM::State_t id, Args&&... args)
+	void registerState(FSM::StateID id, Args&&... args)
 	{
 		static_assert(std::is_base_of<BaseState, T>::value, "Must derive from State class");
-		m_factories[id] = [&args...]()
+		m_factories[id] = [id, &args...]()
 		{
-			return std::make_unique<T>(std::forward<Args>(args)...);
+			return std::make_unique<T>(id, std::forward<Args>(args)...);
 		};
 	}
-	void pushState(FSM::State_t id, cro::Entity& entity);
-	std::unique_ptr<BaseState> popState(cro::Entity& entity);
+	void pushState(FSM::StateID id);
+	std::unique_ptr<BaseState> popState();
 	void clearStates();
-	void changeState(FSM::State_t id, cro::Entity& entity);
+	void changeState(FSM::StateID id);
 	[[nodiscard]] BaseState* getCurrentState() const { return isEmpty() ? nullptr : m_states.top().get(); }
-	[[nodiscard]] FSM::State_t getCurrentStateID() const { return getCurrentState() ? getCurrentState()->getStateID() : static_cast<FSM::State_t>(FSM::State::None); }
-	[[nodiscard]] FSM::State_t getPrevStateID() const { return m_prevState; }
+	[[nodiscard]] FSM::StateID getCurrentStateID() const { return getCurrentState() ? getCurrentState()->getStateID() : static_cast<FSM::StateID>(FSM::State::None); }
+	[[nodiscard]] FSM::StateID getPrevStateID() const { return m_prevState; }
 	[[nodiscard]] bool isEmpty() const { return m_states.empty(); }
 	[[nodiscard]] std::size_t getSize() const { return m_states.size(); }
-	[[nodiscard]] bool hasState(FSM::State_t id) const { return m_factories.count(id) > 0; }
+	[[nodiscard]] bool hasState(FSM::StateID id) const { return m_factories.count(id) > 0; }
 private:
 	std::stack<std::unique_ptr<BaseState>> m_states;
-	std::map<FSM::State_t, std::function<std::unique_ptr<BaseState>(void)>> m_factories;
-	FSM::State_t m_prevState = FSM::State::None;
+	std::map<FSM::StateID, std::function<std::unique_ptr<BaseState>(void)>> m_factories;
+	FSM::StateID m_prevState = FSM::State::None;
 };
 
 

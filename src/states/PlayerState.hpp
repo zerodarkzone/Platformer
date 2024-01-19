@@ -17,11 +17,11 @@ namespace cro
 class PlayerState : public BaseState
 {
 public:
-	void handleInput(cro::Entity& entity, std::uint8_t input) override;
+	void handleInput(std::uint8_t input) override;
 
 	~PlayerState() override = default;
 
-	explicit PlayerState(FSM::State_t id) : BaseState(id)
+	PlayerState(FSM::StateID id, cro::Entity entity) : BaseState(id, entity)
 	{
 	}
 

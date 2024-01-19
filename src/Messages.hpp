@@ -28,6 +28,8 @@ namespace FrameMessageID
 		PrepareJumpEnded = 1,
 		SlidingStartEnded = 2,
 		SlidingEndEnded = 3,
+		AttackEnded = 4,
+		AttackComboEnded = 5,
 	};
 }
 

@@ -5,10 +5,10 @@
 #include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
 
-void PlayerState::handleInput(cro::Entity& entity, std::uint8_t input)
+void PlayerState::handleInput(std::uint8_t input)
 {
 	m_desiredSpeed = 0.f;
-	auto& player = entity.getComponent<Player>();
+	auto& player = m_entity.getComponent<Player>();
 	if ((input & InputFlag::Left) && !(input & InputFlag::Right))
 	{
 		player.facing = Player::Facing::Left;

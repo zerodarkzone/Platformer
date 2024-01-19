@@ -119,11 +119,15 @@ void PlayerDirector::process(float)
 		auto& stateMachine = entity.getComponent<FiniteStateMachine>();
 		if (stateMachine.getSize() != 0)
 		{
-			stateMachine.getCurrentState()->handleInput(entity, input);
+			stateMachine.getCurrentState()->handleInput(input);
 			auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
-			if (stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Sliding && vel.x == 0)
+			if ((stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Sliding && vel.x == 0) || stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Idle)
 			{
 				m_currentInput &= ~InputFlag::Down;
+			}
+			if (m_currentInput & InputFlag::Attack)
+			{
+				m_currentInput &= ~InputFlag::Attack;
 			}
 		}
 	};
