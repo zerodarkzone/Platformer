@@ -19,6 +19,11 @@ void PlayerWallSlidingState::handleInput(std::uint8_t input)
 	{
 		stateMachine.changeState(PlayerStateID::State::Jumping);
 	}
+	else if ((input & InputFlag::Down) && ((player.getContactNum(SensorType::Left) > 0 && !(input & InputFlag::Left)) ||
+		(player.getContactNum(SensorType::Right) > 0 && !(input & InputFlag::Right))))
+	{
+		stateMachine.changeState(PlayerStateID::State::Falling);
+	}
 }
 
 void PlayerWallSlidingState::fixedUpdate(float dt)

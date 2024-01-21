@@ -11,7 +11,7 @@ class MyApp final : public cro::App
 public:
 	MyApp();
 
-	~MyApp() = default;
+	~MyApp() override = default;
 
 private:
 
