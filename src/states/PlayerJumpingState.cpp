@@ -9,89 +9,89 @@
 
 void PlayerJumpingState::handleInput(std::uint8_t input)
 {
-	PlayerState::handleInput(input);
+    PlayerState::handleInput(input);
 }
 
 void PlayerJumpingState::fixedUpdate(float dt)
 {
-	auto& player = m_entity.getComponent<Player>();
-	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-	auto& physics = m_entity.getComponent<PhysicsObject>();
-	auto& body = *physics.getPhysicsBody();
-	auto& animController = m_entity.getComponent<AnimationController>();
-	auto vel = body.GetLinearVelocity();
+    auto& player = m_entity.getComponent<Player>();
+    auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+    auto& physics = m_entity.getComponent<PhysicsObject>();
+    auto& body = *physics.getPhysicsBody();
+    auto& animController = m_entity.getComponent<AnimationController>();
+    auto vel = body.GetLinearVelocity();
 
-	if (m_jumped && player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
-	{
-		if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
-			(player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1))
-		{
-			stateMachine.changeState(PlayerStateID::State::Falling);
-		}
-		else
-		{
-			stateMachine.changeState(PlayerStateID::State::WallSliding);
-		}
-		return;
-	}
-	if (m_jumped && player.getContactNum(SensorType::Feet) > 0 && vel.y <= 0)
-	{
-		stateMachine.changeState(PlayerStateID::State::Falling);
-		return;
-	}
+    if (m_jumped && player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
+    {
+        if ((player.facing == Player::Facing::Left && player.getContactNum(SensorType::Left) < 1) ||
+            (player.facing == Player::Facing::Right && player.getContactNum(SensorType::Right) < 1))
+        {
+            stateMachine.changeState(PlayerStateID::State::Falling);
+        }
+        else
+        {
+            stateMachine.changeState(PlayerStateID::State::WallSliding);
+        }
+        return;
+    }
+    if (m_jumped && player.getContactNum(SensorType::Feet) > 0 && vel.y <= 0)
+    {
+        stateMachine.changeState(PlayerStateID::State::Falling);
+        return;
+    }
 
-	if (!m_jumped)
-	{
-		m_jumped = true;
-		float impulse = body.GetMass() * player.jumpForce;
-		if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding)
-		{
-			impulse *= 0.9f;
-			player.numWallJumps += 1;
-		}
+    if (!m_jumped)
+    {
+        m_jumped = true;
+        float impulse = body.GetMass() * player.jumpForce;
+        if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding)
+        {
+            impulse *= 0.9f;
+            player.numWallJumps += 1;
+        }
 
-		body.ApplyLinearImpulseToCenter({ 0, impulse }, true);
-		if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
-			player.getContactNum(SensorType::Left) > 0)
-		{
-			m_desiredSpeed = player.speed;
-			player.facing = Player::Facing::Right;
-		}
-		else if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
-				 player.getContactNum(SensorType::Right) > 0)
-		{
-			m_desiredSpeed = -player.speed;
-			player.facing = Player::Facing::Left;
-		}
-		animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
-	}
+        body.ApplyLinearImpulseToCenter({0, impulse}, true);
+        if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
+            player.getContactNum(SensorType::Left) > 0)
+        {
+            m_desiredSpeed = player.speed;
+            player.facing = Player::Facing::Right;
+        }
+        else if (stateMachine.getPrevStateID() == PlayerStateID::State::WallSliding &&
+                 player.getContactNum(SensorType::Right) > 0)
+        {
+            m_desiredSpeed = -player.speed;
+            player.facing = Player::Facing::Left;
+        }
+        animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
+    }
 
-	if ((player.facing == Player::Facing::Left && vel.x < -0.5) ||
-		(player.facing == Player::Facing::Right && vel.x > 0.5))
-	{
-		m_desiredSpeed = 0;
-	}
+    if ((player.facing == Player::Facing::Left && vel.x < -0.5) ||
+        (player.facing == Player::Facing::Right && vel.x > 0.5))
+    {
+        m_desiredSpeed = 0;
+    }
 
-	if (m_desiredSpeed != 0)
-	{
-		float velChange = m_desiredSpeed - vel.x;
-		float impulse = body.GetMass() * velChange; //disregard time factor
-		body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
-	}
+    if (m_desiredSpeed != 0)
+    {
+        float velChange = m_desiredSpeed - vel.x;
+        float impulse = body.GetMass() * velChange; //disregard time factor
+        body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
+    }
 }
 
 void PlayerJumpingState::onEnter()
 {
-	cro::Logger::log("PlayerJumpingState Enter");
-	auto& animController = m_entity.getComponent<AnimationController>();
-	animController.nextAnimation = AnimationID::PrepareJump;
-	animController.resetAnimation = true;
+    cro::Logger::log("PlayerJumpingState Enter");
+    auto& animController = m_entity.getComponent<AnimationController>();
+    animController.nextAnimation = AnimationID::PrepareJump;
+    animController.resetAnimation = true;
 
-	m_desiredSpeed = 0.f;
-	m_jumped = false;
+    m_desiredSpeed = 0.f;
+    m_jumped = false;
 }
 
 void PlayerJumpingState::onExit()
 {
-	cro::Logger::log("PlayerJumpingState Exit");
+    cro::Logger::log("PlayerJumpingState Exit");
 }

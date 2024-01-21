@@ -11,75 +11,74 @@
 
 void PlayerIdleState::handleInput(std::uint8_t input)
 {
-	auto& player = m_entity.getComponent<Player>();
-	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-	if ((input & InputFlag::Left) && !(input & InputFlag::Right))
-	{
-		player.facing = Player::Facing::Left;
-		stateMachine.changeState(PlayerStateID::State::Walking);
-	}
-	else if ((input & InputFlag::Right) && !(input & InputFlag::Left))
-	{
-		player.facing = Player::Facing::Right;
-		stateMachine.changeState(PlayerStateID::State::Walking);
-	}
-	else if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0)
-	{
-		stateMachine.changeState(PlayerStateID::State::Jumping);
-	}
-	else if (input & InputFlag::Attack)
-	{
-		stateMachine.pushState(PlayerStateID::State::Attacking);
-	}
+    auto& player = m_entity.getComponent<Player>();
+    auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+    if ((input & InputFlag::Left) && !(input & InputFlag::Right))
+    {
+        player.facing = Player::Facing::Left;
+        stateMachine.changeState(PlayerStateID::State::Walking);
+    }
+    else if ((input & InputFlag::Right) && !(input & InputFlag::Left))
+    {
+        player.facing = Player::Facing::Right;
+        stateMachine.changeState(PlayerStateID::State::Walking);
+    }
+    else if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0)
+    {
+        stateMachine.changeState(PlayerStateID::State::Jumping);
+    }
+    else if (input & InputFlag::Attack)
+    {
+        stateMachine.pushState(PlayerStateID::State::Attacking);
+    }
 }
 
 void PlayerIdleState::fixedUpdate(float dt)
 {
-	auto& player = m_entity.getComponent<Player>();
-	auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-	auto& physics = m_entity.getComponent<PhysicsObject>();
-	auto& body = *physics.getPhysicsBody();
-	auto vel = body.GetLinearVelocity();
+    auto& player = m_entity.getComponent<Player>();
+    auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
+    auto& physics = m_entity.getComponent<PhysicsObject>();
+    auto& body = *physics.getPhysicsBody();
+    auto vel = body.GetLinearVelocity();
 
-	if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
-	{
-		stateMachine.changeState(PlayerStateID::State::Falling);
-		return;
-	}
+    if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
+    {
+        stateMachine.changeState(PlayerStateID::State::Falling);
+        return;
+    }
 
-	if (player.getContactNum(SensorType::Feet) > 0)
-	{
-		float velChange = m_desiredSpeed - vel.x;
-		float impulse = body.GetMass() * velChange; //disregard time factor
-		if (impulse != 0.f)
-			body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
-	}
+    if (player.getContactNum(SensorType::Feet) > 0)
+    {
+        float velChange = m_desiredSpeed - vel.x;
+        float impulse = body.GetMass() * velChange; //disregard time factor
+        if (impulse != 0.f)
+            body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
+    }
 }
 
 void PlayerIdleState::onEnter()
 {
-	cro::Logger::log("PlayerIdleState Enter");
-	auto& animController = m_entity.getComponent<AnimationController>();
-	if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Sliding)
-	{
-		animController.nextAnimation = AnimationID::EndSlide;
-	}
-	else if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Falling)
-	{
-		animController.nextAnimation = AnimationID::Land;
-	}
-	else
-	{
-		animController.nextAnimation = AnimationID::Idle;
-	}
-	animController.resetAnimation = true;
+    cro::Logger::log("PlayerIdleState Enter");
+    auto& animController = m_entity.getComponent<AnimationController>();
+    if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Sliding)
+    {
+        animController.nextAnimation = AnimationID::EndSlide;
+    }
+    else if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Falling)
+    {
+        animController.nextAnimation = AnimationID::Land;
+    }
+    else
+    {
+        animController.nextAnimation = AnimationID::Idle;
+    }
+    animController.resetAnimation = true;
 
-	auto& player = m_entity.getComponent<Player>();
-	player.numWallJumps = 0;
+    auto& player = m_entity.getComponent<Player>();
+    player.numWallJumps = 0;
 }
 
 void PlayerIdleState::onExit()
 {
-	cro::Logger::log("PlayerIdleState Exit");
+    cro::Logger::log("PlayerIdleState Exit");
 }
-

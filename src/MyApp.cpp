@@ -35,62 +35,62 @@ source distribution.
 #include <crogine/core/Clock.hpp>
 
 MyApp::MyApp()
-		: App(0, 1.f / 120.f), m_stateStack({ *this, getWindow() })
+    : App(0, 1.f / 120.f), m_stateStack({*this, getWindow()})
 {
-	setApplicationStrings("Cage", "PhysicsTest");
-	m_stateStack.registerState<MenuState>(States::ID::MainMenu);
-	m_stateStack.registerState<GameState>(States::ID::Game);
+    setApplicationStrings("Cage", "PhysicsTest");
+    m_stateStack.registerState<MenuState>(States::ID::MainMenu);
+    m_stateStack.registerState<GameState>(States::ID::Game);
 }
 
 //public
 void MyApp::handleEvent(const cro::Event& evt)
 {
-	if (evt.type == SDL_KEYUP)
-	{
-		switch (evt.key.keysym.sym)
-		{
-		default:
-			break;
-		case SDLK_ESCAPE:
-		case SDLK_AC_BACK:
-			App::quit();
-			break;
-		}
-	}
+    if (evt.type == SDL_KEYUP)
+    {
+        switch (evt.key.keysym.sym)
+        {
+            default:
+                break;
+            case SDLK_ESCAPE:
+            case SDLK_AC_BACK:
+                App::quit();
+                break;
+        }
+    }
 
-	m_stateStack.handleEvent(evt);
+    m_stateStack.handleEvent(evt);
 }
 
 void MyApp::handleMessage(const cro::Message& msg)
 {
-	m_stateStack.handleMessage(msg);
+    m_stateStack.handleMessage(msg);
 }
 
 void MyApp::simulate(float dt)
 {
-	m_stateStack.simulate(dt);
+    m_stateStack.simulate(dt);
 }
 
 void MyApp::render()
 {
-	m_stateStack.render();
+    m_stateStack.render();
 }
 
 bool MyApp::initialise()
 {
-	getWindow().setLoadingScreen<LoadingScreen>();
-	getWindow().setTitle("Physics Test");
+    getWindow().setLoadingScreen<LoadingScreen>();
+    getWindow().setTitle("Physics Test");
 
-	m_stateStack.pushState(States::Game);
+    m_stateStack.pushState(States::Game);
 
-	getWindow().setSize({ 1280, 720 });
-	getWindow().setWindowedSize({ 1280, 720 });
+    getWindow().setSize({1280, 720});
+    getWindow().setWindowedSize({1280, 720});
 
-	return true;
+    return true;
 }
 
 void MyApp::finalise()
 {
-	m_stateStack.clearStates();
-	m_stateStack.simulate(0.f);
+    m_stateStack.clearStates();
+    m_stateStack.simulate(0.f);
 }

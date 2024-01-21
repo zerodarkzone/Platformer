@@ -32,72 +32,60 @@ source distribution.
 #include <crogine/core/App.hpp>
 #include <crogine/gui/Gui.hpp>
 
-namespace
-{
-
-}
+namespace {}
 
 MenuState::MenuState(cro::StateStack& stack, cro::State::Context context)
-		: cro::State(stack, context),
-		  m_scene(context.appInstance.getMessageBus())
+    : cro::State(stack, context),
+      m_scene(context.appInstance.getMessageBus())
 {
-	//launches a loading screen (registered in MyApp.cpp)
-	context.mainWindow.loadResources([this]()
-	{
-		//add systems to scene
-		addSystems();
-		//load assets (textures, shaders, models etc)
-		loadAssets();
-		//create some entities
-		createScene();
-	});
+    //launches a loading screen (registered in MyApp.cpp)
+    context.mainWindow.loadResources([this]() {
+        //add systems to scene
+        addSystems();
+        //load assets (textures, shaders, models etc)
+        loadAssets();
+        //create some entities
+        createScene();
+    });
 
-	context.appInstance.setClearColour(cro::Colour(0.2f, 0.2f, 0.26f));
+    context.appInstance.setClearColour(cro::Colour(0.2f, 0.2f, 0.26f));
 }
 
 //public
 bool MenuState::handleEvent(const cro::Event& evt)
 {
-	if (cro::ui::wantsMouse() || cro::ui::wantsKeyboard())
-	{
-		return true;
-	}
+    if (cro::ui::wantsMouse() || cro::ui::wantsKeyboard())
+    {
+        return true;
+    }
 
-	m_scene.forwardEvent(evt);
-	return true;
+    m_scene.forwardEvent(evt);
+    return true;
 }
 
 void MenuState::handleMessage(const cro::Message& msg)
 {
-	m_scene.forwardMessage(msg);
+    m_scene.forwardMessage(msg);
 }
 
 bool MenuState::simulate(float dt)
 {
-	m_scene.simulate(dt);
-	return true;
+    m_scene.simulate(dt);
+    return true;
 }
 
 void MenuState::render()
 {
-	//draw any renderable systems
-	m_scene.render();
+    //draw any renderable systems
+    m_scene.render();
 }
 
 //private
 void MenuState::addSystems()
 {
-	auto& mb = getContext().appInstance.getMessageBus();
-
-
+    auto& mb = getContext().appInstance.getMessageBus();
 }
 
-void MenuState::loadAssets()
-{
+void MenuState::loadAssets() {}
 
-}
-
-void MenuState::createScene()
-{
-
-}
+void MenuState::createScene() {}

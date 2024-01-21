@@ -11,62 +11,62 @@ class b2Contact;
 
 namespace MessageID
 {
-	enum
-	{
-		UIMessage = cro::Message::Count,
-		CollisionStartedMessage,
-		CollisionEndedMessage,
-		AnimationMessage
-	};
+    enum
+    {
+        UIMessage = cro::Message::Count,
+        CollisionStartedMessage,
+        CollisionEndedMessage,
+        AnimationMessage
+    };
 }
 
 namespace FrameMessageID
 {
-	enum
-	{
-		PrepareJumpStarted = 0,
-		PrepareJumpEnded = 1,
-		SlidingStartEnded = 2,
-		SlidingEndEnded = 3,
-		AttackEnded = 4,
-		AttackComboEnded = 5,
-		LandingEnded = 6,
-	};
+    enum
+    {
+        PrepareJumpStarted = 0,
+        PrepareJumpEnded = 1,
+        SlidingStartEnded = 2,
+        SlidingEndEnded = 3,
+        AttackEnded = 4,
+        AttackComboEnded = 5,
+        LandingEnded = 6,
+    };
 }
 
 struct UIEvent final
 {
-	enum
-	{
-		ButtonPressed,
-		ButtonReleased
-	} type;
+    enum
+    {
+        ButtonPressed,
+        ButtonReleased
+    } type;
 
-	enum Button
-	{
-		Left,
-		Right,
-		Jump,
-		Fire
-	} button;
+    enum Button
+    {
+        Left,
+        Right,
+        Jump,
+        Fire
+    } button;
 };
 
 struct CollisionEvent final
 {
-	cro::Entity entityA{};
-	cro::Entity entityB{};
-	b2Fixture* shapeA{ nullptr };
-	b2Fixture* shapeB{ nullptr };
-	b2Contact* contact{ nullptr };
+    cro::Entity entityA{};
+    cro::Entity entityB{};
+    b2Fixture* shapeA{nullptr};
+    b2Fixture* shapeB{nullptr};
+    b2Contact* contact{nullptr};
 };
 
 struct AnimationEvent final
 {
-	std::int32_t newAnim = -1;
-	std::int32_t oldAnim = -1;
-	cro::Entity entity;
-	float x = 0.f;
-	float y = 0.f;
+    std::int32_t newAnim = -1;
+    std::int32_t oldAnim = -1;
+    cro::Entity entity;
+    float x = 0.f;
+    float y = 0.f;
 };
 
 

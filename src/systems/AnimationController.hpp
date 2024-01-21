@@ -13,7 +13,6 @@
 
 struct AnimationController final
 {
-
 	static const std::array<std::string, AnimationID::Count> animationName;
 
 	std::array<std::size_t, AnimationID::Count> animationMap{};

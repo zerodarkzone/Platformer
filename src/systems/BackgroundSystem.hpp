@@ -12,23 +12,23 @@
 
 struct BackgroundElement
 {
-	std::string texturePath;
-	glm::vec2 position;
-	glm::vec2 size;
-	glm::vec2 scale;
-	glm::vec2 parallaxFactor;
-	bool repeatX;
-	bool repeatY;
+    std::string texturePath;
+    glm::vec2 position;
+    glm::vec2 size;
+    glm::vec2 scale;
+    glm::vec2 parallaxFactor;
+    bool repeatX;
+    bool repeatY;
 };
 
 class BackgroundSystem final : public cro::System
 {
 public:
-	explicit BackgroundSystem(cro::MessageBus& mb);
+    explicit BackgroundSystem(cro::MessageBus& mb);
 
-	void handleMessage(const cro::Message&) override;
+    void handleMessage(const cro::Message&) override;
 
-	void process(float dt) override;
+    void process(float dt) override;
 };
 
 
