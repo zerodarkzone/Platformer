@@ -140,7 +140,7 @@ bool GameState::simulate(float dt)
     {
         auto cam = m_gameScene.getActiveCamera();
         auto& camTransform = cam.getComponent<cro::Transform>();
-        auto& playerTransform = m_playerEntity.getComponent<cro::Transform>();
+        const auto& playerTransform = m_playerEntity.getComponent<cro::Transform>();
         auto newCamPos = glm::vec2{
             (playerTransform.getPosition().x - camTransform.getPosition().x) * dt * 2 +
             camTransform.getPosition().x,
@@ -353,16 +353,16 @@ void GameState::createScene()
         std::uint16_t repY = 1;
         if (repeatX && repeatY)
         {
-            repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 2;
-            repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 2;
+            repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / static_cast<float>(texture.getSize().x)) + 2;
+            repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / static_cast<float>(texture.getSize().y)) + 2;
         }
         else if (repeatX)
         {
-            repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / (float)texture.getSize().x) + 2;
+            repX = static_cast<std::uint16_t>(CAMERA_SIZE.x / static_cast<float>(texture.getSize().x)) + 2;
         }
         else if (repeatY)
         {
-            repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / (float)texture.getSize().y) + 2;
+            repY = static_cast<std::uint16_t>(CAMERA_SIZE.y / static_cast<float>(texture.getSize().y)) + 2;
         }
         newText.create(texture.getSize().x * repX, texture.getSize().y * repY);
         for (auto i = 0u; i < repX; ++i)

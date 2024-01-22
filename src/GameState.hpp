@@ -11,7 +11,6 @@
 #include <crogine/graphics/ModelDefinition.hpp>
 #include <crogine/gui/GuiClient.hpp>
 #include <crogine/ecs/components/Sprite.hpp>
-#include <tmxlite/Layer.hpp>
 
 namespace cro
 {

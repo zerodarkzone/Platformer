@@ -18,7 +18,7 @@ AnimationControllerSystem::AnimationControllerSystem(cro::MessageBus& mb) : cro:
     requireComponent<cro::Transform>();
     requireComponent<cro::SpriteAnimation>();
     requireComponent<cro::Drawable2D>();
-    std::fill(m_animationStopped.begin(), m_animationStopped.end(), false);
+    std::ranges::fill(m_animationStopped, false);
 }
 
 void AnimationControllerSystem::handleMessage(const cro::Message& msg) {}
@@ -34,7 +34,7 @@ void AnimationControllerSystem::process(float dt)
 
         xForm.setScale({controller.direction, 1.f});
         drawable.setFacing(controller.direction > 0.f ? cro::Drawable2D::Facing::Front : cro::Drawable2D::Facing::Back);
-        auto position = xForm.getPosition();
+        const auto position = xForm.getPosition();
 
         if (controller.currAnimation != AnimationID::Count
             && !entity.getComponent<cro::SpriteAnimation>().playing

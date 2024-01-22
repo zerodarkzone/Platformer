@@ -17,15 +17,15 @@
 
 namespace utils
 {
-	inline bool processCollisionEvent(b2Contact* contact, ActorID selfType, cro::Scene* scene, cro::Entity& self,
+	inline bool processCollisionEvent(b2Contact* contact, const ActorID selfType, const cro::Scene* scene, cro::Entity& self,
 			cro::Entity& other, b2Fixture*& selfFixture, b2Fixture*& otherFixture)
 	{
-		auto fixtureA = contact->GetFixtureA();
-		auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
+		const auto fixtureA = contact->GetFixtureA();
+		const auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
 		auto entityA = scene->getEntity(entityIDA);
 
-		auto fixtureB = contact->GetFixtureB();
-		auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
+		const auto fixtureB = contact->GetFixtureB();
+		const auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
 		auto entityB = scene->getEntity(entityIDB);
 
 		if (entityA.isValid() && entityA.getComponent<ActorInfo>().id == selfType)
@@ -36,7 +36,7 @@ namespace utils
 			otherFixture = fixtureB;
 			return true;
 		}
-		else if (entityB.isValid() && entityB.getComponent<ActorInfo>().id == selfType)
+		if (entityB.isValid() && entityB.getComponent<ActorInfo>().id == selfType)
 		{
 			self = entityB;
 			other = entityA;
@@ -44,10 +44,7 @@ namespace utils
 			otherFixture = fixtureA;
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	inline std::vector<std::uint8_t> getTexturePixels(const cro::Texture& texture)
@@ -111,7 +108,7 @@ namespace utils
 			format = GL_RED;
 		}
 
-		std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size.x * size.y * bpp));
+		std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size.x * size.y * static_cast<float>(bpp)));
 
 		//TODO assert this works on GLES too
 		GLuint frameBuffer = 0;
@@ -154,28 +151,28 @@ namespace utils
 		return signum(x, std::is_signed<T>());
 	}
 
-	constexpr size_t mod(int64_t k, int64_t n)
+	constexpr size_t mod(int64_t k, const int64_t n)
 	{
 		return static_cast<size_t>(((k %= n) < 0) ? k + n : k);
 	}
 
-	inline float mod(float k, int64_t n)
+	inline float mod(float k, const int64_t n)
 	{
-		float whole, fractional;
-		fractional = std::modf(k, &whole);
-		whole = (float)mod((int64_t)whole, n);
+		float whole;
+		const float fractional = std::modf(k, &whole);
+		whole = static_cast<float>(mod(static_cast<int64_t>(whole), n));
 		return whole + fractional;
 	}
 
-	inline float wrap(float k, float min, float max)
+	inline float wrap(const float k, const float min, const float max)
 	{
 		// x = x_min + (x - x_min) % (x_max - x_min);
 		return min + mod((k - min), static_cast<int64_t>(max - min));
 	}
 
-	inline glm::vec2 rotated(float radAngle)
+	inline glm::vec2 rotated(const float radAngle)
 	{
-		auto basisVec = glm::vec2(1, 0);
+		constexpr auto basisVec = glm::vec2(1, 0);
 		return {
 				basisVec.x * std::cos(radAngle) - basisVec.y * std::sin(radAngle),
 				basisVec.x * std::sin(radAngle) + basisVec.y * std::cos(radAngle)
@@ -193,11 +190,11 @@ namespace utils
 	{
 		return static_cast<hash_t>(*str) ? hash_compile_time(1ull + str, (static_cast<hash_t>(*str) ^ last_value) * prime) : last_value;
 	}*/
-	constexpr hash_t hash_compile_time(char const* str)
+	constexpr hash_t hash_compile_time(const char* str)
 	{
 		hash_t ret{ basis };
 
-		for (; *str;)
+		while (*str)
 		{
 			ret ^= *str;
 			ret *= prime;
@@ -210,7 +207,7 @@ namespace utils
 	{
 		hash_t ret{ basis };
 
-		for (auto ch: str)
+		for (const auto ch: str)
 		{
 			ret ^= ch;
 			ret *= prime;
@@ -221,9 +218,9 @@ namespace utils
 	class Shape
 	{
 	public:
-		static std::vector<cro::Vertex2D> rectangle(glm::vec2 size, cro::Colour colour)
+		static std::vector<cro::Vertex2D> rectangle(const glm::vec2 size, const cro::Colour colour)
 		{
-			std::vector<cro::Vertex2D> retval =
+			std::vector retval =
 					{
 							cro::Vertex2D(glm::vec2(0.f), colour),
 							cro::Vertex2D(glm::vec2(0.f, size.y), colour),
@@ -235,9 +232,9 @@ namespace utils
 			return retval;
 		}
 
-		static std::vector<cro::Vertex2D> filledRectangle(glm::vec2 size, cro::Colour colour)
+		static std::vector<cro::Vertex2D> filledRectangle(const glm::vec2 size, const cro::Colour colour)
 		{
-			std::vector<cro::Vertex2D> retval =
+			std::vector retval =
 					{
 							cro::Vertex2D(glm::vec2(0.f), colour),
 							cro::Vertex2D(glm::vec2(0.f, size.y), colour),
@@ -250,21 +247,21 @@ namespace utils
 			return retval;
 		}
 
-		static std::vector<cro::Vertex2D> circle(float radius, cro::Colour colour, std::size_t pointCount)
+		static std::vector<cro::Vertex2D> circle(const float radius, cro::Colour colour, const std::size_t pointCount)
 		{
 			std::vector<cro::Vertex2D> retval;
 
-			float angle = cro::Util::Const::TAU / static_cast<float>(pointCount);
+			const float angle = cro::Util::Const::TAU / static_cast<float>(pointCount);
 			for (auto i = 0u; i < pointCount; ++i)
 			{
-				retval.emplace_back(glm::vec2(std::cos(angle * i), std::sin(angle * i)) * radius, colour);
+				retval.emplace_back(glm::vec2(std::cos(angle * static_cast<float>(i)), std::sin(angle * static_cast<float>(i))) * radius, colour);
 			}
 			retval.push_back(retval.front());
 
 			return retval;
 		}
 
-		static std::vector<cro::Vertex2D> polygon(const std::vector<glm::vec2>& points, cro::Colour colour)
+		static std::vector<cro::Vertex2D> polygon(const std::vector<glm::vec2>& points, const cro::Colour colour)
 		{
 			std::vector<cro::Vertex2D> retval;
 			for (auto p: points)
@@ -276,9 +273,9 @@ namespace utils
 			return retval;
 		}
 
-		static std::vector<cro::Vertex2D> line(glm::vec2 start, glm::vec2 end, cro::Colour colour)
+		static std::vector<cro::Vertex2D> line(const glm::vec2 start, const glm::vec2 end, const cro::Colour colour)
 		{
-			std::vector<cro::Vertex2D> retval =
+			std::vector retval =
 					{
 							cro::Vertex2D(start, colour),
 							cro::Vertex2D(end, colour)
@@ -287,7 +284,7 @@ namespace utils
 			return retval;
 		}
 
-		static std::vector<cro::Vertex2D> polyLine(const std::vector<glm::vec2>& points, cro::Colour colour)
+		static std::vector<cro::Vertex2D> polyLine(const std::vector<glm::vec2>& points, const cro::Colour colour)
 		{
 			std::vector<cro::Vertex2D> retval;
 			for (auto p: points)

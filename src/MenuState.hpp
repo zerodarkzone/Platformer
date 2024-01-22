@@ -19,7 +19,7 @@ class MenuState final : public cro::State
 public:
 	MenuState(cro::StateStack&, cro::State::Context);
 
-	~MenuState() = default;
+	~MenuState() override = default;
 
 	cro::StateID getStateID() const override
 	{

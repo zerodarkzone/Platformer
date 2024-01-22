@@ -6,7 +6,6 @@
 #include <crogine/core/Console.hpp>
 #include <crogine/ecs/components/Transform.hpp>
 
-#include <set>
 #include <crogine/ecs/components/SpriteAnimation.hpp>
 
 #include "PlayerSystem.hpp"
@@ -94,6 +93,7 @@ void PlayerSystem::handleMessage(const cro::Message& msg)
             }
             break;
         }
+        default: ;
     }
 }
 

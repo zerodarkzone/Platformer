@@ -3,7 +3,6 @@
 
 #include <crogine/core/Message.hpp>
 
-#include <crogine/detail/glm/vec3.hpp>
 
 class b2Fixture;
 
