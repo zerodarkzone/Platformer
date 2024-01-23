@@ -61,7 +61,8 @@ struct Player
     std::unordered_multiset<b2Fixture *> leftSensorContacts;
     std::unordered_multiset<b2Fixture *> rightSensorContacts;
 
-    [[nodiscard]] std::uint16_t getContactNum(SensorType sensor = SensorType::Feet, FixtureType type = FixtureType::Count) const;
+    [[nodiscard]] std::uint16_t getContactNum(SensorType sensor = SensorType::Feet,
+                                              FixtureType type = FixtureType::Count) const;
 
     [[nodiscard]] std::uint16_t getSlopeContactsNum() const;
 };

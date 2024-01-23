@@ -6,6 +6,9 @@
 #include <crogine/ecs/Scene.hpp>
 
 #include "PhysicsSystem.hpp"
+
+#include <ranges>
+
 #include "Messages.hpp"
 
 #include "Utils.hpp"
@@ -14,14 +17,14 @@
 
 namespace
 {
-    const float FIXED_TIME_STEP = 1.f / 60.f;
-    const int MAX_STEPS = 5;
+    constexpr float FIXED_TIME_STEP = 1.f / 60.f;
+    constexpr int MAX_STEPS = 5;
     int32_t velocityIterations = 8;
     int32_t positionIterations = 3;
 }
 
-PhysicsSystem::PhysicsSystem(cro::MessageBus& mb, glm::vec2 gravity, bool debugDraw) : cro::System(
-        mb, typeid(PhysicsSystem)), m_gravity(gravity), m_world(nullptr), m_debugDraw(debugDraw),
+PhysicsSystem::PhysicsSystem(cro::MessageBus& mb, const glm::vec2 gravity, const bool debugDraw) : cro::System(
+        mb, typeid(PhysicsSystem)), m_world(nullptr), m_debugDraw(debugDraw),
     m_fixedTimeStepAccumulator(0),
     m_fixedTimeStepAccumulatorRatio(0)
 {
@@ -39,8 +42,7 @@ PhysicsSystem::PhysicsSystem(cro::MessageBus& mb, glm::vec2 gravity, bool debugD
 PhysicsSystem::~PhysicsSystem()
 {
     m_world->SetContactListener(nullptr);
-    auto& entities = getEntities();
-    for (auto entity: entities)
+    for (const auto& entities = getEntities(); auto entity: entities)
     {
         removeObject(entity.getComponent<PhysicsObject>());
     }
@@ -52,7 +54,7 @@ void PhysicsSystem::removeObject(PhysicsObject& obj)
     {
         for (auto i = 0u; i < obj.m_shapeCount; ++i)
         {
-            auto info = reinterpret_cast<ShapeInfo *>(obj.m_shapes[i]->GetUserData().pointer);
+            const auto info = reinterpret_cast<ShapeInfo *>(obj.m_shapes[i]->GetUserData().pointer);
             delete info;
             obj.m_shapes[i] = nullptr;
         }
@@ -136,8 +138,7 @@ void PhysicsSystem::process(float dt)
 
 inline void PhysicsSystem::resetSmoothStates()
 {
-    const auto& entities = getEntities();
-    for (auto entity: entities)
+    for (const auto& entities = getEntities(); auto entity: entities)
     {
         auto& tx = entity.getComponent<cro::Transform>();
         auto& phys = entity.getComponent<PhysicsObject>();
@@ -158,8 +159,7 @@ inline void PhysicsSystem::smoothStates()
 {
     const float oneMinusRatio = 1.f - m_fixedTimeStepAccumulatorRatio;
     //const float dt = m_fixedTimeStepAccumulatorRatio * FIXED_TIME_STEP;
-    const auto& entities = getEntities();
-    for (auto entity: entities)
+    for (const auto& entities = getEntities(); auto entity: entities)
     {
         auto& tx = entity.getComponent<cro::Transform>();
         const auto& phys = entity.getComponent<PhysicsObject>();
@@ -181,7 +181,7 @@ inline void PhysicsSystem::smoothStates()
 inline void PhysicsSystem::singleStep(float dt)
 {
     // Call the fixed update callbacks
-    for (auto& [id, callback]: m_fixedUpdateCallbacks)
+    for (auto& callback: std::views::values(m_fixedUpdateCallbacks))
     {
         callback(dt);
     }
@@ -199,19 +199,19 @@ inline void PhysicsSystem::singleStep(float dt)
 
 void PhysicsSystem::BeginContact(b2Contact* contact)
 {
-    for (auto& [id, callback]: m_beginContactCallbacks)
+    for (auto& callback: std::views::values(m_beginContactCallbacks))
     {
         callback(contact);
     }
-    auto fixtureA = contact->GetFixtureA();
-    auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
-    auto entityA = getScene()->getEntity(entityIDA);
+    const auto fixtureA = contact->GetFixtureA();
+    const auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
+    const auto entityA = getScene()->getEntity(entityIDA);
 
-    auto fixtureB = contact->GetFixtureB();
-    auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
-    auto entityB = getScene()->getEntity(entityIDB);
+    const auto fixtureB = contact->GetFixtureB();
+    const auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
+    const auto entityB = getScene()->getEntity(entityIDB);
 
-    auto msg = postMessage<CollisionEvent>(MessageID::CollisionStartedMessage);
+    const auto msg = postMessage<CollisionEvent>(MessageID::CollisionStartedMessage);
     msg->entityA = entityA;
     msg->entityB = entityB;
     msg->shapeA = fixtureA;
@@ -221,19 +221,19 @@ void PhysicsSystem::BeginContact(b2Contact* contact)
 
 void PhysicsSystem::EndContact(b2Contact* contact)
 {
-    for (auto& [id, callback]: m_endContactCallbacks)
+    for (auto& callback: std::views::values(m_endContactCallbacks))
     {
         callback(contact);
     }
-    auto fixtureA = contact->GetFixtureA();
-    auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
-    auto entityA = getScene()->getEntity(entityIDA);
+    const auto fixtureA = contact->GetFixtureA();
+    const auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
+    const auto entityA = getScene()->getEntity(entityIDA);
 
-    auto fixtureB = contact->GetFixtureB();
-    auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
-    auto entityB = getScene()->getEntity(entityIDB);
+    const auto fixtureB = contact->GetFixtureB();
+    const auto entityIDB = fixtureB->GetBody()->GetUserData().pointer;
+    const auto entityB = getScene()->getEntity(entityIDB);
 
-    auto msg = postMessage<CollisionEvent>(MessageID::CollisionEndedMessage);
+    const auto msg = postMessage<CollisionEvent>(MessageID::CollisionEndedMessage);
     msg->entityA = entityA;
     msg->entityB = entityB;
     msg->shapeA = fixtureA;
@@ -243,7 +243,7 @@ void PhysicsSystem::EndContact(b2Contact* contact)
 
 void PhysicsSystem::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-    for (auto& [id, callback]: m_preSolveCallbacks)
+    for (auto& callback: std::views::values(m_preSolveCallbacks))
     {
         callback(contact, oldManifold);
     }
@@ -251,13 +251,13 @@ void PhysicsSystem::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 
 void PhysicsSystem::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-    for (auto& [id, callback]: m_postSolveCallbacks)
+    for (auto& callback: std::views::values(m_postSolveCallbacks))
     {
         callback(contact, impulse);
     }
 }
 
-void PhysicsSystem::setDebugDraw(bool debugDraw)
+void PhysicsSystem::setDebugDraw(const bool debugDraw)
 {
     if (m_debugDraw == debugDraw)
     {
@@ -310,7 +310,8 @@ glm::vec2 PhysicsSystem::getGravity() const
 }
 
 void
-PhysicsSystem::setContactCallback(std::type_index index, ContactType type, std::function<void(b2Contact*)> callback)
+PhysicsSystem::setContactCallback(const std::type_index index, const ContactType type,
+                                  std::function<void(b2Contact*)> callback)
 {
     switch (type)
     {
@@ -324,18 +325,19 @@ PhysicsSystem::setContactCallback(std::type_index index, ContactType type, std::
 }
 
 void
-PhysicsSystem::setPreSolveCallback(std::type_index index, std::function<void(b2Contact*, const b2Manifold*)> callback)
+PhysicsSystem::setPreSolveCallback(const std::type_index index,
+                                   std::function<void(b2Contact*, const b2Manifold*)> callback)
 {
     m_preSolveCallbacks[index] = std::move(callback);
 }
 
-void PhysicsSystem::setPostSolveCallback(std::type_index index,
+void PhysicsSystem::setPostSolveCallback(const std::type_index index,
                                          std::function<void(b2Contact*, const b2ContactImpulse*)> callback)
 {
     m_postSolveCallbacks[index] = std::move(callback);
 }
 
-void PhysicsSystem::setFixedUpdateCallback(std::type_index index, std::function<void(float)> callback)
+void PhysicsSystem::setFixedUpdateCallback(const std::type_index index, std::function<void(float)> callback)
 {
     m_fixedUpdateCallbacks[index] = std::move(callback);
 }

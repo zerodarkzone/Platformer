@@ -92,7 +92,8 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
             {
                 //create the vertices
                 auto pixels = std::make_pair(
-                    glm::vec2(static_cast<float>(x) * tileSize.x, map.getBounds().height - static_cast<float>(y) * tileSize.y - tileSize.y),
+                    glm::vec2(static_cast<float>(x) * tileSize.x,
+                              map.getBounds().height - static_cast<float>(y) * tileSize.y - tileSize.y),
                     std::vector<std::uint8_t>(static_cast<std::size_t>(tileSize.x * tileSize.y * 4)));
 
                 std::size_t i = 0;
@@ -149,10 +150,12 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
                 const auto final_alpha = b_alpha * (1.f - alpha) + alpha;
                 oldPixels[j] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j]) * b_alpha * (1.f - alpha) +
                                                           static_cast<float>(newPixels[j]) * alpha) / final_alpha);
-                oldPixels[j + 1] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j + 1]) * b_alpha * (1.f - alpha) +
-                                                              static_cast<float>(newPixels[j + 1]) * alpha) / final_alpha);
-                oldPixels[j + 2] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j + 2]) * b_alpha * (1.f - alpha) +
-                                                              static_cast<float>(newPixels[j + 2]) * alpha) / final_alpha);
+                oldPixels[j + 1] = static_cast<std::uint8_t>(
+                    (static_cast<float>(oldPixels[j + 1]) * b_alpha * (1.f - alpha) +
+                     static_cast<float>(newPixels[j + 1]) * alpha) / final_alpha);
+                oldPixels[j + 2] = static_cast<std::uint8_t>(
+                    (static_cast<float>(oldPixels[j + 2]) * b_alpha * (1.f - alpha) +
+                     static_cast<float>(newPixels[j + 2]) * alpha) / final_alpha);
                 oldPixels[j + 3] = static_cast<std::uint8_t>(255 * final_alpha);
             }
         }

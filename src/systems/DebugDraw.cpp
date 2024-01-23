@@ -46,6 +46,8 @@ namespace
 class GLRenderPrimitives
 {
 public:
+    virtual ~GLRenderPrimitives() = default;
+
     virtual void create()
     {
         if (m_shader.loadFromString(vertex, fragment))
@@ -103,7 +105,7 @@ public:
             m_vertexData[m_vertexCount++] = v;
     }
 
-    virtual void flush(glm::mat4 viewProjection, glm::mat4 world) {}
+    virtual void flush([[maybe_unused]] glm::mat4 viewProjection, [[maybe_unused]] glm::mat4 world) {}
 
 protected:
     friend class DebugDraw;
@@ -119,7 +121,7 @@ protected:
 };
 
 
-class GLRenderPoints : public GLRenderPrimitives
+class GLRenderPoints final : public GLRenderPrimitives
 {
 public:
     void flush(glm::mat4 viewProjection, glm::mat4 world) override
@@ -155,11 +157,10 @@ public:
         glCheck(glUseProgram(0));
     }
 
-private:
     friend class DebugDraw;
 };
 
-class GLRenderLines : public GLRenderPrimitives
+class GLRenderLines final : public GLRenderPrimitives
 {
     void flush(glm::mat4 viewProjection, glm::mat4 world) override
     {
@@ -192,11 +193,10 @@ class GLRenderLines : public GLRenderPrimitives
         glCheck(glUseProgram(0));
     }
 
-private:
     friend class DebugDraw;
 };
 
-class GLRenderTriangles : public GLRenderPrimitives
+class GLRenderTriangles final : public GLRenderPrimitives
 {
     void flush(glm::mat4 viewProjection, glm::mat4 world) override
     {
@@ -232,12 +232,11 @@ class GLRenderTriangles : public GLRenderPrimitives
         glCheck(glUseProgram(0));
     }
 
-private:
     friend class DebugDraw;
 };
 
 
-DebugDraw::DebugDraw() : m_showUI(false), m_points(nullptr), m_lines(nullptr), m_triangles(nullptr)
+DebugDraw::DebugDraw() : m_points(nullptr), m_lines(nullptr), m_triangles(nullptr)
 {
     m_points = std::make_unique<GLRenderPoints>();
     m_points->create();
