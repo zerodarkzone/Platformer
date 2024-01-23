@@ -41,17 +41,17 @@ namespace utils
 
     inline std::vector<std::uint8_t> getTexturePixels(const cro::Texture& texture)
     {
-        auto bpp = 4;
+        auto bpp = 4u;
         GLenum format = GL_RGBA;
 
         if (texture.getFormat() == cro::ImageFormat::RGB)
         {
-            bpp = 3;
+            bpp = 3u;
             format = GL_RGB;
         }
         else if (texture.getFormat() == cro::ImageFormat::A)
         {
-            bpp = 1;
+            bpp = 1u;
             format = GL_RED;
         }
 
@@ -86,21 +86,21 @@ namespace utils
 
     inline std::vector<std::uint8_t> getTextureSubPixels(const cro::Texture& texture, glm::vec2 pos, glm::vec2 size)
     {
-        auto bpp = 4;
+        auto bpp = 4u;
         GLenum format = GL_RGBA;
 
         if (texture.getFormat() == cro::ImageFormat::RGB)
         {
-            bpp = 3;
+            bpp = 3u;
             format = GL_RGB;
         }
         else if (texture.getFormat() == cro::ImageFormat::A)
         {
-            bpp = 1;
+            bpp = 1u;
             format = GL_RED;
         }
 
-        std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size.x * size.y * static_cast<float>(bpp)));
+        std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size.x) * static_cast<std::size_t>(size.y) * bpp);
 
         //TODO assert this works on GLES too
         GLuint frameBuffer = 0;
@@ -244,6 +244,7 @@ namespace utils
             std::vector<cro::Vertex2D> retval;
 
             const float angle = cro::Util::Const::TAU / static_cast<float>(pointCount);
+            retval.reserve(pointCount);
             for (auto i = 0u; i < pointCount; ++i)
             {
                 retval.emplace_back(glm::vec2(std::cos(angle * static_cast<float>(i)),
@@ -257,6 +258,7 @@ namespace utils
         static std::vector<cro::Vertex2D> polygon(const std::vector<glm::vec2>& points, const cro::Colour colour)
         {
             std::vector<cro::Vertex2D> retval;
+            retval.reserve(points.size());
             for (auto p: points)
             {
                 retval.emplace_back(p, colour);
@@ -280,6 +282,7 @@ namespace utils
         static std::vector<cro::Vertex2D> polyLine(const std::vector<glm::vec2>& points, const cro::Colour colour)
         {
             std::vector<cro::Vertex2D> retval;
+            retval.reserve(points.size());
             for (auto p: points)
             {
                 retval.emplace_back(p, colour);
