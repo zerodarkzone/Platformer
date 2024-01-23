@@ -7,19 +7,19 @@
 #include "systems/PhysicsSystem.hpp"
 #include "systems/AnimationController.hpp"
 
-void PlayerJumpingState::handleInput(std::uint8_t input)
+void PlayerJumpingState::handleInput(const std::uint8_t input)
 {
     PlayerState::handleInput(input);
 }
 
-void PlayerJumpingState::fixedUpdate(float dt)
+void PlayerJumpingState::fixedUpdate(float)
 {
     auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
     auto& animController = m_entity.getComponent<AnimationController>();
-    auto vel = body.GetLinearVelocity();
+    const auto vel = body.GetLinearVelocity();
 
     if (m_jumped && player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
     {
@@ -74,15 +74,17 @@ void PlayerJumpingState::fixedUpdate(float dt)
 
     if (m_desiredSpeed != 0)
     {
-        float velChange = m_desiredSpeed - vel.x;
-        float impulse = body.GetMass() * velChange; //disregard time factor
+        const float velChange = m_desiredSpeed - vel.x;
+        const float impulse = body.GetMass() * velChange; //disregard time factor
         body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
     }
 }
 
 void PlayerJumpingState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerJumpingState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     animController.nextAnimation = AnimationID::PrepareJump;
     animController.resetAnimation = true;
@@ -93,5 +95,7 @@ void PlayerJumpingState::onEnter()
 
 void PlayerJumpingState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerJumpingState Exit");
+#endif
 }

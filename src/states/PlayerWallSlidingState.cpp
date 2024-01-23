@@ -9,9 +9,9 @@
 #include "directors/InputFlags.hpp"
 #include "systems/AnimationController.hpp"
 
-void PlayerWallSlidingState::handleInput(std::uint8_t input)
+void PlayerWallSlidingState::handleInput(const std::uint8_t input)
 {
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
     if ((input & InputFlag::Jump) &&
         (player.getContactNum(SensorType::Left) > 0 || player.getContactNum(SensorType::Right) > 0) &&
@@ -29,11 +29,11 @@ void PlayerWallSlidingState::handleInput(std::uint8_t input)
 
 void PlayerWallSlidingState::fixedUpdate(float dt)
 {
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
-    auto vel = body.GetLinearVelocity();
+    const auto vel = body.GetLinearVelocity();
 
     if (player.getContactNum(SensorType::Left) < 1 && player.getContactNum(SensorType::Right) < 1 && vel.y < 0)
     {
@@ -46,30 +46,33 @@ void PlayerWallSlidingState::fixedUpdate(float dt)
         return;
     }
 
-    float velChange = std::max(-0.5f - vel.y, 0.f);
-    float impulse = body.GetMass() * velChange / (dt * 3);
-
+    const float velChange = std::max(-0.5f - vel.y, 0.f);
+    const float impulse = body.GetMass() * velChange / (dt * 3);
     body.ApplyForceToCenter({0, impulse}, true);
 }
 
 void PlayerWallSlidingState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerWallSlidingState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     animController.nextAnimation = AnimationID::WallSlide;
     animController.resetAnimation = true;
 
-    auto& player = m_entity.getComponent<Player>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& player = m_entity.getComponent<Player>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
     body.SetGravityScale(player.wallSlideGravityScale);
 }
 
 void PlayerWallSlidingState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerWallSlidingState Exit");
+#endif
     auto& player = m_entity.getComponent<Player>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
     body.SetGravityScale(player.normalGravityScale);
     player.facing = (player.facing == Player::Facing::Right) ? Player::Facing::Left : Player::Facing::Right;

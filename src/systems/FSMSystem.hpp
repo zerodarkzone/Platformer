@@ -54,7 +54,7 @@ public:
 		static_assert(std::is_base_of<BaseState, T>::value, "Must derive from State class");
 		m_factories[id] = [id, args=std::make_tuple<Args...>(std::forward<Args>(args)...)]()
 		{
-			return std::apply([id](auto&&... args){ return std::make_unique<T>(id, args...); },
+			return std::apply([id](auto&&... args_){ return std::make_unique<T>(id, args_...); },
 					std::move(args));
 		};
 	}

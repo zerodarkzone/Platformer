@@ -8,12 +8,12 @@
 #include "systems/PhysicsSystem.hpp"
 #include "systems/AnimationController.hpp"
 
-void PlayerWalkingState::handleInput(std::uint8_t input)
+void PlayerWalkingState::handleInput(const std::uint8_t input)
 {
     PlayerState::handleInput(input);
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto vel = m_entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
+    const auto vel = m_entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
     if ((input & InputFlag::Jump) && player.getContactNum(SensorType::Feet) > 0)
     {
         stateMachine.changeState(PlayerStateID::State::Jumping);
@@ -33,13 +33,13 @@ void PlayerWalkingState::handleInput(std::uint8_t input)
     }
 }
 
-void PlayerWalkingState::fixedUpdate(float dt)
+void PlayerWalkingState::fixedUpdate(float)
 {
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
-    auto vel = body.GetLinearVelocity();
+    const auto vel = body.GetLinearVelocity();
 
     if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
     {
@@ -56,15 +56,17 @@ void PlayerWalkingState::fixedUpdate(float dt)
 
     if (player.getContactNum(SensorType::Feet) > 0)
     {
-        float velChange = m_desiredSpeed - vel.x;
-        float impulse = body.GetMass() * velChange; //disregard time factor
+        const float velChange = m_desiredSpeed - vel.x;
+        const float impulse = body.GetMass() * velChange; //disregard time factor
         body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
     }
 }
 
 void PlayerWalkingState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerWalkingState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Falling)
     {
@@ -79,5 +81,7 @@ void PlayerWalkingState::onEnter()
 
 void PlayerWalkingState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerWalkingState Exit");
+#endif
 }

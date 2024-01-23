@@ -8,7 +8,7 @@
 #include "systems/AnimationController.hpp"
 #include "systems/PhysicsSystem.hpp"
 
-void PlayerAttackState::handleInput(std::uint8_t input)
+void PlayerAttackState::handleInput(const std::uint8_t input)
 {
     if (input & InputFlag::Attack)
     {
@@ -19,20 +19,21 @@ void PlayerAttackState::handleInput(std::uint8_t input)
     }
 }
 
-void PlayerAttackState::fixedUpdate(float dt)
+void PlayerAttackState::fixedUpdate(float)
 {
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
-    auto vel = body.GetLinearVelocity();
-    float velChange = m_desiredSpeed - vel.x;
-    float impulse = body.GetMass() * velChange; //disregard time factor
-    if (impulse != 0.f)
+    const auto vel = body.GetLinearVelocity();
+    const float velChange = m_desiredSpeed - vel.x;
+    if (const float impulse = body.GetMass() * velChange; impulse != 0.f)
         body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
 }
 
 void PlayerAttackState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerAttackState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     auto& spriteAnim = m_entity.getComponent<cro::SpriteAnimation>();
     animController.currAnimation = AnimationID::Attack;
@@ -43,7 +44,9 @@ void PlayerAttackState::onEnter()
 
 void PlayerAttackState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerAttackState Exit");
+#endif
     auto& spriteAnim = m_entity.getComponent<cro::SpriteAnimation>();
     spriteAnim.currentFrameTime = 0.f;
 }

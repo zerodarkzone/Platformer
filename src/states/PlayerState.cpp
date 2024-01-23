@@ -5,7 +5,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
 
-void PlayerState::handleInput(std::uint8_t input)
+void PlayerState::handleInput(const std::uint8_t input)
 {
     m_desiredSpeed = 0.f;
     auto& player = m_entity.getComponent<Player>();

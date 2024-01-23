@@ -12,13 +12,13 @@ void PlayerFallingState::handleInput(std::uint8_t input)
     PlayerState::handleInput(input);
 }
 
-void PlayerFallingState::fixedUpdate(float dt)
+void PlayerFallingState::fixedUpdate(float)
 {
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
-    auto vel = body.GetLinearVelocity();
+    const auto vel = body.GetLinearVelocity();
 
     if (player.getContactNum(SensorType::Feet) < 1 && vel.y <= 0)
     {
@@ -47,21 +47,23 @@ void PlayerFallingState::fixedUpdate(float dt)
 
     if (m_desiredSpeed != 0)
     {
-        float velChange = m_desiredSpeed - vel.x;
-        float impulse = body.GetMass() * velChange; //disregard time factor
+        const float velChange = m_desiredSpeed - vel.x;
+        const float impulse = body.GetMass() * velChange; //disregard time factor
         body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
     }
 }
 
 void PlayerFallingState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerFallingState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     animController.nextAnimation = AnimationID::Fall;
     animController.resetAnimation = true;
 
-    auto& player = m_entity.getComponent<Player>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& player = m_entity.getComponent<Player>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
     body.SetGravityScale(player.fallGravityScale);
     m_desiredSpeed = 0.f;
@@ -69,9 +71,11 @@ void PlayerFallingState::onEnter()
 
 void PlayerFallingState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerFallingState Exit");
-    auto& player = m_entity.getComponent<Player>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+#endif
+    const auto& player = m_entity.getComponent<Player>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
     body.SetGravityScale(player.normalGravityScale);
 }

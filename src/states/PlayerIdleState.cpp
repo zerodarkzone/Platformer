@@ -33,13 +33,13 @@ void PlayerIdleState::handleInput(std::uint8_t input)
     }
 }
 
-void PlayerIdleState::fixedUpdate(float dt)
+void PlayerIdleState::fixedUpdate(float)
 {
-    auto& player = m_entity.getComponent<Player>();
+    const auto& player = m_entity.getComponent<Player>();
     auto& stateMachine = m_entity.getComponent<FiniteStateMachine>();
-    auto& physics = m_entity.getComponent<PhysicsObject>();
+    const auto& physics = m_entity.getComponent<PhysicsObject>();
     auto& body = *physics.getPhysicsBody();
-    auto vel = body.GetLinearVelocity();
+    const auto vel = body.GetLinearVelocity();
 
     if ((player.getContactNum(SensorType::Feet) < 1) && vel.y < 0)
     {
@@ -49,9 +49,8 @@ void PlayerIdleState::fixedUpdate(float dt)
 
     if (player.getContactNum(SensorType::Feet) > 0)
     {
-        float velChange = m_desiredSpeed - vel.x;
-        float impulse = body.GetMass() * velChange; //disregard time factor
-        if (impulse != 0.f)
+        const float velChange = m_desiredSpeed - vel.x;
+        if (const float impulse = body.GetMass() * velChange; impulse != 0.f)
             body.ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
     }
 }

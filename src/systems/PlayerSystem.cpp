@@ -135,7 +135,7 @@ void PlayerSystem::process(float dt)
     }
 }
 
-void PlayerSystem::fixedUpdate(float dt) {}
+void PlayerSystem::fixedUpdate(float) {}
 
 void PlayerSystem::beginContact(b2Contact* contact)
 {
@@ -215,7 +215,7 @@ void PlayerSystem::endContact(b2Contact* contact)
     }
 }
 
-void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
+void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold*)
 {
     if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
     {
