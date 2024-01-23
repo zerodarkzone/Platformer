@@ -115,19 +115,14 @@ void PlayerDirector::process(float)
     cmd.targetFlags = CommandID::Player1;
     auto input = m_currentInput;
     cmd.action = [input, this](cro::Entity entity, float) {
-        auto& stateMachine = entity.getComponent<FiniteStateMachine>();
-        if (stateMachine.getSize() != 0)
+        if (const auto& stateMachine = entity.getComponent<FiniteStateMachine>(); stateMachine.getSize() != 0)
         {
             stateMachine.getCurrentState()->handleInput(input);
-            auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
+            const auto vel = entity.getComponent<PhysicsObject>().getPhysicsBody()->GetLinearVelocity();
             if ((stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Sliding && vel.x == 0) ||
                 stateMachine.getCurrentState()->getStateID() == PlayerStateID::State::Idle)
             {
                 m_currentInput &= ~InputFlag::Down;
-            }
-            if (m_currentInput & InputFlag::Attack)
-            {
-                m_currentInput &= ~InputFlag::Attack;
             }
         }
     };
@@ -135,5 +130,9 @@ void PlayerDirector::process(float)
     if (m_currentInput & InputFlag::Jump)
     {
         m_currentInput &= ~InputFlag::Jump;
+    }
+    if (m_currentInput & InputFlag::Attack)
+    {
+        m_currentInput &= ~InputFlag::Attack;
     }
 }

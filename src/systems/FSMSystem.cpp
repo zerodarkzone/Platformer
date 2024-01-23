@@ -4,9 +4,9 @@
 
 #include "FSMSystem.hpp"
 
-void FiniteStateMachine::pushState(FSM::StateID id)
+void FiniteStateMachine::pushState(const FSM::StateID id)
 {
-    if (m_factories.count(id) == 0)
+    if (!m_factories.contains(id))
     {
         return;
     }
@@ -41,7 +41,7 @@ void FiniteStateMachine::clearStates()
     }
 }
 
-void FiniteStateMachine::changeState(FSM::StateID id)
+void FiniteStateMachine::changeState(const FSM::StateID id)
 {
     popState();
     pushState(id);

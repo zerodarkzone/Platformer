@@ -102,8 +102,8 @@ void PlayerSystem::process(float dt)
     for (auto& entity: getEntities())
     {
         auto& player = entity.getComponent<Player>();
-        auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
-        auto vel = body->GetLinearVelocity();
+        const auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
+        const auto vel = body->GetLinearVelocity();
         auto& stateMachine = entity.getComponent<FiniteStateMachine>();
         auto& animController = entity.getComponent<AnimationController>();
 
@@ -139,13 +139,11 @@ void PlayerSystem::fixedUpdate(float dt) {}
 
 void PlayerSystem::beginContact(b2Contact* contact)
 {
-    cro::Entity self, other;
-    b2Fixture *selfFixture, *otherFixture;
-    if (utils::processCollisionEvent(contact, ActorID::Player, getScene(), self, other, selfFixture, otherFixture))
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
     {
         auto& player = self.getComponent<Player>();
-        auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
-        auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
+        const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
+        const auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
         if (!fixtureData or !otherFixtureData)
             return;
 
@@ -178,13 +176,11 @@ void PlayerSystem::beginContact(b2Contact* contact)
 
 void PlayerSystem::endContact(b2Contact* contact)
 {
-    cro::Entity self, other;
-    b2Fixture *selfFixture, *otherFixture;
-    if (utils::processCollisionEvent(contact, ActorID::Player, getScene(), self, other, selfFixture, otherFixture))
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
     {
         auto& player = self.getComponent<Player>();
-        auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
-        auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
+        const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
+        const auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
         if (!fixtureData or !otherFixtureData)
             return;
 
@@ -221,13 +217,11 @@ void PlayerSystem::endContact(b2Contact* contact)
 
 void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-    cro::Entity self, other;
-    b2Fixture *selfFixture, *otherFixture;
-    if (utils::processCollisionEvent(contact, ActorID::Player, getScene(), self, other, selfFixture, otherFixture))
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
     {
-        auto& stateMachine = self.getComponent<FiniteStateMachine>();
-        auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
-        auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
+        const auto& stateMachine = self.getComponent<FiniteStateMachine>();
+        const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
+        const auto otherFixtureData = reinterpret_cast<ShapeInfo *>(otherFixture->GetUserData().pointer);
         if (!fixtureData or !otherFixtureData)
             return;
         if (fixtureData->type == FixtureType::Solid)
@@ -254,11 +248,9 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold* oldManifold)
 
 void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-    cro::Entity self, other;
-    b2Fixture *selfFixture, *otherFixture;
-    if (utils::processCollisionEvent(contact, ActorID::Player, getScene(), self, other, selfFixture, otherFixture))
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
     {
-        auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
+        const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
         if (fixtureData->type == FixtureType::Solid)
         {
             cro::Console::printStat("impulse n0: ", std::to_string(impulse->normalImpulses[0]));

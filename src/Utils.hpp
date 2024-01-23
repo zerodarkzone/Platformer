@@ -17,8 +17,7 @@
 
 namespace utils
 {
-	inline bool processCollisionEvent(b2Contact* contact, const ActorID selfType, const cro::Scene* scene, cro::Entity& self,
-			cro::Entity& other, b2Fixture*& selfFixture, b2Fixture*& otherFixture)
+	inline std::tuple<bool, cro::Entity, cro::Entity, b2Fixture*, b2Fixture*> processCollisionEvent(b2Contact* contact, const ActorID selfType, const cro::Scene* scene)
 	{
 		const auto fixtureA = contact->GetFixtureA();
 		const auto entityIDA = fixtureA->GetBody()->GetUserData().pointer;
@@ -30,21 +29,13 @@ namespace utils
 
 		if (entityA.isValid() && entityA.getComponent<ActorInfo>().id == selfType)
 		{
-			self = entityA;
-			other = entityB;
-			selfFixture = fixtureA;
-			otherFixture = fixtureB;
-			return true;
+			return {true, entityA, entityB, fixtureA, fixtureB};
 		}
 		if (entityB.isValid() && entityB.getComponent<ActorInfo>().id == selfType)
 		{
-			self = entityB;
-			other = entityA;
-			selfFixture = fixtureB;
-			otherFixture = fixtureA;
-			return true;
+			return {true, entityB, entityA, fixtureB, fixtureA};
 		}
-		return false;
+		return {false, cro::Entity{}, cro::Entity{}, nullptr, nullptr};
 	}
 
 	inline std::vector<std::uint8_t> getTexturePixels(const cro::Texture& texture)

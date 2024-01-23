@@ -6,7 +6,6 @@
 #define PHYSICS_TEST_FINITESTATEMACHINESYSTEM_HPP
 
 #include <stack>
-#include <memory>
 #include <cstdint>
 #include <map>
 #include <functional>
@@ -68,7 +67,7 @@ public:
 	[[nodiscard]] FSM::StateID getPrevStateID() const { return m_prevState; }
 	[[nodiscard]] bool isEmpty() const { return m_states.empty(); }
 	[[nodiscard]] std::size_t getSize() const { return m_states.size(); }
-	[[nodiscard]] bool hasState(FSM::StateID id) const { return m_factories.count(id) > 0; }
+	[[nodiscard]] bool hasState(const FSM::StateID id) const { return m_factories.contains(id); }
 private:
 	std::stack<std::unique_ptr<BaseState>> m_states;
 	std::map<FSM::StateID, std::function<std::unique_ptr<BaseState>(void)>> m_factories;
