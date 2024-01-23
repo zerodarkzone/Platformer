@@ -20,7 +20,7 @@ public:
 
 	~PlayerJumpingState() override = default;
 
-	PlayerJumpingState(FSM::StateID id, cro::Entity entity) : PlayerState(id, entity)
+	PlayerJumpingState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
 	{
 	}
 

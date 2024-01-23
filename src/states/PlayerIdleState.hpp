@@ -20,7 +20,7 @@ public:
 
 	~PlayerIdleState() override = default;
 
-	PlayerIdleState(FSM::StateID id, cro::Entity entity) : PlayerState(id, entity)
+	PlayerIdleState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
 	{
 	}
 };

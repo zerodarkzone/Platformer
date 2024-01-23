@@ -14,7 +14,7 @@
 
 namespace cro
 {
-	struct Camera;
+    struct Camera;
 }
 
 class PhysicsSystem;
@@ -22,45 +22,44 @@ class PhysicsSystem;
 class GameState final : public cro::State, public cro::GuiClient
 {
 public:
-	GameState(cro::StateStack&, cro::State::Context);
+    GameState(cro::StateStack&, cro::State::Context);
 
-	~GameState() override = default;
+    ~GameState() override = default;
 
-	cro::StateID getStateID() const override
-	{
-		return States::Game;
-	}
+    cro::StateID getStateID() const override
+    {
+        return States::Game;
+    }
 
-	bool handleEvent(const cro::Event&) override;
+    bool handleEvent(const cro::Event&) override;
 
-	void handleMessage(const cro::Message&) override;
+    void handleMessage(const cro::Message&) override;
 
-	bool simulate(float) override;
+    bool simulate(float) override;
 
-	void render() override;
+    void render() override;
 
 private:
+    cro::Scene m_gameScene;
+    cro::Scene m_uiScene;
+    PhysicsSystem* m_physicsSystem;
+    std::array<cro::Sprite, SpriteID::Count> m_sprites;
+    std::array<AnimationController, SpriteID::Count> m_animationControllers;
+    cro::ResourceCollection m_resources;
+    MapData m_mapData;
+    cro::Texture m_mapTexture;
+    cro::Entity m_playerEntity;
 
-	cro::Scene m_gameScene;
-	cro::Scene m_uiScene;
-	PhysicsSystem* m_physicsSystem;
-	std::array<cro::Sprite, SpriteID::Count> m_sprites;
-	std::array<AnimationController, SpriteID::Count> m_animationControllers;
-	cro::ResourceCollection m_resources;
-	MapData m_mapData;
-	cro::Texture m_mapTexture;
-	cro::Entity m_playerEntity;
+    void addSystems();
 
-	void addSystems();
+    void loadAssets();
 
-	void loadAssets();
+    void createScene();
 
-	void createScene();
+    void createUI();
 
-	void createUI();
-
-	//assigned to camera resize callback
-	void updateView(cro::Camera&);
+    //assigned to camera resize callback
+    void updateView(cro::Camera&);
 };
 
 #endif // PHYSICS_TEST_GAMESTATE_HPP

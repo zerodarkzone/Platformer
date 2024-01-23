@@ -20,7 +20,7 @@ public:
 
 	~PlayerAttackState() override = default;
 
-	PlayerAttackState(FSM::StateID id, cro::Entity entity) : PlayerState(id, entity)
+	PlayerAttackState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
 	{
 	}
 };

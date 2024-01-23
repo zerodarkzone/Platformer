@@ -88,12 +88,11 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
     {
         for (auto x = 0u; x < tileCount.x; ++x)
         {
-            const auto idx = y * tileCount.x + x;
-            if (tiles[idx].ID > 0)
+            if (const auto idx = y * tileCount.x + x; tiles[idx].ID > 0)
             {
                 //create the vertices
                 auto pixels = std::make_pair(
-                    glm::vec2(x * tileSize.x, map.getBounds().height - y * tileSize.y - tileSize.y),
+                    glm::vec2(static_cast<float>(x) * tileSize.x, map.getBounds().height - static_cast<float>(y) * tileSize.y - tileSize.y),
                     std::vector<std::uint8_t>(static_cast<std::size_t>(tileSize.x * tileSize.y * 4)));
 
                 std::size_t i = 0;
@@ -105,7 +104,7 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
                         const auto tileIdx = tiles[idx].ID - tilesets[i].getFirstGID(); //tile relative to first in set
                         const auto tileX = tileIdx % tilesets[i].getColumnCount();
                         const auto tileY = tileIdx / tilesets[i].getColumnCount();
-                        auto newPixels = utils::getTextureSubPixels(
+                        const auto newPixels = utils::getTextureSubPixels(
                             *textures[i], {
                                 static_cast<float>(tileX) * tileSize.x,
                                 static_cast<float>(textures[i]->getSize().y) -
@@ -145,15 +144,15 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
             }
             else
             {
-                const auto alpha = newPixels[j + 3] / 255.f;
-                const auto b_alpha = oldPixels[j + 3] / 255.f;
+                const auto alpha = static_cast<float>(newPixels[j + 3]) / 255.f;
+                const auto b_alpha = static_cast<float>(oldPixels[j + 3]) / 255.f;
                 const auto final_alpha = b_alpha * (1.f - alpha) + alpha;
-                oldPixels[j] = static_cast<std::uint8_t>((oldPixels[j] * b_alpha * (1.f - alpha) +
-                                                          newPixels[j] * alpha) / final_alpha);
-                oldPixels[j + 1] = static_cast<std::uint8_t>((oldPixels[j + 1] * b_alpha * (1.f - alpha) +
-                                                              newPixels[j + 1] * alpha) / final_alpha);
-                oldPixels[j + 2] = static_cast<std::uint8_t>((oldPixels[j + 2] * b_alpha * (1.f - alpha) +
-                                                              newPixels[j + 2] * alpha) / final_alpha);
+                oldPixels[j] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j]) * b_alpha * (1.f - alpha) +
+                                                          static_cast<float>(newPixels[j]) * alpha) / final_alpha);
+                oldPixels[j + 1] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j + 1]) * b_alpha * (1.f - alpha) +
+                                                              static_cast<float>(newPixels[j + 1]) * alpha) / final_alpha);
+                oldPixels[j + 2] = static_cast<std::uint8_t>((static_cast<float>(oldPixels[j + 2]) * b_alpha * (1.f - alpha) +
+                                                              static_cast<float>(newPixels[j + 2]) * alpha) / final_alpha);
                 oldPixels[j + 3] = static_cast<std::uint8_t>(255 * final_alpha);
             }
         }
@@ -208,10 +207,10 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
                         case "ghost"_hash:
                             shapeInfo.ghost = property.getBoolValue();
                             break;
+                        default: ;
                     }
                 }
-                auto shape = obj.getShape();
-                switch (shape)
+                switch (obj.getShape())
                 {
                     case tmx::Object::Shape::Rectangle:
                     {
@@ -292,8 +291,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
         if (objs.empty()) return 0;
         for (const auto& obj: objs)
         {
-            const auto type = cro::Util::String::toLower(obj.getClass());
-            if (type == "spawnpoint")
+            if (const auto type = cro::Util::String::toLower(obj.getClass()); type == "spawnpoint")
             {
                 spawnPoints[obj.getName()] = glm::vec2{
                     obj.getPosition().x + obj.getAABB().width / 2.f,
@@ -311,15 +309,15 @@ std::int32_t MapSystem::parseImageLayer(const tmx::Layer* layer, const tmx::Map&
 {
     if (layer->getVisible())
     {
-        auto imgLayer = dynamic_cast<const tmx::ImageLayer *>(layer);
-        auto name = imgLayer->getName();
-        auto texturePath = imgLayer->getImagePath();
-        auto position = glm::vec2{
-            imgLayer->getOffset().x, map.getBounds().height - (float)imgLayer->getOffset().y -
-                                     (float)imgLayer->getImageSize().y
+        const auto imgLayer = dynamic_cast<const tmx::ImageLayer *>(layer);
+        const auto name = imgLayer->getName();
+        const auto texturePath = imgLayer->getImagePath();
+        const auto position = glm::vec2{
+            imgLayer->getOffset().x, map.getBounds().height - static_cast<float>(imgLayer->getOffset().y) -
+                                     static_cast<float>(imgLayer->getImageSize().y)
         };
-        auto size = glm::vec2{imgLayer->getImageSize().x, imgLayer->getImageSize().y};
-        auto parallaxFactor = glm::vec2{imgLayer->getParallaxFactor().x, imgLayer->getParallaxFactor().y};
+        const auto size = glm::vec2{imgLayer->getImageSize().x, imgLayer->getImageSize().y};
+        const auto parallaxFactor = glm::vec2{imgLayer->getParallaxFactor().x, imgLayer->getParallaxFactor().y};
         const auto repeatX = imgLayer->hasRepeatX();
         const auto repeatY = imgLayer->hasRepeatY();
 

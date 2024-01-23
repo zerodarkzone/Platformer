@@ -35,7 +35,7 @@ source distribution.
 #include <crogine/core/Clock.hpp>
 
 MyApp::MyApp()
-    : App(0, 1.f / 120.f), m_stateStack({*this, getWindow()})
+    : App(0, 1.f / 60.f), m_stateStack({*this, getWindow()})
 {
     setApplicationStrings("Cage", "PhysicsTest");
     m_stateStack.registerState<MenuState>(States::ID::MainMenu);

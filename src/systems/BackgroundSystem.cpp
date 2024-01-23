@@ -18,18 +18,17 @@ BackgroundSystem::BackgroundSystem(cro::MessageBus& mb) : cro::System(mb, typeid
 
 void BackgroundSystem::handleMessage(const cro::Message&) {}
 
-void BackgroundSystem::process(float dt)
+void BackgroundSystem::process(float)
 {
-    auto& cameraTransform = getScene()->getActiveCamera().getComponent<cro::Transform>();
-    auto& camera = getScene()->getActiveCamera().getComponent<cro::Camera>();
-    auto& entities = getEntities();
-    for (auto& entity: entities)
+    const auto& cameraTransform = getScene()->getActiveCamera().getComponent<cro::Transform>();
+    const auto& camera = getScene()->getActiveCamera().getComponent<cro::Camera>();
+    for (auto& entities = getEntities(); auto& entity: entities)
     {
         auto& element = entity.getComponent<BackgroundElement>();
         auto& transform = entity.getComponent<cro::Transform>();
 
-        auto parallax = 1.0f - element.parallaxFactor;
-        auto position = glm::vec2{
+        const auto parallax = 1.0f - element.parallaxFactor;
+        const auto position = glm::vec2{
             element.position.x + ((cameraTransform.getPosition().x - camera.getViewSize().width / 2) * parallax.x),
             element.position.y +
             ((cameraTransform.getPosition().y - camera.getViewSize().height / 2) * parallax.y)

@@ -23,7 +23,7 @@ public:
 
 	void update(float) override {}
 
-	PlayerState(FSM::StateID id, cro::Entity entity) : BaseState(id, entity)
+	PlayerState(const FSM::StateID id, const cro::Entity entity) : BaseState(id, entity)
 	{
 	}
 

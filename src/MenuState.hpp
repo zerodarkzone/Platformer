@@ -17,36 +17,35 @@ Creates a state to render a menu.
 class MenuState final : public cro::State
 {
 public:
-	MenuState(cro::StateStack&, cro::State::Context);
+    MenuState(cro::StateStack&, cro::State::Context);
 
-	~MenuState() override = default;
+    ~MenuState() override = default;
 
-	cro::StateID getStateID() const override
-	{
-		return States::MainMenu;
-	}
+    cro::StateID getStateID() const override
+    {
+        return States::MainMenu;
+    }
 
-	bool handleEvent(const cro::Event&) override;
+    bool handleEvent(const cro::Event&) override;
 
-	void handleMessage(const cro::Message&) override;
+    void handleMessage(const cro::Message&) override;
 
-	bool simulate(float) override;
+    bool simulate(float) override;
 
-	void render() override;
+    void render() override;
 
 private:
+    cro::Scene m_scene;
+    cro::MeshResource m_meshResource;
+    cro::ShaderResource m_shaderResource;
+    cro::MaterialResource m_materialResource;
+    cro::TextureResource m_textureResource;
 
-	cro::Scene m_scene;
-	cro::MeshResource m_meshResource;
-	cro::ShaderResource m_shaderResource;
-	cro::MaterialResource m_materialResource;
-	cro::TextureResource m_textureResource;
+    void addSystems();
 
-	void addSystems();
+    void loadAssets();
 
-	void loadAssets();
-
-	void createScene();
+    void createScene();
 };
 
 #endif // PHYSICS_TEST_MENUSTATE_HPP

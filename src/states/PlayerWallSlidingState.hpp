@@ -20,7 +20,7 @@ public:
 
 	~PlayerWallSlidingState() override = default;
 
-	PlayerWallSlidingState(FSM::StateID id, cro::Entity entity) : PlayerState(id, entity)
+	PlayerWallSlidingState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
 	{
 	}
 };

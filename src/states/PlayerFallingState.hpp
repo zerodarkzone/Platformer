@@ -21,7 +21,7 @@ public:
 
 	~PlayerFallingState() override = default;
 
-	PlayerFallingState(FSM::StateID id, cro::Entity entity) : PlayerState(id, entity)
+	PlayerFallingState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
 	{
 	}
 };

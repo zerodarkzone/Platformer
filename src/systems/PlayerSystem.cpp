@@ -139,7 +139,8 @@ void PlayerSystem::fixedUpdate(float) {}
 
 void PlayerSystem::beginContact(b2Contact* contact)
 {
-    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(
+        contact, ActorID::Player, getScene()); process)
     {
         auto& player = self.getComponent<Player>();
         const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
@@ -176,7 +177,8 @@ void PlayerSystem::beginContact(b2Contact* contact)
 
 void PlayerSystem::endContact(b2Contact* contact)
 {
-    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(
+        contact, ActorID::Player, getScene()); process)
     {
         auto& player = self.getComponent<Player>();
         const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
@@ -217,7 +219,8 @@ void PlayerSystem::endContact(b2Contact* contact)
 
 void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold*)
 {
-    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(
+        contact, ActorID::Player, getScene()); process)
     {
         const auto& stateMachine = self.getComponent<FiniteStateMachine>();
         const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
@@ -248,7 +251,8 @@ void PlayerSystem::preSolve(b2Contact* contact, const b2Manifold*)
 
 void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(contact, ActorID::Player, getScene()); process)
+    if (auto [process, self, other, selfFixture, otherFixture] = utils::processCollisionEvent(
+        contact, ActorID::Player, getScene()); process)
     {
         const auto fixtureData = reinterpret_cast<ShapeInfo *>(selfFixture->GetUserData().pointer);
         if (fixtureData->type == FixtureType::Solid)

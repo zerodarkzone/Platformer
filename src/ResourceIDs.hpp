@@ -33,91 +33,79 @@ source distribution.
 
 namespace MaterialID
 {
-	/*enum
-	{
+    /*enum
+    {
 
-	};*/
+    };*/
 }
 
 namespace MeshID
 {
-	/*enum
-	{
+    /*enum
+    {
 
-	};*/
+    };*/
 }
 
-namespace GameModelID
-{
+namespace GameModelID {}
 
-}
+namespace FontID {}
 
-namespace FontID
-{
-
-}
-
-namespace ShaderID
-{
-
-}
+namespace ShaderID {}
 
 namespace CommandID
 {
-	enum
-	{
-		Player1 = 0x1,
-		AI = 0x2,
-		Map = 0x4,
-	};
+    enum
+    {
+        Player1 = 0x1,
+        AI = 0x2,
+        Map = 0x4,
+    };
 }
 
 namespace TextureID
 {
-	enum
-	{
-		//game
-		Background = 1,
-		Background2,
-		Background3,
-	};
+    enum
+    {
+        //game
+        Background = 1,
+        Background2,
+        Background3,
+    };
 }
 
 namespace AnimationID
 {
-	enum Animation : short
-	{
-		None = -1,
-		Idle,
-		Walk,
-		Run,
-		Attack,
-		AttackCombo,
-		Die,
-		Dead,
-		PrepareJump,
-		Jump,
-		ReloadJump,
-		Fall,
-		Land,
-		StartSlide,
-		Slide,
-		EndSlide,
-		WallSlide,
-		Count
-	};
+    enum Animation : short
+    {
+        None = -1,
+        Idle,
+        Walk,
+        Run,
+        Attack,
+        AttackCombo,
+        Die,
+        Dead,
+        PrepareJump,
+        Jump,
+        ReloadJump,
+        Fall,
+        Land,
+        StartSlide,
+        Slide,
+        EndSlide,
+        WallSlide,
+        Count
+    };
 }
 
 namespace SpriteID
 {
-	enum : int8_t
-	{
-		Player = 0,
-		Count
-	};
+    enum : int8_t
+    {
+        Player = 0,
+        Count
+    };
 }
 
-namespace CollisionID
-{
-
-}
+namespace CollisionID {}

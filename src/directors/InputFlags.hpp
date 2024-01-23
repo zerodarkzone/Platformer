@@ -9,18 +9,19 @@
 
 namespace InputFlag
 {
-	typedef std::uint8_t InputFlag_t;
-	enum : InputFlag_t
-	{
-		Up = 0x1,
-		Down = 0x2,
-		Left = 0x4,
-		Right = 0x8,
-		Jump = 0x10,
-		Attack = 0x20,
-		StateChanged = (1 << 7),
-		Stop = 0
-	};
+    typedef std::uint8_t InputFlag_t;
+
+    enum : InputFlag_t
+    {
+        Up = 0x1,
+        Down = 0x2,
+        Left = 0x4,
+        Right = 0x8,
+        Jump = 0x10,
+        Attack = 0x20,
+        StateChanged = (1 << 7),
+        Stop = 0
+    };
 }
 
 #endif //PHYSICS_TEST_INPUTFLAGS_HPP
