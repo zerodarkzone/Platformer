@@ -3,10 +3,10 @@
 //
 
 #include "PlayerSlidingState.hpp"
-#include "systems/PlayerSystem.hpp"
 #include "directors/InputFlags.hpp"
-#include "systems/PhysicsSystem.hpp"
 #include "systems/AnimationController.hpp"
+#include "systems/PhysicsSystem.hpp"
+#include "systems/PlayerSystem.hpp"
 
 
 void PlayerSlidingState::handleInput(const std::uint8_t input)
@@ -182,7 +182,7 @@ bool PlayerSlidingState::checkStand()
     const auto world = body->GetWorld();
     const auto hw = Convert::toPhysFloat(player.slideCollisionShapeInfo.size.x / 2);
     const auto yOff = Convert::toPhysFloat(player.slideCollisionShapeInfo.offset.y);
-    auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
+    const auto raycastPoints = std::vector<std::pair<RayCastFlag_t, b2Vec2>>{
         {RayCastFlag::Middle, {body->GetPosition().x, body->GetPosition().y + yOff}},
         {RayCastFlag::Right, {body->GetPosition().x + hw, body->GetPosition().y + yOff}},
         {RayCastFlag::Left, {body->GetPosition().x - hw, body->GetPosition().y + yOff}},
