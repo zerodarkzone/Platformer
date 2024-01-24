@@ -15,9 +15,6 @@
 #include <box2d/b2_world_callbacks.h>
 
 #include "ShapeUserInfo.hpp"
-#include "states/PlayerStateIDs.hpp"
-#include "states/PlayerState.hpp"
-
 
 struct Player
 {

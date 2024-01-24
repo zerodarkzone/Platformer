@@ -6,6 +6,7 @@
 #define PHYSICS_TEST_PHYSICSSYSTEM_HPP
 
 #include "DebugDraw.hpp"
+#include "PhysicsSystemConfig.hpp"
 
 #include <map>
 #include <span>
@@ -104,8 +105,6 @@ struct ShapeInfo final
 {
     FixtureType type = FixtureType::None;
 };
-#else
-#include "ShapeUserInfo.hpp"
 #endif
 
 class PhysicsSystem;

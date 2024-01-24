@@ -2,9 +2,9 @@
 // Created by juanb on 28/12/2023.
 //
 
-#include <crogine/ecs/components/Transform.hpp>
-#include <crogine/ecs/components/SpriteAnimation.hpp>
 #include <crogine/ecs/components/Drawable2D.hpp>
+#include <crogine/ecs/components/SpriteAnimation.hpp>
+#include <crogine/ecs/components/Transform.hpp>
 
 #include "AnimationController.hpp"
 #include "Messages.hpp"

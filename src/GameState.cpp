@@ -65,9 +65,8 @@ source distribution.
 
 namespace
 {
-    const glm::vec2 CAMERA_SIZE(382, 215);
-    const float ASPECT_RATIO = CAMERA_SIZE.y / CAMERA_SIZE.x;
-    const float UIPadding = 20.f;
+    constexpr glm::vec2 CAMERA_SIZE(382, 215);
+    constexpr float ASPECT_RATIO = CAMERA_SIZE.y / CAMERA_SIZE.x;
 }
 
 GameState::GameState(cro::StateStack& stack, cro::State::Context context)

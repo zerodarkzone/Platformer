@@ -5,11 +5,12 @@
 #include <crogine/ecs/systems/CommandSystem.hpp>
 
 #include "PlayerDirector.hpp"
-#include "ResourceIDs.hpp"
-#include "systems/PlayerSystem.hpp"
-#include "systems/PhysicsSystem.hpp"
-#include "Messages.hpp"
 #include "InputFlags.hpp"
+#include "Messages.hpp"
+#include "ResourceIDs.hpp"
+#include "states/PlayerStateIDs.hpp"
+#include "systems/FSMSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
 
 PlayerDirector::PlayerDirector() : m_currentInput(0) {}
 

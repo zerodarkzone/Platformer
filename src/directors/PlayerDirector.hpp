@@ -6,7 +6,6 @@
 #define PHYSICS_TEST_PLAYERDIRECTOR_HPP
 
 #include <crogine/ecs/Director.hpp>
-#include <crogine/detail/glm/vec2.hpp>
 
 
 class PlayerDirector final : public cro::Director
