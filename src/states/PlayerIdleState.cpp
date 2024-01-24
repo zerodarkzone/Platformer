@@ -57,7 +57,9 @@ void PlayerIdleState::fixedUpdate(float)
 
 void PlayerIdleState::onEnter()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerIdleState Enter");
+#endif
     auto& animController = m_entity.getComponent<AnimationController>();
     if (m_entity.getComponent<FiniteStateMachine>().getPrevStateID() == PlayerStateID::State::Sliding)
     {
@@ -79,5 +81,7 @@ void PlayerIdleState::onEnter()
 
 void PlayerIdleState::onExit()
 {
+#if CRO_DEBUG_
     cro::Logger::log("PlayerIdleState Exit");
+#endif
 }
