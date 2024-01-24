@@ -6,8 +6,8 @@
     "activeFile": "level_00.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "Rules",
-        "."
+        ".",
+        "Rules"
     ],
     "file.lastUsedOpenFilter": "Todos los archivos (*)",
     "fileStates": {
@@ -43,7 +43,7 @@
         },
         "decorations.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 0.25,
+            "scaleInDock": 4,
             "scaleInEditor": 1
         },
         "level_00.tmx": {
@@ -53,13 +53,13 @@
             "scale": 3,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 2931,
-                "y": 186.66666666666663
+                "x": 2965.333333333333,
+                "y": 186.33333333333334
             }
         },
         "oak_woods_tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 5.5,
             "scaleInEditor": 1.5
         },
         "template.tsx": {
@@ -86,9 +86,9 @@
     "project": "platformer.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "level_00.tmx",
         "Rules/autotile_rules.tmx",
         "oak_woods_tileset.tsx",
+        "level_00.tmx",
         "decorations.tsx",
         "E:/xygine/Pacman/assets/maps/maze.tmx",
         "Rules/autitile_rules.tmx"
