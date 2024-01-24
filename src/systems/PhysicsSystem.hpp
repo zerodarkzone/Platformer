@@ -167,10 +167,15 @@ public:
         return m_deleteShapeUserInfo;
     }
 
+    [[nodiscard]] inline std::size_t getShapeCount() const
+    {
+        return m_shapeCount;
+    }
+
+    static constexpr std::size_t MaxShapes = 25u;
 private:
     Type m_type;
     b2Body* m_body;
-    static constexpr std::size_t MaxShapes = 100u;
     std::array<b2Fixture *, MaxShapes> m_shapes{};
     std::size_t m_shapeCount;
     PhysicsSystem* m_system;

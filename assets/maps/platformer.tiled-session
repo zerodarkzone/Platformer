@@ -34,11 +34,11 @@
             }
         },
         "Rules/autotile_rules.tmx": {
-            "scale": 2,
+            "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 415,
-                "y": 311.75
+                "x": 147.75,
+                "y": 414.75
             }
         },
         "decorations.tsx": {
@@ -50,11 +50,11 @@
             "expandedObjectLayers": [
                 6
             ],
-            "scale": 1.5,
-            "selectedLayer": 6,
+            "scale": 3,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 1080,
-                "y": 143.66666666666666
+                "x": 2931,
+                "y": 186.66666666666663
             }
         },
         "oak_woods_tileset.tsx": {
@@ -63,6 +63,7 @@
             "scaleInEditor": 1.5
         },
         "template.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1
         }
     },
@@ -92,6 +93,7 @@
         "E:/xygine/Pacman/assets/maps/maze.tmx",
         "Rules/autitile_rules.tmx"
     ],
+    "resizeMap.removeObjects": false,
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 24,

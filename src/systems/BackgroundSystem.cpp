@@ -20,8 +20,9 @@ void BackgroundSystem::handleMessage(const cro::Message&) {}
 
 void BackgroundSystem::process(float)
 {
-    const auto& cameraTransform = getScene()->getActiveCamera().getComponent<cro::Transform>();
-    const auto& camera = getScene()->getActiveCamera().getComponent<cro::Camera>();
+    auto camEntity = getScene()->getActiveCamera();
+    const auto& cameraTransform = camEntity.getComponent<cro::Transform>();
+    const auto& camera = camEntity.getComponent<cro::Camera>();
     for (auto& entities = getEntities(); auto& entity: entities)
     {
         auto& element = entity.getComponent<BackgroundElement>();

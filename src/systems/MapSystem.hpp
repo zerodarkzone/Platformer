@@ -18,6 +18,8 @@
 
 struct MapData
 {
+	cro::Entity entity;
+	cro::Entity parent;
 	std::string mapName{};
 	glm::vec2 position{};
 	glm::vec2 tileSize{};

@@ -60,6 +60,7 @@ namespace CommandID
         Player1 = 0x1,
         AI = 0x2,
         Map = 0x4,
+        MapChild = 0x8,
     };
 }
 

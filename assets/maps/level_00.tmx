@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="90" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="12" nextobjectid="121">
- <editorsettings>
-  <export target="level_00.tmx" format="tmx"/>
- </editorsettings>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="130" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="12" nextobjectid="153">
  <tileset firstgid="1" source="oak_woods_tileset.tsx"/>
  <tileset firstgid="316" source="template.tsx"/>
  <tileset firstgid="372" source="decorations.tsx"/>
@@ -15,24 +12,24 @@
  <imagelayer id="4" name="background3" locked="1" offsetx="0" offsety="72" repeatx="1">
   <image source="../images/background_layer_3.png" width="320" height="180"/>
  </imagelayer>
- <layer id="7" name="void" width="90" height="12">
+ <layer id="7" name="void" width="130" height="12">
   <data encoding="base64" compression="zlib">
-   eJztwwENAAAIA6Dbyf7Z3kNhIwEAAOCjHb2zxWAlRQ==
+   eJztwzENAAAIA7DhCf/admAAAW3SBAAAAADgZ0f1FuAHNdU=
   </data>
  </layer>
- <layer id="11" name="prototype" width="90" height="12" visible="0">
+ <layer id="11" name="prototype" width="130" height="12" visible="0">
   <data encoding="base64" compression="zlib">
-   eJztkjEOwCAIRfVuXMWxS3v/xA52aRrAVMCQP7zNj5+nVEs5gCk0iO6RHXiG50zA8x6e8QY+ni3vjd49u2cKujfSF5ejaufE0/F7j7+uHs6bazKn6SV1+zoX/We5XTTdpHxjfEtZLStnru7mTTOcDc9zdBQmqWQ=
+   eJztlDkOwDAIBM3f+IrLNMn/paRIFYF8IS+OKbbEwDAyU0pHZOvwG/QckfBg53hhHx5gb++FfXiA5e2FfckDL3P+IUyyBx4Yo+bwsLt3D2YyQngg8VglvXMzrfsfaLNb9Z294+g+3/rzydXZ38orK/bSexq3Ul9tz1n3bnGglmOpPpPuQ03fFv5ITrUMR96RuKyWbMRgxNueOovdwwPboD24AeuXaFM=
   </data>
  </layer>
- <layer id="5" name="terrain" width="90" height="12">
+ <layer id="5" name="terrain" width="130" height="12">
   <data encoding="base64" compression="zlib">
-   eJztVEEOgjAQbI0JJy9GITzDRxi/42v0Ez6MZ7gNbEImsNhadwl2kuHS7nRmKLSu4Neoia21iT9A6VkHpWcdlJ51sNTzQcvIxmF1ny8GZ1rCoucrsSPelM/NAU/cJ8xJPQfN3cAUbQn3zHoSOEc1MDVP0DnR4+x7jQfxGTGHPbOvsNa4nkF7yRvPjfdZ/x84I+eIycPzfNemdF5uvm/skd+PpIf70KOf0TuCdgVErXGuGE7pSlnQZ8o89o2ePp2ViN9AnUnrG5218w3aphT0
+   eJztVcENwjAMbBFSX3wb+oIVGAIxBEswDSzBHjAWsagl10rcJEQxVXPSPZBic76c06GpWDt6y0FbRIU6ag50cdIWMKLmoDzo3V/VVExRc1AWreWb/F5KDnalhKwAkAHTTv1+WW6V9FBovQf/8l0sCfDaNFO/Jf9L7qBGDs6WR7sXl8L/mwOw0yn7i29BTA5KQtIB2jcjc79dt8z9JOAc3cjUefAu9+23x93yEVEHGciVA9il1D1yvTMuHegb1Q6zz3mHdfSc9vvP7yBmHqzHXXD1eTb+PLh8DMlBrtzGAHRgvqV5DTvHdVG/6bkD690x8l7U9xi6+kqzcJ0p9TwPXFOIj/i+oAe/5JZ6F5ohX1ZDyTPcJ/Tw7UdqnyUTPZDmn/t++GqlOlrzAfS2Ha8=
   </data>
  </layer>
- <layer id="10" name="decorations" width="90" height="12">
+ <layer id="10" name="decorations" width="130" height="12">
   <data encoding="base64" compression="zlib">
-   eJztkskKgDAMRJt/djkoireCfrQVLMTQYFwCIvMubXN4GZKGAAAAAAAAvkJFPt6Rjmemdeon3V59asf8Ejm7jGVnvTHnnf1zN783ikurv8Gc3Avps/LOMQmnnOeT/8Ld2z3u705xlurxQv9S1sE427McAPyVFfvLD58=
+   eJztlukKgCAQhPOdO4ii6F/XQ6eQIIvWVtoWzAeRCc1O7YFZBgAAQIJeSTsAAHwVzAcA/kku1LuV8MywM4vOrpS+XO1UcYoX/2uMud8K1AGn5rm+7vSPq+2uy4BWaD8Gi9ZeFS+XMX3YeJO+z/oaPnqGoL5ovp/0m6tt1uP+3AQ0ffvjhfg+rx0z92c+3qQm8W0NHX0HfQcAAAwb+SYWNA==
   </data>
  </layer>
  <objectgroup id="6" name="colliders" class="Collider">
@@ -45,7 +42,7 @@
    <property name="sensorType" value="None"/>
    <property name="shapeType" value="Ground"/>
   </properties>
-  <object id="36" type="Collider" x="24" y="0" width="2112" height="3">
+  <object id="36" type="Collider" x="24" y="0" width="3072" height="3">
    <properties>
     <property name="ActorInfo" value="Floor"/>
     <property name="density" type="float" value="1"/>
@@ -404,7 +401,7 @@
    </properties>
    <polyline points="0,0 0,24"/>
   </object>
-  <object id="111" type="Collider" x="2136" y="0">
+  <object id="111" type="Collider" x="3096" y="0">
    <properties>
     <property name="ActorInfo" value="Wall"/>
     <property name="density" type="float" value="1"/>
@@ -414,7 +411,7 @@
     <property name="sensorType" value="None"/>
     <property name="shapeType" value="Wall"/>
    </properties>
-   <polyline points="0,0 0,192"/>
+   <polyline points="0,0 0,240"/>
   </object>
   <object id="112" type="Collider" x="720" y="144">
    <properties>
@@ -464,7 +461,7 @@
    </properties>
    <polyline points="0,0 -288,0 -288,-24 -360,-24 -360,0 -384,0"/>
   </object>
-  <object id="117" type="Collider" x="2160" y="288">
+  <object id="117" type="Collider" x="3120" y="288">
    <properties>
     <property name="ActorInfo" value="Sensor"/>
     <property name="density" type="float" value="1"/>
@@ -474,7 +471,7 @@
     <property name="sensorType" value="Bottom"/>
     <property name="shapeType" value="Sensor"/>
    </properties>
-   <polyline points="0,0 -2160,0"/>
+   <polyline points="0,0 -3120,0"/>
   </object>
   <object id="118" type="Collider" x="2064" y="240">
    <properties>
@@ -511,6 +508,279 @@
     <property name="shapeType" value="Slope"/>
    </properties>
    <polyline points="48,24 24,24 -72,-24 -96,-24"/>
+  </object>
+  <object id="121" type="Collider" x="2280" y="48">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,192"/>
+  </object>
+  <object id="123" type="Collider" x="2328" y="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-120"/>
+  </object>
+  <object id="124" type="Collider" x="2304" y="120">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-72"/>
+  </object>
+  <object id="126" type="Collider" x="2376" y="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,72"/>
+  </object>
+  <object id="128" type="Collider" x="2736" y="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,72"/>
+  </object>
+  <object id="130" type="Collider" x="3048" y="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,72"/>
+  </object>
+  <object id="131" type="Collider" x="2160" y="120">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,48"/>
+  </object>
+  <object id="133" type="Collider" x="2280" y="240">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -48,0"/>
+  </object>
+  <object id="135" type="Collider" x="2304" y="48">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0"/>
+  </object>
+  <object id="136" type="Collider" x="2352" y="240">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0"/>
+  </object>
+  <object id="138" type="Collider" x="2904" y="240">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -168,0"/>
+  </object>
+  <object id="139" type="Collider" x="3096" y="240">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -48,0"/>
+  </object>
+  <object id="141" type="Collider" x="2448" y="144" width="24" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="142" type="Collider" x="2616" y="192" width="48" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+  </object>
+  <object id="143" type="Collider" x="2328" y="120">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0"/>
+  </object>
+  <object id="144" type="Collider" x="2160" y="168">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0 -24,24"/>
+  </object>
+  <object id="145" type="Collider" x="2232" y="240">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-56 0,-168"/>
+  </object>
+  <object id="146" type="Collider" x="2352" y="312">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-24 0,-72"/>
+  </object>
+  <object id="147" type="Collider" x="2568" y="312">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-24 0,-72"/>
+  </object>
+  <object id="148" type="Collider" x="2904" y="312">
+   <properties>
+    <property name="ActorInfo" value="Wall"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Wall"/>
+   </properties>
+   <polyline points="0,0 0,-24 0,-72"/>
+  </object>
+  <object id="149" type="Collider" x="2232" y="72">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0 -24,24 -48,24 -48,48 -72,48"/>
+  </object>
+  <object id="151" type="Collider" x="2568" y="240">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
+   <polyline points="0,0 -24,0 -24,-24 -168,-24 -168,0 -192,0"/>
+  </object>
+  <object id="152" type="Collider" x="2976" y="192" width="24" height="24">
+   <properties>
+    <property name="ActorInfo" value="Floor"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.2"/>
+    <property name="ghost" type="bool" value="false"/>
+    <property name="restitution" type="float" value="0.02"/>
+    <property name="sensorType" value="None"/>
+    <property name="shapeType" value="Ground"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

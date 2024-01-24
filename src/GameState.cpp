@@ -269,12 +269,28 @@ void GameState::createScene()
     mapEntity.addComponent<cro::CommandTarget>().ID = CommandID::Map;
     mapEntity.addComponent<ActorInfo>({ActorID::Map});
     mapEntity.addComponent<MapData>() = m_mapData;
-    auto& mapBody = mapEntity.addComponent<PhysicsObject>();
-    mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
+    mapEntity.getComponent<MapData>().entity = mapEntity;
+    mapEntity.getComponent<MapData>().parent = mapEntity;
+    auto mapBody = &mapEntity.addComponent<PhysicsObject>();
+    *mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
                                             PhysicsObject::Type::Static, true);
-    mapBody.setDeleteShapeUserInfo(true);
+    mapBody->setDeleteShapeUserInfo(true);
     for (auto& info: m_mapData.collisionShapes)
     {
+        if (mapBody->getShapeCount() >= PhysicsObject::MaxShapes)
+        {
+            auto childEntity = m_gameScene.createEntity();
+            mapEntity.getComponent<cro::Transform>().addChild(childEntity.addComponent<cro::Transform>());
+            childEntity.addComponent<cro::CommandTarget>().ID = CommandID::MapChild;
+            childEntity.addComponent<ActorInfo>({ActorID::Map});
+            childEntity.addComponent<MapData>() = m_mapData;
+            childEntity.getComponent<MapData>().entity = childEntity;
+            childEntity.getComponent<MapData>().parent = mapEntity;
+            mapBody = &childEntity.addComponent<PhysicsObject>();
+            *mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
+                                            PhysicsObject::Type::Static, true);
+            mapBody->setDeleteShapeUserInfo(true);
+        }
         b2Fixture* fixture = nullptr;
         switch (info.shape)
         {
@@ -282,7 +298,7 @@ void GameState::createScene()
                 break;
             case ShapeType::Circle:
             {
-                fixture = mapBody.addCircleShape(
+                fixture = mapBody->addCircleShape(
                     {
                         .restitution = info.restitution, .density = info.density,
                         .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
@@ -292,7 +308,7 @@ void GameState::createScene()
             break;
             case ShapeType::Box:
             {
-                fixture = mapBody.addBoxShape(
+                fixture = mapBody->addBoxShape(
                     {
                         .restitution = info.restitution, .density = info.density,
                         .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
@@ -306,7 +322,7 @@ void GameState::createScene()
                     {
                         auto ghostVert1 = info.points[0];
                         auto ghostVert2 = info.points[info.pointsCount - 1];
-                        fixture = mapBody.addChainShape(
+                        fixture = mapBody->addChainShape(
                             {
                                 .restitution = info.restitution, .density = info.density,
                                 .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
@@ -315,7 +331,7 @@ void GameState::createScene()
                     }
                     else
                     {
-                        fixture = mapBody.addChainShape({
+                        fixture = mapBody->addChainShape({
                                                             .restitution = info.restitution, .density = info.density,
                                                             .isSensor = info.type == FixtureType::Sensor,
                                                             .friction = info.friction
@@ -325,7 +341,7 @@ void GameState::createScene()
                 break;
             case ShapeType::Polygon:
             {
-                fixture = mapBody.addPolygonShape(
+                fixture = mapBody->addPolygonShape(
                     {
                         .restitution = info.restitution, .density = info.density,
                         .isSensor = info.type == FixtureType::Sensor, .friction = info.friction

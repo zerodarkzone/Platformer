@@ -7,17 +7,17 @@
  <tileset firstgid="57" source="../oak_woods_tileset.tsx"/>
  <layer id="1" name="regions" width="34" height="26" opacity="0.31">
   <data encoding="base64" compression="zlib">
-   eJztlUEKwCAMBH2T/39cLz0tiW5sYldwQNAidrK12lo9/W3Yt+ZhH59ZjX0f62E5rXiM1ox6KICeWLuXS2aN3nrM9zkpa5ZZDuzcDI/Rf8aOMzy88c48VIjWXJFBdA9YeyLrzPyax6lnt0XkbqysVcVDhd1nprrHDBWPy+VvHvbnHFM=
+   eJztlUsOwCAIRD2T9z9cN3VD+AwWKSS+xESMscOIdIzzzHfQObePzukaN9DvoTo4TTs6tDO9OipAddLcJV8ic5TOQ+6nk9colg/o3ggd2jtD4wgdUpzpRxW8OZ/wwFsDXE1E9cyvfnTt3Rw7/0krztCh1Ufn+1hk98zqOiyq6Lhc/uYBR2QeRw==
   </data>
  </layer>
  <layer id="2" name="input_prototype" width="34" height="26" opacity="0.55">
   <data encoding="base64" compression="zlib">
-   eJztlUkKwCAMRd16le4qdLj/yWpBIQ2JSbVKWvog4BDw++PgXH98jJDaIfW5PAfyqDEqtOtpdVCaAhqjQkuNDgtgr7N2uJdSPKUBrklp4+pzt05vQPJBm9sKd6ZxvXAduHrWYsUPK0h7xJ70uB+53vh8eOX8yRJjTe0txt6gpdSX/JrdVfdUqcMCpX+S8qnX20mdBawJ5n7xnkJGv5kc0rpW/tRRfvz8WOcAmRcQWQ==
+   eJztldsKgCAMhr3tVbpL6PD+T5aBgv1sbmmHBX4wmDbZ72bq3PMMwXz0fRxzcS6Lo+Yo0+bT6qA0eZijTEuNDgtgrZP2fC8lu0tDnpPSxvXnap/+gFQHbWwr3JnGfmEfuH7WYqUeVpD2iDV54v9I/cbzMSi/H8zBluivwbYGLaWxVK/JnXWPlTosUHonKR/X4LoWHVQ+6e1GXXfeI1/y9p3JIeW18qa+VY9Oxzo73l4RVw==
   </data>
  </layer>
  <layer id="3" name="output_terrain" width="34" height="26">
   <data encoding="base64" compression="zlib">
-   eJxjYKA9CETj++FQ549FrJKK9qWhiScTYZYVDjEQtodiKxzqSHXfUAQrBsDOTALy6PFDbjyNAuJBPRq/Fok9GU3uLRrflfrOGQWDDNig8S3R+NVo/Ao0/hkgPgtlnwPi81RyF6ngIRr/yYC4gvbAnBGVb8GIXR01gC+a2T40tGuogvgBChMvAvYqjMbVKBgFgwYAAFPQEwA=
+   eJxjYKA9CETj++FQ549FrJKK9qWhiScTYZYVDjEQtodiKxzqSHXfUAQrBsDOTALy6PFDbjyNAuJBPRq/Fok9GU3uLRrflfrOGQWDDNig8S3R+NVo/Ao0/hkgPgtlnwPi81RyF6ngIRr/yYC4gvbAnBFCWzDS3q4ANDv8ibDzPzZBOrh1oED8APktnIC9EcM4zEfBKBhqAACE5RRL
   </data>
  </layer>
 </map>
