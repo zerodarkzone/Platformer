@@ -21,9 +21,9 @@ AnimationControllerSystem::AnimationControllerSystem(cro::MessageBus& mb) : cro:
     std::ranges::fill(m_animationStopped, false);
 }
 
-void AnimationControllerSystem::handleMessage(const cro::Message& msg) {}
+void AnimationControllerSystem::handleMessage(const cro::Message&) {}
 
-void AnimationControllerSystem::process(float dt)
+void AnimationControllerSystem::process(float)
 {
     for (auto& entity: getEntities())
     {

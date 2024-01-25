@@ -199,7 +199,9 @@ bool PlayerSlidingState::checkStand()
     }
     if (rayCastFlags != RayCastFlag::None)
     {
+#if CRO_DEBUG_
         cro::Logger::log("raycast hit");
+#endif
         return false;
     }
     return true;

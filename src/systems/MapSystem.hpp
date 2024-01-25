@@ -33,9 +33,7 @@ struct MapData
 
 	MapData() = default;
 
-	explicit MapData(std::string mapName) : mapName(std::move(mapName))
-	{
-	}
+	explicit MapData(std::string mapName) : mapName(std::move(mapName)) {}
 };
 
 class MapSystem final : public cro::System
@@ -54,11 +52,11 @@ private:
 	static std::int32_t parseTileLayer(const tmx::Layer* layer, const tmx::Map& map, cro::Texture& /*out*/ mapTexture);
 
 	static std::int32_t parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize,
-			std::unordered_map<std::string, glm::vec2>& /*out*/ spawnPoints,
-			std::vector<ShapeInfo>& /*out*/ shapes);
+	                                  std::unordered_map<std::string, glm::vec2>& /*out*/ spawnPoints,
+	                                  std::vector<ShapeInfo>& /*out*/ shapes);
 
 	static std::int32_t parseImageLayer(const tmx::Layer* layer, const tmx::Map& map,
-			std::map<std::string, BackgroundElement>& /*out*/ elements);
+	                                    std::map<std::string, BackgroundElement>& /*out*/ elements);
 };
 
 

@@ -174,6 +174,7 @@ public:
     }
 
     static constexpr std::size_t MaxShapes = 25u;
+
 private:
     Type m_type;
     b2Body* m_body;
