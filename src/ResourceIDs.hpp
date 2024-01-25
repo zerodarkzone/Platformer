@@ -108,5 +108,3 @@ namespace SpriteID
         Count
     };
 }
-
-namespace CollisionID {}

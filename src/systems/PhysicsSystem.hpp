@@ -86,6 +86,7 @@ struct ShapeProperties final
     float friction = 0.2f;; //surface friction of a shape
     std::uint16_t layer = CollisionLayer::LAYER1;
     std::uint16_t mask = CollisionLayer::SET;
+    std::int16_t groupIndex = 0;
 };
 
 #ifndef USE_SHAPE_USER_INFO
@@ -150,7 +151,7 @@ public:
     b2Fixture* addChainShape(const ShapeProperties&, const std::span<glm::vec2>& points, bool loop = false,
                              glm::vec2 prevPoint = {}, glm::vec2 nextPoint = {}, bool sort = false);
 
-    void removeShape(b2Fixture*);
+    void removeShape(const b2Fixture*);
 
     [[nodiscard]] inline b2Body* getPhysicsBody() const
     {

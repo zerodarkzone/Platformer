@@ -49,6 +49,8 @@ struct Player
     float wallSlideGravityScale = 0.3f;
     float normalGravityScale = 1.f;
     float minSlideSpeed = 2.7f;
+    std::uint16_t layer = 0;
+    std::uint16_t mask = 0;
 
     constexpr static float maxSpeed = 6.f;
     std::uint16_t maxConsecutiveWallJumps = 3u;

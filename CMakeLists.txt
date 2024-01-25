@@ -8,6 +8,8 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mo
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++20")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wreorder -DCRO_DEBUG_")
 set(CMAKE_CXX_FLAGS_RELEASE "-s -O3 -flto=auto -march=native -DNDEBUG")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g -flto=auto -march=native -fprofile-generate -DNDEBUG")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O2 -s -flto=auto -march=native -fprofile-use -fprofile-correction -DNDEBUG")
 
 # We're using c++20
 SET (CMAKE_CXX_STANDARD 20)

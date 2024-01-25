@@ -24,6 +24,9 @@ struct MapData
 	glm::vec2 position{};
 	glm::vec2 tileSize{};
 	glm::vec2 mapSize{};
+	std::uint16_t layer = 0;
+	std::uint16_t mask = 0;
+	std::int16_t groupIndex = 0;
 	std::vector<ShapeInfo> collisionShapes;
 	std::unordered_map<std::string, glm::vec2> spawnPoints;
 	std::map<std::string, BackgroundElement> backgroundElements;

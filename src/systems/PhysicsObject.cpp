@@ -14,10 +14,7 @@ PhysicsObject::PhysicsObject(bool deleteShapeUserInfo)
       m_prevRotation(0),
       m_deleteShapeUserInfo(deleteShapeUserInfo)
 {
-    for (auto& s: m_shapes)
-    {
-        s = nullptr;
-    }
+    std::ranges::fill(m_shapes, nullptr);
 }
 
 PhysicsObject::~PhysicsObject()
@@ -89,7 +86,7 @@ bool PhysicsObject::awake() const
     return (m_body && m_body->IsAwake());
 }
 
-b2Fixture* PhysicsObject::addCircleShape(const ShapeProperties& properties, float radius, glm::vec2 offset)
+b2Fixture* PhysicsObject::addCircleShape(const ShapeProperties& properties, const float radius, const glm::vec2 offset)
 {
     CRO_ASSERT(m_system && m_body, "Component not initialised!");
     CRO_ASSERT(m_shapeCount < MaxShapes, "No more shapes available!");
@@ -102,7 +99,7 @@ b2Fixture* PhysicsObject::addCircleShape(const ShapeProperties& properties, floa
 }
 
 b2Fixture*
-PhysicsObject::addBoxShape(const ShapeProperties& properties, glm::vec2 size, glm::vec2 offset, float angle)
+PhysicsObject::addBoxShape(const ShapeProperties& properties, const glm::vec2 size, const glm::vec2 offset, const float angle)
 {
     CRO_ASSERT(m_system && m_body, "Component not initialised!");
     CRO_ASSERT(m_shapeCount < MaxShapes, "No more shapes available!");
@@ -114,7 +111,7 @@ PhysicsObject::addBoxShape(const ShapeProperties& properties, glm::vec2 size, gl
     return m_shapes[m_shapeCount - 1];
 }
 
-b2Fixture* PhysicsObject::addEdgeShape(const ShapeProperties& properties, glm::vec2 start, glm::vec2 end)
+b2Fixture* PhysicsObject::addEdgeShape(const ShapeProperties& properties, const glm::vec2 start, const glm::vec2 end)
 {
     CRO_ASSERT(m_system && m_body, "Component not initialised!");
     CRO_ASSERT(m_shapeCount < MaxShapes, "No more shapes available!");
@@ -125,7 +122,7 @@ b2Fixture* PhysicsObject::addEdgeShape(const ShapeProperties& properties, glm::v
     return m_shapes[m_shapeCount - 1];
 }
 
-b2Vec2 findCentroid(std::vector<b2Vec2>& points)
+b2Vec2 findCentroid(const std::vector<b2Vec2>& points)
 {
     float x = 0;
     float y = 0;
@@ -134,7 +131,7 @@ b2Vec2 findCentroid(std::vector<b2Vec2>& points)
         x += p.x;
         y += p.y;
     }
-    return {x / (float)points.size(), y / (float)points.size()};
+    return {x / static_cast<float>(points.size()), y / static_cast<float>(points.size())};
 }
 
 b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, const std::span<glm::vec2>& points)
@@ -151,7 +148,7 @@ b2Fixture* PhysicsObject::addPolygonShape(const ShapeProperties& properties, con
     }
 
     auto midP = findCentroid(verts);
-    std::sort(std::begin(verts), std::end(verts), [midP](b2Vec2 a, b2Vec2 b) -> bool {
+    std::ranges::sort(verts, [midP](const b2Vec2 a, const b2Vec2 b) -> bool {
         return std::atan2(a.x - midP.x, a.y - midP.y) + 2 * cro::Util::Const::PI > std::atan2(
                    b.x - midP.x, b.y - midP.y) + 2 * cro::Util::Const::PI;
     });
@@ -206,12 +203,13 @@ b2Fixture* PhysicsObject::applyProperties(const ShapeProperties& properties, con
     fixtureDef.isSensor = properties.isSensor;
     fixtureDef.filter.categoryBits = properties.layer;
     fixtureDef.filter.maskBits = properties.mask;
+    fixtureDef.filter.groupIndex = properties.groupIndex;
     fixtureDef.shape = &shape;
 
     return m_body->CreateFixture(&fixtureDef);
 }
 
-void PhysicsObject::removeShape(b2Fixture* fixture)
+void PhysicsObject::removeShape(const b2Fixture* fixture)
 {
     CRO_ASSERT(m_system && m_body, "Component not initialised!");
 

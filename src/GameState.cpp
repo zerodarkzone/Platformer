@@ -221,7 +221,7 @@ void GameState::loadAssets()
     m_mapData = MapSystem::getMapData("level_00", {0, 0}, map, m_mapTexture);
     for (auto& [key, value]: m_mapData.backgroundElements)
     {
-        m_resources.textures.load(std::hash<std::string>{}(key), value.texturePath);
+        m_resources.textures.load(utils::hash(key), value.texturePath);
     }
 
 
@@ -263,6 +263,9 @@ void GameState::createScene()
 {
     // Map
     auto mapEntity = m_gameScene.createEntity();
+    m_mapData.layer = CollisionLayer::LAYER1;
+    m_mapData.mask = CollisionLayer::SET;
+    m_mapData.groupIndex = -1;
     mapEntity.addComponent<cro::Sprite>().setTexture(m_mapTexture);
     mapEntity.addComponent<cro::Drawable2D>();
     mapEntity.addComponent<cro::Transform>().setPosition({m_mapData.position.x, m_mapData.position.y, -10});
@@ -273,7 +276,7 @@ void GameState::createScene()
     mapEntity.getComponent<MapData>().parent = mapEntity;
     auto mapBody = &mapEntity.addComponent<PhysicsObject>();
     *mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
-                                            PhysicsObject::Type::Static, true);
+                                             PhysicsObject::Type::Static, true);
     mapBody->setDeleteShapeUserInfo(true);
     for (auto& info: m_mapData.collisionShapes)
     {
@@ -288,7 +291,7 @@ void GameState::createScene()
             childEntity.getComponent<MapData>().parent = mapEntity;
             mapBody = &childEntity.addComponent<PhysicsObject>();
             *mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
-                                            PhysicsObject::Type::Static, true);
+                                                     PhysicsObject::Type::Static, true);
             mapBody->setDeleteShapeUserInfo(true);
         }
         b2Fixture* fixture = nullptr;
@@ -301,7 +304,8 @@ void GameState::createScene()
                 fixture = mapBody->addCircleShape(
                     {
                         .restitution = info.restitution, .density = info.density,
-                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
+                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction,
+                        .layer = m_mapData.layer, .mask = m_mapData.mask, .groupIndex = m_mapData.groupIndex
                     }, info.radius,
                     info.offset);
             }
@@ -311,7 +315,8 @@ void GameState::createScene()
                 fixture = mapBody->addBoxShape(
                     {
                         .restitution = info.restitution, .density = info.density,
-                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
+                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction,
+                        .layer = m_mapData.layer, .mask = m_mapData.mask, .groupIndex = m_mapData.groupIndex
                     }, info.size, info.offset);
             }
             break;
@@ -325,17 +330,19 @@ void GameState::createScene()
                         fixture = mapBody->addChainShape(
                             {
                                 .restitution = info.restitution, .density = info.density,
-                                .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
+                                .isSensor = info.type == FixtureType::Sensor, .friction = info.friction,
+                                .layer = m_mapData.layer, .mask = m_mapData.mask, .groupIndex = m_mapData.groupIndex
                             }, {info.points.data() + 1, static_cast<std::size_t>(info.pointsCount - 2)}, false,
                             ghostVert1, ghostVert2);
                     }
                     else
                     {
                         fixture = mapBody->addChainShape({
-                                                            .restitution = info.restitution, .density = info.density,
-                                                            .isSensor = info.type == FixtureType::Sensor,
-                                                            .friction = info.friction
-                                                        }, {info.points.data(), info.pointsCount}, false);
+                                                             .restitution = info.restitution, .density = info.density,
+                                                             .isSensor = info.type == FixtureType::Sensor,
+                                                             .friction = info.friction, .layer = m_mapData.layer,
+                                                             .mask = m_mapData.mask, .groupIndex = m_mapData.groupIndex
+                                                         }, {info.points.data(), info.pointsCount}, false);
                     }
                 }
                 break;
@@ -344,7 +351,8 @@ void GameState::createScene()
                 fixture = mapBody->addPolygonShape(
                     {
                         .restitution = info.restitution, .density = info.density,
-                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction
+                        .isSensor = info.type == FixtureType::Sensor, .friction = info.friction,
+                        .layer = m_mapData.layer, .mask = m_mapData.mask, .groupIndex = m_mapData.groupIndex
                     }, {info.points.data(), info.pointsCount});
             }
             break;
@@ -362,7 +370,7 @@ void GameState::createScene()
         auto background = m_gameScene.createEntity();
         background.addComponent<cro::Transform>().setPosition({position.x, position.y, backGroundPos});
         background.addComponent<cro::Drawable2D>();
-        auto& texture = m_resources.textures.get(std::hash<std::string>{}(key));
+        auto& texture = m_resources.textures.get(utils::hash(key));
         auto newText = cro::Texture();
         std::uint16_t repX = 1;
         std::uint16_t repY = 1;
@@ -403,7 +411,9 @@ void GameState::createScene()
     player.addComponent<cro::Drawable2D>();
     player.getComponent<cro::Drawable2D>().setFacing(cro::Drawable2D::Facing::Front);
     player.addComponent<ActorInfo>({ActorID::Player});
-    player.addComponent<Player>();
+    auto& playerCmp = player.addComponent<Player>();
+    playerCmp.layer = CollisionLayer::LAYER2;
+    playerCmp.mask = CollisionLayer::SET;
     auto& playerSprite = player.addComponent<cro::Sprite>();
     playerSprite = m_sprites[SpriteID::Player];
     player.addComponent<cro::SpriteAnimation>();
@@ -457,7 +467,7 @@ void GameState::createScene()
     auto mainFixture = playerBody.addBoxShape(
         {
             .restitution = mainShapeInfo.restitution, .density = mainShapeInfo.density,
-            .friction = mainShapeInfo.friction
+            .friction = mainShapeInfo.friction, .layer = playerCmp.layer, .mask = playerCmp.mask
         },
         mainShapeInfo.size, mainShapeInfo.offset);
     mainFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(mainShapeInfo));
@@ -480,7 +490,8 @@ void GameState::createScene()
             {mainShapeInfo.size.x, 8.0f}
         }
     );
-    auto groundFixture = playerBody.addBoxShape({.isSensor = true}, groundShapeInfo.size, groundShapeInfo.offset);
+    auto groundFixture = playerBody.addBoxShape({.isSensor = true, .layer = playerCmp.layer, .mask = playerCmp.mask},
+                                                groundShapeInfo.size, groundShapeInfo.offset);
     groundFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(groundShapeInfo));
 
     // Add right sensor fixture
@@ -512,7 +523,8 @@ void GameState::createScene()
             {rightShapeInfo.size.x, rightShapeInfo.size.y * 0.5}
         }
     );
-    auto rightFixture = playerBody.addBoxShape({.isSensor = true}, rightShapeInfo.size, rightShapeInfo.offset);
+    auto rightFixture = playerBody.addBoxShape({.isSensor = true, .layer = playerCmp.layer, .mask = playerCmp.mask},
+                                               rightShapeInfo.size, rightShapeInfo.offset);
     rightFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(rightShapeInfo));
     player.getComponent<Player>().rightSensorShapeInfo = rightShapeInfo;
     player.getComponent<Player>().slideRightSensorShapeInfo = slideShapeInfo;
@@ -547,7 +559,8 @@ void GameState::createScene()
             {leftShapeInfo.size.x, leftShapeInfo.size.y * 0.5}
         }
     );
-    auto leftFixture = playerBody.addBoxShape({.isSensor = true}, leftShapeInfo.size, leftShapeInfo.offset);
+    auto leftFixture = playerBody.addBoxShape({.isSensor = true, .layer = playerCmp.layer, .mask = playerCmp.mask},
+                                              leftShapeInfo.size, leftShapeInfo.offset);
     leftFixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(leftShapeInfo));
     player.getComponent<Player>().leftSensorShapeInfo = leftShapeInfo;
     player.getComponent<Player>().slideLeftSensorShapeInfo = slideShapeInfo;
