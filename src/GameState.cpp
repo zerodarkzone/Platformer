@@ -289,6 +289,9 @@ void GameState::createScene()
             childEntity.addComponent<MapData>() = m_mapData;
             childEntity.getComponent<MapData>().entity = childEntity;
             childEntity.getComponent<MapData>().parent = mapEntity;
+            childEntity.getComponent<MapData>().collisionShapes = {};
+            childEntity.getComponent<MapData>().spawnPoints = {};
+            childEntity.getComponent<MapData>().backgroundElements = {};
             mapBody = &childEntity.addComponent<PhysicsObject>();
             *mapBody = m_physicsSystem->createObject({m_mapData.position.x, m_mapData.position.y}, 0,
                                                      PhysicsObject::Type::Static, true);
@@ -433,7 +436,7 @@ void GameState::createScene()
     playerTransform.setOrigin({playerSprite.getSize().x / 2.0f, playerSprite.getSize().y / 2.0f});
     playerTransform.setScale({1.f, 1.f});
     auto& playerBody = player.addComponent<PhysicsObject>();
-    playerBody = m_physicsSystem->createObject({CAMERA_SIZE.x / 2, 120.0f}, 0, PhysicsObject::Type::Dynamic, true);
+    playerBody = m_physicsSystem->createObject(m_mapData.spawnPoints["Player"], 0, PhysicsObject::Type::Dynamic, true);
     playerBody.setDeleteShapeUserInfo(true);
     // Add main fixture
     auto mainShapeInfo = ShapeInfo(

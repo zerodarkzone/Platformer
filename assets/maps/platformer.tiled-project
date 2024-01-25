@@ -64,6 +64,20 @@
                 "wangset",
                 "project"
             ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 2,
+            "members": [
+            ],
+            "name": "SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
         }
     ]
 }

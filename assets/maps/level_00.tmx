@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="130" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="12" nextobjectid="153">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-up" width="130" height="12" tilewidth="24" tileheight="24" infinite="0" nextlayerid="13" nextobjectid="155">
  <tileset firstgid="1" source="oak_woods_tileset.tsx"/>
  <tileset firstgid="316" source="template.tsx"/>
  <tileset firstgid="372" source="decorations.tsx"/>
@@ -782,5 +782,8 @@
     <property name="shapeType" value="Ground"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="12" name="spawn">
+  <object id="154" name="Player" type="SpawnPoint" x="54" y="210" width="12.3333" height="12.3333"/>
  </objectgroup>
 </map>

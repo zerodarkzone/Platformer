@@ -82,10 +82,6 @@ bool MyApp::initialise()
     getWindow().setTitle("Physics Test");
 
     m_stateStack.pushState(States::Game);
-
-    getWindow().setSize({1280, 720});
-    getWindow().setWindowedSize({1280, 720});
-
     return true;
 }
 

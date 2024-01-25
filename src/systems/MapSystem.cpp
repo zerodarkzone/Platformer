@@ -298,7 +298,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
             {
                 spawnPoints[obj.getName()] = glm::vec2{
                     obj.getPosition().x + obj.getAABB().width / 2.f,
-                    obj.getPosition().y + obj.getAABB().height / 2.f
+                    mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f
                 };
             }
         }

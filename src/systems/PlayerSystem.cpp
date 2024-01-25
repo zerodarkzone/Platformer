@@ -9,6 +9,9 @@
 #include <crogine/ecs/components/SpriteAnimation.hpp>
 
 #include "PlayerSystem.hpp"
+
+#include <format>
+
 #include "Actors.hpp"
 #include "AnimationController.hpp"
 #include "Messages.hpp"
@@ -106,34 +109,28 @@ void PlayerSystem::process(float dt)
         auto& player = entity.getComponent<Player>();
         const auto body = entity.getComponent<PhysicsObject>().getPhysicsBody();
         const auto vel = body->GetLinearVelocity();
+        const auto pos = body->GetPosition();
         auto& stateMachine = entity.getComponent<FiniteStateMachine>();
         auto& animController = entity.getComponent<AnimationController>();
 
         animController.direction = player.facing == Player::Facing::Right ? 1.0f : -1.0f;
 
-        cro::Console::printStat("Player1 Velocity x", std::to_string(vel.x));
-        cro::Console::printStat("Player1 Velocity y", std::to_string(vel.y));
-        cro::Console::printStat("Foot Contacts ", std::to_string(player.getContactNum(SensorType::Feet)));
-        cro::Console::printStat("Wall Contacts ",
-                                std::to_string(
-                                    player.getContactNum(SensorType::Left) + player.getContactNum(SensorType::Right)));
-        cro::Console::printStat(
-            "Jumping ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::Jumping));
-        cro::Console::printStat("Num Wall Jumps ", std::to_string(player.numWallJumps));
-        cro::Console::printStat(
-            "Sliding ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::Sliding));
-        cro::Console::printStat("Walking Left ",
-                                std::to_string(
-                                    stateMachine.getCurrentStateID() == PlayerStateID::State::Walking && vel.x < 0));
-        cro::Console::printStat("Walking Right ",
-                                std::to_string(
-                                    stateMachine.getCurrentStateID() == PlayerStateID::State::Walking && vel.x > 0));
-        cro::Console::printStat(
-            "Falling ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::Falling));
-        cro::Console::printStat("Wall Sliding ",
-                                std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::WallSliding));
-        cro::Console::printStat(
-            "Idle ", std::to_string(stateMachine.getCurrentStateID() == PlayerStateID::State::Idle));
+        DPRINT("Player1 Velocity", std::format(" x: {:7.3f},  y: {:7.3f}", vel.x, vel.y));
+        DPRINT("Player1 Position", std::format(" x: {:7.3f},  y: {:7.3f}", pos.x, pos.y));
+        DPRINT("Foot Contacts", std::format(" {}", player.getContactNum(SensorType::Feet)));
+        DPRINT("Wall Contacts",
+               std::format(" {}", player.getContactNum(SensorType::Left) + player.getContactNum(SensorType::Right)));
+        DPRINT("Jumping", std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Jumping));
+        DPRINT("Num Wall Jumps ", std::to_string(player.numWallJumps));
+        DPRINT("Sliding", std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Sliding));
+        DPRINT("Walking Left",
+               std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Walking && vel.x < 0));
+        DPRINT("Walking Right",
+               std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Walking && vel.x > 0));
+        DPRINT("Falling", std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Falling));
+        DPRINT("Wall Sliding",
+               std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::WallSliding));
+        DPRINT("Idle", std::format(" {}", stateMachine.getCurrentStateID() == PlayerStateID::State::Idle));
     }
 }
 
