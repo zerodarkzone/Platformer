@@ -28,6 +28,7 @@ source distribution.
 -----------------------------------------------------------------------*/
 
 #include "LoadingScreen.hpp"
+#include "ErrorCheck.hpp"
 
 #include <crogine/core/App.hpp>
 #include <crogine/detail/OpenGL.hpp>
@@ -40,7 +41,6 @@ source distribution.
 #include <string>
 #include <vector>
 
-#define glCheck(x) x
 
 namespace
 {
@@ -81,6 +81,7 @@ LoadingScreen::LoadingScreen()
       m_transformIndex(-1),
       m_transform(1.f),
       m_projectionMatrix(1.f),
+      m_viewport(1.f),
       m_wavetableIndex(0)
 {
     m_viewport = cro::App::getWindow().getSize();
@@ -156,7 +157,7 @@ void LoadingScreen::launch()
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
 
         //pos
-        glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, vertexSize, (void*)0));
+        glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, vertexSize, nullptr));
         glCheck(glEnableVertexAttribArray(0));
 
         glCheck(glBindVertexArray(0));
