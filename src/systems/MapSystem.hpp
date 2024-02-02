@@ -28,6 +28,7 @@ struct MapData
 	std::uint16_t mask = 0;
 	std::int16_t groupIndex = 0;
 	std::vector<ShapeInfo> collisionShapes;
+	std::vector<ShapeInfo> checkpointShapes;
 	std::unordered_map<std::string, glm::vec2> spawnPoints;
 	std::map<std::string, BackgroundElement> backgroundElements;
 
@@ -53,7 +54,8 @@ private:
 
 	static std::int32_t parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize,
 	                                  std::unordered_map<std::string, glm::vec2>& /*out*/ spawnPoints,
-	                                  std::vector<ShapeInfo>& /*out*/ shapes);
+	                                  std::vector<ShapeInfo>& /*out*/ shapes,
+	                                  std::vector<ShapeInfo>& /*out*/ checkpointShapes);
 
 	static std::int32_t parseImageLayer(const tmx::Layer* layer, const tmx::Map& map,
 	                                    std::map<std::string, BackgroundElement>& /*out*/ elements);

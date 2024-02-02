@@ -37,7 +37,7 @@
             "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 411.5,
+                "x": 408,
                 "y": 311.875
             }
         },
@@ -53,8 +53,8 @@
             "scale": 3,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 1560,
-                "y": 143.83333333333334
+                "x": 1562.6666666666665,
+                "y": 143.83333333333331
             }
         },
         "oak_woods_tileset.tsx": {

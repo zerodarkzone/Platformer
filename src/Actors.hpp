@@ -17,6 +17,7 @@ enum class ActorID : std::uint8_t
     Floor,
     Wall,
     Map,
+    Checkpoint,
     Background,
     Background2,
     Background3,

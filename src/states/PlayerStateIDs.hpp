@@ -19,6 +19,7 @@ namespace PlayerStateID
 		Crouching,
 		WallSliding,
 		Attacking,
+		Dying,
 		Count
 	};
 }

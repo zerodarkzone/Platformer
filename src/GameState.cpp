@@ -60,6 +60,7 @@ source distribution.
 #include <crogine/ecs/components/Drawable2D.hpp>
 #include <crogine/ecs/components/Sprite.hpp>
 #include <crogine/ecs/components/SpriteAnimation.hpp>
+#include <states/PlayerDyingState.hpp>
 
 #include <tmxlite/Map.hpp>
 
@@ -363,6 +364,25 @@ void GameState::createScene()
         if (fixture)
             fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));
     }
+    for (auto& info: m_mapData.checkpointShapes)
+    {
+        auto entity = m_gameScene.createEntity();
+        mapEntity.getComponent<cro::Transform>().addChild(entity.addComponent<cro::Transform>());
+        entity.addComponent<cro::CommandTarget>().ID = CommandID::CheckPoint;
+        entity.addComponent<ActorInfo>({ActorID::Checkpoint});
+        auto* body = &entity.addComponent<PhysicsObject>();
+
+        *body = m_physicsSystem->createObject({info.offset.x, info.offset.y}, 0,
+                                                 PhysicsObject::Type::Static, true);
+
+        auto fixture = body->addBoxShape(
+            {.isSensor = true, .layer = m_mapData.layer, .mask = m_mapData.mask,
+                .groupIndex = m_mapData.groupIndex
+            }, info.size);
+        fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));
+        body->setDeleteShapeUserInfo(true);
+    }
+
 
     // Background
     auto backGroundPos = -15.f;
@@ -423,13 +443,15 @@ void GameState::createScene()
     player.addComponent<AnimationController>() = m_animationControllers[SpriteID::Player];
     player.getComponent<AnimationController>().nextAnimation = AnimationID::Idle;
     auto& fsm = player.addComponent<FiniteStateMachine>();
-    fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle, player);
-    fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking, player);
-    fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling, player);
-    fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping, player);
-    fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding, player);
-    fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding, player);
-    fsm.registerState<PlayerAttackState>(PlayerStateID::State::Attacking, player);
+    auto& mb = getContext().appInstance.getMessageBus();
+    fsm.registerState<PlayerIdleState>(PlayerStateID::State::Idle, player, &mb);
+    fsm.registerState<PlayerWalkingState>(PlayerStateID::State::Walking, player, &mb);
+    fsm.registerState<PlayerFallingState>(PlayerStateID::State::Falling, player, &mb);
+    fsm.registerState<PlayerJumpingState>(PlayerStateID::State::Jumping, player, &mb);
+    fsm.registerState<PlayerWallSlidingState>(PlayerStateID::State::WallSliding, player, &mb);
+    fsm.registerState<PlayerSlidingState>(PlayerStateID::State::Sliding, player, &mb);
+    fsm.registerState<PlayerAttackState>(PlayerStateID::State::Attacking, player, &mb);
+    fsm.registerState<PlayerDyingState>(PlayerStateID::State::Dying, player, &mb);
     fsm.changeState(PlayerStateID::State::Idle);
     player.addComponent<cro::CommandTarget>().ID = CommandID::Player1;
     auto& playerTransform = player.addComponent<cro::Transform>();
@@ -441,6 +463,7 @@ void GameState::createScene()
     // Add main fixture
     auto mainShapeInfo = ShapeInfo(
         {
+            0,
             FixtureType::Solid,
             SensorType::None,
             PlatformType::None,
@@ -455,6 +478,7 @@ void GameState::createScene()
     );
     auto slideShapeInfo = ShapeInfo(
         {
+            0,
             mainShapeInfo.type,
             mainShapeInfo.sensor,
             mainShapeInfo.platform,
@@ -481,6 +505,7 @@ void GameState::createScene()
     // Add ground sensor fixture
     auto groundShapeInfo = ShapeInfo(
         {
+            1,
             FixtureType::Sensor,
             SensorType::Feet,
             PlatformType::None,
@@ -500,6 +525,7 @@ void GameState::createScene()
     // Add right sensor fixture
     auto rightShapeInfo = ShapeInfo(
         {
+            2,
             FixtureType::Sensor,
             SensorType::Right,
             PlatformType::None,
@@ -514,6 +540,7 @@ void GameState::createScene()
     );
     slideShapeInfo = ShapeInfo(
         {
+            2,
             rightShapeInfo.type,
             rightShapeInfo.sensor,
             rightShapeInfo.platform,
@@ -536,6 +563,7 @@ void GameState::createScene()
     // Add left sensor fixture
     auto leftShapeInfo = ShapeInfo(
         {
+            3,
             FixtureType::Sensor,
             SensorType::Left,
             PlatformType::None,
@@ -550,6 +578,7 @@ void GameState::createScene()
     );
     slideShapeInfo = ShapeInfo(
         {
+            3,
             leftShapeInfo.type,
             leftShapeInfo.sensor,
             leftShapeInfo.platform,

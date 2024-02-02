@@ -20,7 +20,7 @@ public:
 
 	~PlayerWalkingState() override = default;
 
-	PlayerWalkingState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
+	PlayerWalkingState(const FSM::StateID id, const cro::Entity entity, cro::MessageBus* mb) : PlayerState(id, entity, mb)
 	{
 	}
 };

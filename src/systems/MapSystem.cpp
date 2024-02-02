@@ -47,7 +47,7 @@ MapSystem::getMapData(std::string mapName, glm::vec2 position, const tmx::Map& m
         else if (layer->getType() == tmx::Layer::Type::Object)
         {
             //create map collision
-            flags |= parseObjLayer(layer.get(), {size.x, size.y}, mapData.spawnPoints, mapData.collisionShapes);
+            flags |= parseObjLayer(layer.get(), {size.x, size.y}, mapData.spawnPoints, mapData.collisionShapes, mapData.checkpointShapes);
         }
         else if (layer->getType() == tmx::Layer::Type::Image)
         {
@@ -172,7 +172,7 @@ std::int32_t MapSystem::parseTileLayer(const tmx::Layer* layer, const tmx::Map& 
 
 std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize,
                                       std::unordered_map<std::string, glm::vec2>& spawnPoints,
-                                      std::vector<ShapeInfo>& shapes)
+                                      std::vector<ShapeInfo>& shapes, std::vector<ShapeInfo>& checkpointShapes)
 {
     const auto name = cro::Util::String::toLower(layer->getName());
     if (name == "colliders")
@@ -187,6 +187,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
             if (type == "collider")
             {
                 ShapeInfo shapeInfo;
+                shapeInfo.id = obj.getUID();
                 for (const auto& property: properties)
                 {
                     const auto& p_name = property.getName();
@@ -288,7 +289,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
             }
         }
     }
-    if (name == "spawn")
+    else if (name == "spawn")
     {
         auto& objs = dynamic_cast<const tmx::ObjectGroup *>(layer)->getObjects();
         if (objs.empty()) return 0;
@@ -297,9 +298,40 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
             if (const auto type = cro::Util::String::toLower(obj.getClass()); type == "spawnpoint")
             {
                 spawnPoints[obj.getName()] = glm::vec2{
-                    obj.getPosition().x + obj.getAABB().width / 2.f,
-                    mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f
+                    obj.getPosition().x, mapSize.y - obj.getPosition().y
                 };
+            }
+        }
+    }
+    else if (name == "checkpoints")
+    {
+        auto& objs = dynamic_cast<const tmx::ObjectGroup *>(layer)->getObjects();
+        if (objs.empty()) return 0;
+
+        for (const auto& obj: objs)
+        {
+            const auto type = cro::Util::String::toLower(obj.getClass());
+            if (type == "checkpoint")
+            {
+                switch (obj.getShape())
+                {
+                case tmx::Object::Shape::Rectangle:
+                    {
+                        ShapeInfo shapeInfo;
+                        shapeInfo.id = obj.getUID();
+                        auto position = glm::vec2{
+                            obj.getPosition().x + obj.getAABB().width / 2.f,
+                            mapSize.y - obj.getPosition().y - obj.getAABB().height / 2.f
+                        };
+                        auto size = glm::vec2{obj.getAABB().width, obj.getAABB().height};
+                        shapeInfo.shape = ShapeType::Box;
+                        shapeInfo.size = size;
+                        shapeInfo.offset = position;
+                        checkpointShapes.emplace_back(shapeInfo);
+                    }
+                    break;
+                    default:;
+                }
             }
         }
     }

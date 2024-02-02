@@ -15,7 +15,8 @@ namespace MessageID
         UIMessage = cro::Message::Count,
         CollisionStartedMessage,
         CollisionEndedMessage,
-        AnimationMessage
+        AnimationMessage,
+        PlayerMessage,
     };
 }
 
@@ -68,5 +69,17 @@ struct AnimationEvent final
     float y = 0.f;
 };
 
+struct PlayerEvent final
+{
+    enum
+    {
+        Attacked,
+        Checkpoint,
+        Died,
+        Respawned,
+        None,
+    } type = None;
+    cro::Entity entity;
+};
 
 #endif // PHYSICS_TEST_MESSAGES_HPP

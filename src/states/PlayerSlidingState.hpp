@@ -22,7 +22,7 @@ public:
 
 	~PlayerSlidingState() override = default;
 
-	PlayerSlidingState(const FSM::StateID id, const cro::Entity entity) : PlayerState(id, entity)
+	PlayerSlidingState(const FSM::StateID id, const cro::Entity entity, cro::MessageBus* mb) : PlayerState(id, entity, mb)
 	{
 	}
 

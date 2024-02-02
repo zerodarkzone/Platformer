@@ -61,6 +61,7 @@ namespace CommandID
         AI = 0x2,
         Map = 0x4,
         MapChild = 0x8,
+        CheckPoint = 0x10,
     };
 }
 

@@ -23,7 +23,9 @@ public:
 
 	void update(float) override {}
 
-	PlayerState(const FSM::StateID id, const cro::Entity entity) : BaseState(id, entity)
+	void fixedUpdate(float) override {}
+
+	PlayerState(const FSM::StateID id, const cro::Entity entity, cro::MessageBus* mb) : BaseState(id, entity, mb)
 	{
 	}
 

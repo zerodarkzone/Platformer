@@ -5,6 +5,10 @@
 #include <crogine/ecs/systems/CommandSystem.hpp>
 
 #include "PlayerDirector.hpp"
+
+#include <crogine/ecs/components/Transform.hpp>
+#include <systems/PlayerSystem.hpp>
+
 #include "InputFlags.hpp"
 #include "Messages.hpp"
 #include "ResourceIDs.hpp"
@@ -105,8 +109,36 @@ void PlayerDirector::handleMessage(const cro::Message& msg)
 {
     switch (msg.id)
     {
-        default:
+        case MessageID::PlayerMessage:
+        {
+            auto& data = msg.getData<PlayerEvent>();
+            if (data.type == PlayerEvent::Respawned)
+            {
+                auto entity = data.entity;
+                cro::Command cmd;
+                cmd.targetFlags = CommandID::CheckPoint;
+                cmd.action = [entity] (cro::Entity e, float)mutable
+                {
+                    auto *body = e.getComponent<PhysicsObject>().getPhysicsBody();
+                    auto *fixture = body->GetFixtureList();
+                    const auto &p = entity.getComponent<Player>();
+                    if (p.lastCheckpoint == reinterpret_cast<ShapeInfo*>(fixture->GetUserData().pointer)->id)
+                    {
+                        const auto position = e.getComponent<cro::Transform>().getPosition();
+
+                        auto *pBody = entity.getComponent<PhysicsObject>().getPhysicsBody();
+                        pBody->SetLinearVelocity({0.f, 0.f});
+                        pBody->SetTransform(Convert::toPhysVec({position.x, position.y}), 0);
+
+                        auto &fsm = entity.getComponent<FiniteStateMachine>();
+                        fsm.pushState(PlayerStateID::Idle);
+                    }
+                };
+                sendCommand(cmd);
+            }
             break;
+        }
+        default: ;
     }
 }
 

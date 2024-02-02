@@ -171,6 +171,28 @@ void PlayerSystem::beginContact(b2Contact* contact)
                 }
             }
         }
+        else if (fixtureData->type == FixtureType::Solid)
+        {
+            if (other.getComponent<ActorInfo>().id == ActorID::Checkpoint)
+            {
+                if (player.lastCheckpoint != otherFixtureData->id)
+                {
+                    player.lastCheckpoint = otherFixtureData->id;
+                    if (player.lastCheckpoint > 0)
+                    {
+                        auto* msg = postMessage<PlayerEvent>(MessageID::PlayerMessage);
+                        msg->type = PlayerEvent::Checkpoint;
+                        msg->entity = self;
+                    }
+                }
+            }
+            if (other.getComponent<ActorInfo>().id == ActorID::Map &&
+                otherFixtureData->type == FixtureType::Sensor &&
+                otherFixtureData->sensor == SensorType::Bottom)
+            {
+                kill(self);
+            }
+        }
     }
 }
 
@@ -262,6 +284,16 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
             cro::Console::printStat("impulse t1: ", std::to_string(impulse->tangentImpulses[1]));
         }
     }
+}
+
+void PlayerSystem::kill(cro::Entity entity)
+{
+    auto &fsm = entity.getComponent<FiniteStateMachine>();
+    fsm.changeState(PlayerStateID::Dying);
+
+    auto* msg = postMessage<PlayerEvent>(MessageID::PlayerMessage);
+    msg->type = PlayerEvent::Died;
+    msg->entity = entity;
 }
 
 std::uint16_t Player::getContactNum(SensorType sensor, FixtureType type) const

@@ -39,13 +39,14 @@ public:
 
     virtual ~BaseState() = default;
 
-    explicit BaseState(FSM::StateID id, cro::Entity entity) : m_id(id), m_entity(entity) {}
+    explicit BaseState(FSM::StateID id, cro::Entity entity, cro::MessageBus* mb) : m_id(id), m_entity(entity), m_messageBus(mb) {}
 
     BaseState() = delete;
 
 protected:
     FSM::StateID m_id = FSM::State::None;
     cro::Entity m_entity;
+    cro::MessageBus* m_messageBus;
 };
 
 class FiniteStateMachine

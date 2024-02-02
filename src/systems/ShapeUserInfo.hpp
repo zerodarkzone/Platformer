@@ -86,6 +86,7 @@ inline std::map<std::string, ShapeType> shapeTypeMap = {
 
 struct ShapeInfo final
 {
+    std::uint32_t id = 0;
     FixtureType type = FixtureType::None;
     SensorType sensor = SensorType::None;
     PlatformType platform = PlatformType::None;

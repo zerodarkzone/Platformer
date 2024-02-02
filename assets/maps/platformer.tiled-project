@@ -78,6 +78,26 @@
                 "object",
                 "project"
             ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 3,
+            "members": [
+            ],
+            "name": "CheckPoint",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
         }
     ]
 }

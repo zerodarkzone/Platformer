@@ -51,6 +51,7 @@ struct Player
     float minSlideSpeed = 2.7f;
     std::uint16_t layer = 0;
     std::uint16_t mask = 0;
+    std::int64_t lastCheckpoint = -1;
 
     constexpr static float maxSpeed = 6.f;
     std::uint16_t maxConsecutiveWallJumps = 3u;
@@ -85,6 +86,9 @@ public:
     void preSolve(b2Contact* contact, const b2Manifold* oldManifold);
 
     void postSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+
+private:
+    void kill(cro::Entity entity);
 };
 
 
