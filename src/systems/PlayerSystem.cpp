@@ -288,7 +288,7 @@ void PlayerSystem::postSolve(b2Contact* contact, const b2ContactImpulse* impulse
 
 void PlayerSystem::kill(cro::Entity entity)
 {
-    auto &fsm = entity.getComponent<FiniteStateMachine>();
+    auto& fsm = entity.getComponent<FiniteStateMachine>();
     fsm.changeState(PlayerStateID::Dying);
 
     auto* msg = postMessage<PlayerEvent>(MessageID::PlayerMessage);

@@ -39,7 +39,8 @@ public:
 
     virtual ~BaseState() = default;
 
-    explicit BaseState(FSM::StateID id, cro::Entity entity, cro::MessageBus* mb) : m_id(id), m_entity(entity), m_messageBus(mb) {}
+    explicit BaseState(FSM::StateID id, cro::Entity entity, cro::MessageBus* mb) : m_id(id), m_entity(entity),
+        m_messageBus(mb) {}
 
     BaseState() = delete;
 
@@ -65,7 +66,7 @@ public:
     template<typename T, typename... Args>
     void registerState(FSM::StateID id, Args&&... args)
     {
-        static_assert(std::is_base_of<BaseState, T>::value, "Must derive from State class");
+        static_assert(std::is_base_of_v<BaseState, T>, "Must derive from State class");
         m_factories[id] = [id, args=std::make_tuple<Args...>(std::forward<Args>(args)...)]() {
             return std::apply([id](auto&&... args_) { return std::make_unique<T>(id, args_...); },
                               std::move(args));

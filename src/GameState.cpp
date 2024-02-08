@@ -373,10 +373,11 @@ void GameState::createScene()
         auto* body = &entity.addComponent<PhysicsObject>();
 
         *body = m_physicsSystem->createObject({info.offset.x, info.offset.y}, 0,
-                                                 PhysicsObject::Type::Static, true);
+                                              PhysicsObject::Type::Static, true);
 
         auto fixture = body->addBoxShape(
-            {.isSensor = true, .layer = m_mapData.layer, .mask = m_mapData.mask,
+            {
+                .isSensor = true, .layer = m_mapData.layer, .mask = m_mapData.mask,
                 .groupIndex = m_mapData.groupIndex
             }, info.size);
         fixture->GetUserData().pointer = reinterpret_cast<std::uintptr_t>(new ShapeInfo(info));

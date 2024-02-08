@@ -47,7 +47,8 @@ MapSystem::getMapData(std::string mapName, glm::vec2 position, const tmx::Map& m
         else if (layer->getType() == tmx::Layer::Type::Object)
         {
             //create map collision
-            flags |= parseObjLayer(layer.get(), {size.x, size.y}, mapData.spawnPoints, mapData.collisionShapes, mapData.checkpointShapes);
+            flags |= parseObjLayer(layer.get(), {size.x, size.y}, mapData.spawnPoints, mapData.collisionShapes,
+                                   mapData.checkpointShapes);
         }
         else if (layer->getType() == tmx::Layer::Type::Image)
         {
@@ -315,7 +316,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
             {
                 switch (obj.getShape())
                 {
-                case tmx::Object::Shape::Rectangle:
+                    case tmx::Object::Shape::Rectangle:
                     {
                         ShapeInfo shapeInfo;
                         shapeInfo.id = obj.getUID();
@@ -330,7 +331,7 @@ std::int32_t MapSystem::parseObjLayer(const tmx::Layer* layer, glm::vec2 mapSize
                         checkpointShapes.emplace_back(shapeInfo);
                     }
                     break;
-                    default:;
+                    default: ;
                 }
             }
         }
